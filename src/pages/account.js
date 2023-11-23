@@ -3,10 +3,10 @@ import { Box, Container, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } f
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { AccountPicture } from 'src/sections/account/account-picture';
 import { AccountDetails } from 'src/sections/account/account-details';
-import axios from 'axios';
+import axios from '../api/axios';
 import { useState, useEffect } from 'react';
+import * as accountsApi from '../api/accounts'
 
-const baseURL = 'https://criminal-management.onrender.com';
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJub3JlcGx5LmNyaW1pbmFsbWFuYWdlbWVudEBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiU3VwZXJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL21vYmlsZXBob25lIjoiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE2OTk2MzY1NDJ9.HxgFnOkLn-rgfAnvedgZWQyopIGmY3NQwu-wt4wyvlA';
 
 const Page = () => {
@@ -19,12 +19,7 @@ const Page = () => {
     setError(null);
 
     try {
-      const response = await axios.get(`${baseURL}/api/v1/account/1`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+      const response = await accountsApi.getAccountById(1);
       setAccount(response.data.data);
       setIsLoading(false);
     }

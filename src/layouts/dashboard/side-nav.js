@@ -53,8 +53,9 @@ export const SideNav = (props) => {
             href="/"
             sx={{
               display: 'flex',
-              height: 32,
-              width: 32,
+              height: 60,
+              width: 60,
+              justifyContent: 'center'
             }}
           >
             <Logo />
