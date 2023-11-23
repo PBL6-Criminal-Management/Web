@@ -52,7 +52,7 @@ export const CriminalsTable = (props) => {
                 <TableCell>
                   Tội danh
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: 150 }}>
                   Thời gian phạm tội gần nhất
                 </TableCell>
                 <TableCell>
@@ -62,7 +62,6 @@ export const CriminalsTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((criminal) => {
-                const latestCrimeDate = format(criminal.latestCrimeDate, 'dd/MM/yyyy');
                 return (
                   <TableRow
                     hover
@@ -79,19 +78,19 @@ export const CriminalsTable = (props) => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {criminal.birthYear}
+                      {criminal.yearOfBirth}
                     </TableCell>
                     <TableCell>
-                      {criminal.area}
+                      {criminal.permanentResidence}
                     </TableCell>
                     <TableCell>
-                      {criminal.status}
+                      {getCriminalStatusById(criminal.status)}
                     </TableCell>
                     <TableCell>
-                      {criminal.crime}
+                      {criminal.charge}
                     </TableCell>
-                    <TableCell>
-                      {latestCrimeDate}
+                    <TableCell sx={{ width: 150 }}>
+                      {criminal.dateOfMostRecentCrime}
                     </TableCell>
                     <TableCell>
                     <Stack
@@ -140,4 +139,19 @@ CriminalsTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+};
+
+export const getCriminalStatusById = (id) => {
+  switch (id) {
+    case 0: 
+      return "Đang ngồi tù";
+    case 1: 
+      return "Đã được thả";
+    case 2:
+      return "Bị truy nã";
+    case 3:
+      return "Chưa kết án";
+    case 4:
+      return "Án treo";
+  }
 };

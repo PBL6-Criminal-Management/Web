@@ -1,132 +1,22 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import Head from 'next/head';
-import { subDays, subHours } from 'date-fns';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
-import { useSelection } from 'src/hooks/use-selection';
+import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CriminalsTable } from 'src/sections/criminals/criminals-table';
 import { CriminalsSearch } from 'src/sections/criminals/criminals-search';
-import { applyPagination } from 'src/utils/apply-pagination';
+import axios from 'axios';
 
 const now = new Date();
-
-const data = [
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-  {
-    id: '5e887ac47eed253091be10cb',
-    name: 'Carson Darrin',
-    birthYear: 1991,
-    area: 'Thanh Khê',
-    status: 'Đang ngồi tù',
-    latestCrimeDate: subDays(subHours(now, 7), 1).getTime(),
-    crime: 'Cướp tài sản',
-  },
-];
-
-const useCriminals = (page, rowsPerPage) => {
-  return useMemo(
-    () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
-};
-
-const useCriminalIds = (criminals) => {
-  return useMemo(
-    () => {
-      return criminals.map((criminal) => criminal.id);
-    },
-    [criminals]
-  );
-};
+const baseURL = 'https://criminal-management.onrender.com';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJub3JlcGx5LmNyaW1pbmFsbWFuYWdlbWVudEBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiU3VwZXJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL21vYmlsZXBob25lIjoiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3MDA5MTE5MDR9.GfSJbi4mkTpkidTALykL_QlrDfaDeOW_BPUc7dJApyM';
 
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const criminals = useCriminals(page, rowsPerPage);
-  const criminalsIds = useCriminalIds(criminals);
+  const [criminals, setCriminals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -141,6 +31,36 @@ const Page = () => {
     },
     []
   );
+
+  const getCriminals = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axios.get(`${baseURL}/api/v1/criminal`, 
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setCriminals(response.data.data);
+      setIsLoading(false);
+    }
+    catch (error) {
+      setError(error.message);
+    }
+
+    setLoading(false);
+  }
+  
+  useEffect(() => {
+    getCriminals();
+  }, []);
+  {if (loading) 
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      {<CircularProgress />}
+    </div>
+  }
 
   return (
     <>
@@ -181,7 +101,7 @@ const Page = () => {
             </Stack>
             <CriminalsSearch />
             <CriminalsTable
-              count={data.length}
+              count={criminals.length}
               items={criminals}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}

@@ -56,16 +56,14 @@ export const AccountsTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((account) => {
-                const createdAt = format(account.createdAt, 'dd/MM/yyyy');
-
                 return (
                   <TableRow
                     hover
-                    key={account.id}
+                    key={account.username}
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {account.name}
+                          {account.username}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -77,10 +75,10 @@ export const AccountsTable = (props) => {
                       {account.email}
                     </TableCell>
                     <TableCell>
-                      {account.role}
+                      {getRoleById(account.roleId)}
                     </TableCell>
                     <TableCell>
-                      {createdAt}
+                      {account.createdAt}
                     </TableCell>
                     <TableCell>
                     <Stack
@@ -129,4 +127,17 @@ AccountsTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+};
+
+export const getRoleById = (id) => {
+  switch (id) {
+    case 0: 
+      return "Admin";
+    case 1: 
+      return "Người nhập liệu";
+    case 2:
+      return "Người điều tra";
+    default:
+      return "None";
+  }
 };
