@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Container, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountProfile } from 'src/sections/account/account-profile';
-import { AccountProfileDetails } from 'src/sections/account/account-profile-details';
+import { AccountPicture } from 'src/sections/account/account-picture';
+import { AccountDetails } from 'src/sections/account/account-details';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
@@ -17,14 +17,14 @@ const Page = () => {
   const getAccount = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await axios.get(`${baseURL}/api/v1/account/1`, 
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await axios.get(`${baseURL}/api/v1/account/1`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
       setAccount(response.data.data);
       setIsLoading(false);
     }
@@ -34,16 +34,16 @@ const Page = () => {
 
     setLoading(false);
   }
-  
+
   useEffect(() => {
     getAccount();
   }, []);
-  {if (loading) return <div>Loading...</div>}
+
   return (
     <>
       <Head>
         <title>
-          Account
+          Thông tin cá nhân
         </title>
       </Head>
       <Box
@@ -54,8 +54,9 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <div>
+              
               <Typography variant="h4">
-                Account
+                {loading ? <Skeleton /> : 'Thông tin cá nhân'}
               </Typography>
             </div>
             <div>
@@ -68,14 +69,14 @@ const Page = () => {
                   md={6}
                   lg={4}
                 >
-                  <AccountProfile />
+                  <AccountPicture imageLink={account.imageLink} loading={loading}/>
                 </Grid>
                 <Grid
                   xs={12}
                   md={6}
                   lg={8}
                 >
-                  <AccountProfileDetails account={account}/>
+                  <AccountDetails account={account} loading={loading} />
                 </Grid>
               </Grid>
             </div>
