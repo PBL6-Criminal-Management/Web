@@ -3,7 +3,6 @@ import { Box, Container, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } f
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { AccountPicture } from 'src/sections/account/account-picture';
 import { AccountDetails } from 'src/sections/account/account-details';
-import axios from '../api/axios';
 import { useState, useEffect } from 'react';
 import * as accountsApi from '../api/accounts'
 
@@ -17,16 +16,16 @@ const Page = () => {
     setError(null);
 
     try {
-      const response = await accountsApi.getAccountById(1);
-      console.log(response);
-      setAccount(response);
-      setIsLoading(false);
+      const user = JSON.parse(localStorage.getItem('user'));
+      setAccount(user);
+      setLoading(false);
     }
     catch (error) {
       setError(error.message);
     }
-
-    setLoading(false);
+    finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {

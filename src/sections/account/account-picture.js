@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Card,
@@ -10,14 +11,7 @@ import {
   Typography
 } from '@mui/material';
 
-const user = {
-  avatar: '/assets/avatars/avatar-anika-visser.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Anika Visser',
-  timezone: 'GTM-7'
-};
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 export const AccountPicture = ({ imageLink, loading }) => (
   <Card
@@ -68,7 +62,7 @@ export const AccountPicture = ({ imageLink, loading }) => (
         <Button
           fullWidth
           variant="contained"
-          
+          startIcon={<CloudUploadIcon />}
         >
           Tải ảnh lên
         </Button>
