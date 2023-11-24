@@ -154,7 +154,7 @@ export function createComponents(config) {
           borderStyle: 'solid',
           borderWidth: 1,
           overflow: 'hidden',
-          borderColor: palette.neutral[200],
+          borderColor: palette.neutral[300],
           transition: muiTheme.transitions.create([
             'border-color',
             'box-shadow'
@@ -194,7 +194,7 @@ export function createComponents(config) {
           '&:hover': {
             backgroundColor: palette.action.hover,
             [`& .${outlinedInputClasses.notchedOutline}`]: {
-              borderColor: palette.neutral[200]
+              borderColor: palette.neutral[300]
             }
           },
           [`&.${outlinedInputClasses.focused}`]: {
@@ -217,7 +217,7 @@ export function createComponents(config) {
           lineHeight: '24px',
         },
         notchedOutline: {
-          borderColor: palette.neutral[200],
+          borderColor: palette.neutral[300],
           transition: muiTheme.transitions.create([
             'border-color',
             'box-shadow'

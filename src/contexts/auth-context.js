@@ -88,12 +88,7 @@ export const AuthProvider = (props) => {
     }
 
     if (isAuthenticated) {
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
-      };
+      const user = JSON.parse(localStorage.getItem('user'));
 
       dispatch({
         type: HANDLERS.INITIALIZE,
@@ -123,18 +118,11 @@ export const AuthProvider = (props) => {
       const refreshToken = response.refreshToken;
       Cookies.set('token', token, { secure: true });
       Cookies.set('refreshToken', refreshToken, { secure: true });
+      window.sessionStorage.setItem('authenticated', true);
 
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
-      };
-      // const user = accountsApi.getAccountById(1);
-      // localStorage.setItem('user', JSON.stringify(user));
-
-      // const abc = JSON.parse(localStorage.getItem('user'));
-      // console.log(abc);
+      const user = await accountsApi.getAccountById(response.userId);
+      localStorage.setItem('user', JSON.stringify(user));
+      
       dispatch({
         type: HANDLERS.SIGN_IN,
         payload: user
@@ -146,6 +134,8 @@ export const AuthProvider = (props) => {
   };
 
   const signOut = () => {
+    window.sessionStorage.removeItem('authenticated');
+    window.localStorage.removeItem('user');
     dispatch({
       type: HANDLERS.SIGN_OUT
     });

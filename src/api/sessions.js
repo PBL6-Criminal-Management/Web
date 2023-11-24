@@ -4,7 +4,7 @@ import axios from './axios';
 export async function login(username, password) {
     try {
         const response = await axios.post('/api/identity/token', {
-            userName: username,
+            username: username,
             password: password
         }, {
             headers: {
