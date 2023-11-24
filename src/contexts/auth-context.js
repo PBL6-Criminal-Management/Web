@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
+import { useLoading } from './loading-context';
+import { useMockUser } from '../hooks/use-mocked-user';
+import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
+import * as sessionsApi from '../api/sessions';
+import * as accountsApi from '../api/accounts';
+
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -9,7 +15,7 @@ const HANDLERS = {
 
 const initialState = {
   isAuthenticated: false,
-  isLoading: true,
+  isFinished: true,
   user: null
 };
 
@@ -24,11 +30,11 @@ const handlers = {
         user
           ? ({
             isAuthenticated: true,
-            isLoading: false,
+            isFinished: false,
             user
           })
           : ({
-            isLoading: false
+            isFinished: false
           })
       )
     };
@@ -63,6 +69,7 @@ export const AuthProvider = (props) => {
   const { children } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialized = useRef(false);
+  const { loading, startLoading, stopLoading } = useLoading();
 
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
@@ -107,52 +114,35 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const skip = () => {
+  const signIn = async (username, password) => {
     try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
+      startLoading();
+      const response = await sessionsApi.login(username, password);
+      console.log(response);
+      const token = response.token;
+      const refreshToken = response.refreshToken;
+      Cookies.set('token', token, { secure: true });
+      Cookies.set('refreshToken', refreshToken, { secure: true });
+
+      const user = {
+        id: '5e86809283e28b96d2d38537',
+        avatar: '/assets/avatars/avatar-anika-visser.png',
+        name: 'Anika Visser',
+        email: 'anika.visser@devias.io'
+      };
+      // const user = accountsApi.getAccountById(1);
+      // localStorage.setItem('user', JSON.stringify(user));
+
+      // const abc = JSON.parse(localStorage.getItem('user'));
+      // console.log(abc);
+      dispatch({
+        type: HANDLERS.SIGN_IN,
+        payload: user
+      });
     }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
-
-  const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
+    finally {
+      stopLoading();
     }
-
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
-
-  const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
   };
 
   const signOut = () => {
@@ -165,9 +155,8 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        skip,
+        loading,
         signIn,
-        signUp,
         signOut
       }}
     >
