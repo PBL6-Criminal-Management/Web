@@ -6,10 +6,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CriminalsTable } from 'src/sections/criminals/criminals-table';
 import { CriminalsSearch } from 'src/sections/criminals/criminals-search';
 import axios from 'axios';
-
-const now = new Date();
-const baseURL = 'https://criminal-management.onrender.com';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJub3JlcGx5LmNyaW1pbmFsbWFuYWdlbWVudEBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiU3VwZXJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL21vYmlsZXBob25lIjoiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3MDA5MTE5MDR9.GfSJbi4mkTpkidTALykL_QlrDfaDeOW_BPUc7dJApyM';
+import * as criminalsApi from '../api/criminals';
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -37,13 +34,8 @@ const Page = () => {
     setError(null);
     
     try {
-      const response = await axios.get(`${baseURL}/api/v1/criminal`, 
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      setCriminals(response.data.data);
+      const criminals = await criminalsApi.getAllCriminals();
+      setCriminals(criminals);
       setIsLoading(false);
     }
     catch (error) {
