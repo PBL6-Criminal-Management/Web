@@ -4,12 +4,16 @@ import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
+  Alert,
   Box,
   Button,
+  Collapse,
+  IconButton,
   Stack,
   TextField,
   Typography
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 import { LoadingButton } from '@mui/lab';
@@ -17,6 +21,7 @@ import { LoadingButton } from '@mui/lab';
 const Page = () => {
   const router = useRouter();
   const auth = useAuth();
+  const [open, setOpen] = useState(true);
 
   const formik = useFormik({
     initialValues: {
@@ -36,6 +41,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
+        setOpen(true);
         await auth.signIn(values.username, values.password);
         router.push('/');
       } catch (err) {
@@ -107,7 +113,7 @@ const Page = () => {
                   value={formik.values.password}
                 />
               </Stack>
-              {formik.errors.submit && (
+              {/* {formik.errors.submit && (
                 <Typography
                   color="error"
                   sx={{ mt: 3 }}
@@ -115,7 +121,7 @@ const Page = () => {
                 >
                   {formik.errors.submit}
                 </Typography>
-              )}
+              )} */}
               {auth.loading ?
                 <LoadingButton
                   disabled
@@ -135,6 +141,43 @@ const Page = () => {
                 >
                   Đăng nhập
                 </Button>}
+              {formik.errors.submit && (
+                <Box sx={{ 
+                  width: '100%',
+                  mt: 3
+                  }}>
+                  <Collapse in={open}>
+                    <Alert
+                      variant='outlined'
+                      open={open}
+                      severity="error"
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="error"
+                          size="small"
+                          onClick={() => {
+                            setOpen(false);
+                          }}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                      }
+                      sx={{ 
+                        mb: 2,
+                        borderRadius: '12px', 
+                      }}
+                    >
+                      <Typography
+                        color="error"
+                        variant="subtitle2"
+                      >
+                        {formik.errors.submit}
+                      </Typography>
+                    </Alert>
+                  </Collapse>
+                </Box>
+              )}
             </form>
           </div>
         </Box>
