@@ -154,8 +154,8 @@ export const AuthProvider = (props) => {
 
     const intervalId = setInterval(checkRefreshToken, 60 * 1000);
 
-    return () =>  clearInterval(intervalId);
-   });
+    return () => clearInterval(intervalId);
+  });
 
   const signIn = async (username, password) => {
     try {
@@ -196,15 +196,32 @@ export const AuthProvider = (props) => {
   }
 
   useEffect(() => {
-    const handleUnload = () => {
-      state.isAuthenticated = false;
-      removeItems();
+    let isPageRefresh = false;
+
+    const handleBeforeUnload = (event) => {
+      if (!isPageRefresh) {
+        // Page is being refreshed or navigated away, do not remove items
+        console.log('Page is being refreshed or navigated away, do not remove items');
+      } else {
+        // Page is being closed, handle your logic
+        console.log('Page is being closed, remove items if needed');
+        removeItems();
+      }
     };
 
-    window.addEventListener('unload', handleUnload);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        // Page is being refreshed
+        isPageRefresh = true;
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('unload', handleUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 
