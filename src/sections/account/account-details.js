@@ -10,10 +10,7 @@ import {
   Unstable_Grid2 as Grid,
   Skeleton
 } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import vi from 'date-fns/locale/vi';
 import { format, parse } from 'date-fns';
 import * as constants from '../../constants/constants';
 
@@ -84,14 +81,14 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-  
+
     // Convert the string value to a boolean if the field is 'gender'
     const updatedValue = name === 'gender' ? value === 'true' : value;
-  
+
     // Update the state
     dispatch({ type: 'UPDATE_ACCOUNT', payload: { [name]: updatedValue } });
   };
-  
+
 
   const handleDateChange = (date) => {
     dispatch({ type: 'UPDATE_BIRTHDAY', payload: date });
@@ -132,7 +129,7 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
                 { label: 'Email', name: 'email', md: 4 },
                 { label: 'Tên tài khoản', name: 'username', md: 4, disabled: true },
                 { label: 'Địa chỉ', name: 'address', md: 8 },
-                { label: 'Vai trò', name: 'role', md: 4, disabled: true}
+                { label: 'Vai trò', name: 'role', md: 4, disabled: true }
               ].map((field) => (
                 <Grid key={field.name} xs={12} md={field.md || 12}>
                   {loading ? (
@@ -141,24 +138,24 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
                     </Skeleton>
                   ) : (
                     field.datePicker ? (
-                      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
-                        <DatePicker
-                          disabled={state.isFieldDisabled || field.disabled}
-                          label={field.label}
-                          value={state.account[field.name] ? parse(state.account.birthday, 'dd/MM/yyyy', new Date()) : null}
-                          onChange={(date) => handleDateChange(date)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              fullWidth
-                              InputLabelProps={{ shrink: true }}
-                              required={!field.disabled}
-                              onKeyDown={(e) => e.preventDefault()}
-                            />
-                          )}
-                          maxDate={new Date()} // Assuming current date is the maximum allowed
-                        />
-                      </LocalizationProvider>
+                      // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
+                      <DatePicker
+                        disabled={state.isFieldDisabled || field.disabled}
+                        label={field.label}
+                        value={state.account[field.name] ? parse(state.account.birthday, 'dd/MM/yyyy', new Date()) : null}
+                        onChange={(date) => handleDateChange(date)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            fullWidth
+                            InputLabelProps={{ shrink: true }}
+                            required={!field.disabled}
+                            onKeyDown={(e) => e.preventDefault()}
+                          />
+                        )}
+                        maxDate={new Date()} // Assuming current date is the maximum allowed
+                      />
+                      // </LocalizationProvider>
                     ) : (
                       <TextField
                         disabled={state.isFieldDisabled || field.disabled}

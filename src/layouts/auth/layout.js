@@ -55,7 +55,7 @@ export const Layout = (props) => {
           {children}
         </Grid>
         <Grid
-          xs={12}
+          xs={0}
           lg={6}
           sx={{
             alignItems: 'center',

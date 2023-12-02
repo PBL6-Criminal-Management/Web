@@ -6,7 +6,7 @@ export function createPalette() {
   return {
     action: {
       active: neutral[500],
-      disabled: alpha(neutral[900], 0.38),
+      disabled: alpha(neutral[900], 0.55),
       disabledBackground: alpha(neutral[900], 0.12),
       focus: alpha(neutral[900], 0.16),
       hover: alpha(neutral[900], 0.04),
@@ -26,7 +26,7 @@ export function createPalette() {
     text: {
       primary: neutral[900],
       secondary: neutral[500],
-      disabled: alpha(neutral[900], 0.38)
+      disabled: alpha(neutral[900], 0.55)
     },
     warning
   };
