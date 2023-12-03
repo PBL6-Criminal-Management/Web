@@ -50,7 +50,7 @@ export const CriminalsTable = (props) => {
                   Tình trạng
                 </TableCell>
                 <TableCell>
-                  Tội danh
+                  Tội danh gần nhất
                 </TableCell>
                 <TableCell sx={{ width: 150 }}>
                   Thời gian phạm tội gần nhất
@@ -119,7 +119,7 @@ export const CriminalsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
-      <TablePagination
+      {/* <TablePagination
         component="div"
         count={count}
         onPageChange={onPageChange}
@@ -127,7 +127,7 @@ export const CriminalsTable = (props) => {
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
-      />
+      /> */}
     </Card>
   );
 };
