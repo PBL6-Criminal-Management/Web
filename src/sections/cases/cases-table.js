@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { React } from 'react';
 import {
   Box,
   Card,
@@ -17,7 +17,7 @@ import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 
-export const CriminalsTable = (props) => {
+export const CasesTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -35,25 +35,25 @@ export const CriminalsTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Mã tội phạm
+                  ID
                 </TableCell>
                 <TableCell>
-                  Họ và tên
+                  Tội danh
                 </TableCell>
                 <TableCell>
-                  Năm sinh
+                  Thời gian diễn ra
                 </TableCell>
                 <TableCell>
-                  Nơi ĐK HKTT
+                  Lý do
                 </TableCell>
                 <TableCell>
-                  Tình trạng
+                  Loại vi phạm
                 </TableCell>
                 <TableCell>
-                  Tội danh gần nhất
+                  Trạng thái
                 </TableCell>
-                <TableCell sx={{ width: 150 }}>
-                  Thời gian phạm tội gần nhất
+                <TableCell>
+                  Danh sách tội phạm
                 </TableCell>
                 <TableCell>
                   Hành động
@@ -61,36 +61,38 @@ export const CriminalsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((criminal) => {
+              {items.map((casee) => {
                 return (
                   <TableRow
                     hover
-                    key={criminal.id}
+                    key={casee.id}
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {criminal.id}
+                          {casee.id}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {criminal.name}
+                          {casee.charge}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {criminal.yearOfBirth}
+                      {casee.timeTakesPlace}
                     </TableCell>
                     <TableCell>
-                      {criminal.permanentResidence}
+                      {casee.reason}
                     </TableCell>
                     <TableCell>
-                      {getCriminalStatusById(criminal.status)}
+                      {getTypeOfViolationById(casee.typeOfViolation)}
                     </TableCell>
                     <TableCell>
-                      {criminal.charge}
+                      {getCaseStatusById(casee.status)}
                     </TableCell>
-                    <TableCell sx={{ width: 150 }}>
-                      {criminal.dateOfMostRecentCrime}
+                    <TableCell>
+                      {casee.criminalOfCase.map((c, index) => (
+                        index > 0 ? `, ${c.name}` : c.name
+                      ))}
                     </TableCell>
                     <TableCell>
                     <Stack
@@ -132,7 +134,7 @@ export const CriminalsTable = (props) => {
   );
 };
 
-CriminalsTable.propTypes = {
+CasesTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onPageChange: PropTypes.func,
@@ -141,17 +143,22 @@ CriminalsTable.propTypes = {
   rowsPerPage: PropTypes.number,
 };
 
-export const getCriminalStatusById = (id) => {
+export const getCaseStatusById = (id) => {
   switch (id) {
     case 0: 
-      return "Đang ngồi tù";
+      return "Chưa xét xử";
     case 1: 
-      return "Đã được thả";
+      return "Đang điều tra";
     case 2:
-      return "Bị truy nã";
-    case 3:
-      return "Chưa kết án";
-    case 4:
-      return "Án treo";
+      return "Đã xét xử";
+  }
+};
+
+export const getTypeOfViolationById = (id) => {
+  switch (id) {
+    case 0: 
+      return "Dân sự";
+    case 1: 
+      return "Hình sự";
   }
 };
