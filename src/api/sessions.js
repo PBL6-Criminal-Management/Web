@@ -1,7 +1,8 @@
 
 import axios from './axios';
+import Cookies from 'js-cookie';
 
-export async function login(username, password) {
+export const login = async (username, password) => {
     try {
         const response = await axios.post('/api/identity/token', {
             username: username,
@@ -26,6 +27,27 @@ export async function login(username, password) {
             throw new Error('Error setting up the request.');
         }
     }
+}
+
+export const refreshToken = async (token, refreshToken) => {
+    const tokenAuth = Cookies.get('token');
+    try {
+        const response = await axios.post('/api/identity/token/refresh', {
+            token: token,
+            refreshToken: refreshToken
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenAuth}`
+            }
+        });
+        return response.data.data;
+    }
+    catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    } 
 }
 
 

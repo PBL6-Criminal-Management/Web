@@ -37,8 +37,8 @@ export const items = [
     )
   },
   {
-    title: 'Danh sách vụ án',
-    path: '/cases',
+    title: 'Thông tin cá nhân',
+    path: '/account',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
@@ -46,8 +46,8 @@ export const items = [
     )
   },
   {
-    title: 'Account',
-    path: '/account',
+    title: 'Thông tin tội phạm',
+    path: '/criminal',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />

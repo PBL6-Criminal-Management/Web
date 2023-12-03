@@ -4,8 +4,9 @@ import {
   inputLabelClasses,
   outlinedInputClasses,
   paperClasses,
-  tableCellClasses
+  tableCellClasses,
 } from '@mui/material';
+import { spacing } from '@mui/system';
 
 // Used only to create transitions
 const muiTheme = createTheme();
@@ -295,6 +296,86 @@ export function createComponents(config) {
     MuiTextField: {
       defaultProps: {
         variant: 'filled'
+      }
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          border: `1px solid ${palette.divider}`,
+          borderRadius: 12,
+          '&:not(:last-child)': {
+            marginBottom: '16px',
+          },
+          '&.Mui-expanded': {
+            marginBottom: '16px',
+            marginTop: '0',
+          },
+          '&:before': {
+            display: 'none'
+          },
+        }
+      }
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          flexDirection: 'row-reverse',
+          backgroundColor: palette.divider,
+          padding: '0 20px',
+          '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+            transform: 'rotate(90deg)'
+          }
+        },
+        expandIconWrapper: {
+        },
+        content: {
+          '&$expanded': {
+          }
+        }
+      }
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          padding: '12px'
+        }
+      }
+    },
+    MuiBreadcrumbs: {
+      styleOverrides: {
+        root: {
+          '& .MuiBreadcrumbs-separator': {
+            marginLeft: '12px',
+            marginRight: '12px',
+            fontSize: '3rem',
+            color: palette.text.primary,
+          },
+          '& .MuiBreadcrumbs-ol': { 
+            lineHeight: '0.75',
+          }
+        }
+      }
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          borderBottomWidth: 'medium',
+        }
+      }
+    },
+    MuiSkeleton: {
+      styleOverrides: {
+        root: {
+          maxWidth: 'initial',
+        }
+      }
+    },
+    MuiGrid2: {
+      styleOverrides: {
+        root: {
+          '--Grid-columnSpacing1': '12px',
+          '--Grid-rowSpacing1': '12px',
+        }
       }
     }
   };
