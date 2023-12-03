@@ -26,7 +26,7 @@ const Page = () => {
     setError(null);
 
     try {
-      const criminal = await criminalsApi.getCriminalByid(criminalId)
+      const criminal = await criminalsApi.getCriminalById(criminalId)
       setCriminal(criminal);
       console.log(criminal);
     } catch (error) {
