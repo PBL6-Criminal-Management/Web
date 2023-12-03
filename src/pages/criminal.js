@@ -1,30 +1,34 @@
 import Head from 'next/head';
+import NextLink from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
-import { Alert, Box, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
+import { Alert, Box, Breadcrumbs, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid, Link } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountPicture } from 'src/sections/account/account-picture';
-import { AccountDetails } from 'src/sections/account/account-details';
-import * as accountsApi from '../api/accounts';
+import { CriminalPicture } from 'src/sections/criminals/criminal/criminal-picture';
+import { CriminalDetails } from 'src/sections/criminals/criminal/criminal-details/criminal-details';
+import * as criminalsApi from '../api/criminals';
 import * as imagesApi from '../api/images';
 
 
 const Page = () => {
-  const [account, setAccount] = useState({});
+  const [criminal, setCriminal] = useState({});
   const [loadingImage, setLoadingImage] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
-  const getAccount = useCallback(async () => {
+  const criminalId = 24; // dung params de truyen id
+
+  const getCriminal = useCallback(async () => {
     setLoadingImage(true);
     setLoadingDetails(true);
     setError(null);
 
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      setAccount(user);
+      const criminal = await criminalsApi.getCriminalByid(criminalId)
+      setCriminal(criminal);
+      console.log(criminal);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -34,109 +38,125 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    getAccount();
+    getCriminal();
   }, []);
-
-  const updateLocalStorage = (updatedAccount) => {
-    try {
-      // Merge the updated account with the existing user data
-      const updatedUserData = {
-        ...account,
-        ...updatedAccount,
-      };
-
-      // Update the user data in local storage
-      localStorage.setItem('user', JSON.stringify(updatedUserData));
-    } catch (error) {
-      console.error('Error updating local storage:', error);
-      setError('Error updating local storage:', error);
-    }
-  };
 
   const updateDetails = useCallback(async (updatedDetails) => {
     try {
-      const { imageLink, ...user } = account;
-      const updatedUser = {
-        id: window.sessionStorage.getItem('userId'),
-        ...user,
+      const { avatarLink, ...criminalWithoutAvatarLink } = criminal;
+      const updatedCriminal = {
+        id: criminalId, // dung params de truyen id
+        ...criminalWithoutAvatarLink,
         ...updatedDetails,
       };
-
-      await accountsApi.editAccount(updatedUser);
-      updateLocalStorage(updatedDetails);
-      getAccount();
+      console.log(updatedCriminal);
+      await criminalsApi.editCriminal(updatedCriminal);
+      getCriminal();
     } catch (error) {
       setError(error.message);
       console.log(error);
     }
-  }, [account]);
+  }, [criminal]);
 
   const updateAccountDetails = useCallback(
     async (updatedDetails) => {
       try {
-        setAccount((prevAccount) => ({ ...prevAccount, ...updatedDetails }));
+        setCriminal((prevCriminal) => ({ ...prevCriminal, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-        setSuccess("Cập nhật thông tin chi tiết thành công.");
+        setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
       }
       catch (error) {
         setError(error.message);
         console.log(error);
       }
-    }, [setAccount, updateDetails]);
+    }, [setCriminal, updateDetails]);
 
   const uploadImage = useCallback(async (newImage) => {
     try {
       const response = await imagesApi.uploadImage(newImage);
-      const { imageLink, ...user } = account;
-      const updatedUser = {
-        id: window.sessionStorage.getItem('userId'),
-        ...user,
-        image: response[0].filePath,
+      const { avatarLink, ...criminalWithoutAvatarLink } = criminal;
+      const updatedCriminal = {
+        id: criminalId,
+        ...criminalWithoutAvatarLink,
+        avatar: response[0].filePath,
       };
-      
-      await accountsApi.editAccount(updatedUser);
-      updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
-      getAccount();
+      console.log(updatedCriminal);
+      await criminalsApi.editCriminal(updatedCriminal);
+      getCriminal();
     } catch (error) {
       setError(error.message);
       console.log(error);
     }
-  }, [account]);
+  }, [criminal]);
 
   const updateAccountPicture = useCallback(
     async (newImage) => {
-      setAccount((prevAccount) => ({ ...prevAccount, image: newImage }));
+      setCriminal((prevCriminal) => ({ ...prevCriminal, avatar: newImage }));
       setOpen(true);
       await uploadImage(newImage);
-      setSuccess("Cập nhật ảnh đại diện thành công.");
+      setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
     },
-    [setAccount, uploadImage]
+    [setCriminal, uploadImage]
   );
 
   return (
     <>
       <Head>
-        <title>Thông tin cá nhân</title>
+        <title>Tội phạm | {criminal.name}</title>
       </Head>
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth="lg">
-          <Stack spacing={3}>
+          <Stack spacing={0}>
             <div>
-              <Typography variant="h4">Thông tin cá nhân</Typography>
+              {loadingDetails || loadingImage ? (
+                <Skeleton variant="rounded">
+                  <Typography variant='h4'>
+                    Tội phạm
+                  </Typography>
+                </Skeleton>
+              ) : (
+                <Breadcrumbs
+                  separator="›"
+                  aria-label="breadcrumb">
+                  <Link
+                    component={NextLink}
+                    underline="hover"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    href="/criminals"
+                    color="text.primary"
+                  >
+                    <Typography variant='h4'>
+                      Tội phạm
+                    </Typography>
+                  </Link>
+                  <Typography
+                    variant='h4'
+                    sx={{
+                      color: 'primary.main',
+                    }}
+                  >
+                    {criminal.name}
+                  </Typography>
+                </Breadcrumbs>
+              )}
             </div>
             <div>
               <Grid container spacing={3}>
-                <Grid xs={12} md={6} lg={4}>
-                  <AccountPicture
-                    imageLink={account.imageLink}
+                <Grid xs={12} md={12} lg={12}>
+                  <CriminalPicture
+                    imageLink={criminal.avatarLink}
                     loading={loadingImage}
                     onUpdate={updateAccountPicture}
                   />
                 </Grid>
-                <Grid xs={12} md={6} lg={8}>
-                  <AccountDetails
-                    account={account}
+
+                <Grid xs={12} md={12} lg={12}>
+                  <CriminalDetails
+                    criminal={criminal}
                     loading={loadingDetails}
                     onUpdate={updateAccountDetails}
                   />

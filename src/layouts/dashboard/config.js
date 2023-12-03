@@ -37,8 +37,17 @@ export const items = [
     )
   },
   {
-    title: 'Account',
+    title: 'Thông tin cá nhân',
     path: '/account',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Thông tin tội phạm',
+    path: '/criminal',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />

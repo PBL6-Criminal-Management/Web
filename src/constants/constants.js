@@ -22,9 +22,9 @@ export const typeOfViolation = Object.freeze({
 });
 
 export const wantedType = Object.freeze({
-  0: 'Bình thường',
+  0: 'Thường',
   1: 'Nguy hiểm',
-  2: 'Đặc biệt nguy hiểm'
+  2: 'Đặc biệt'
 });
 
 export const reportStatus = Object.freeze({

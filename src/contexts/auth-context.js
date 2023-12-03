@@ -78,13 +78,7 @@ export const AuthProvider = (props) => {
 
     initialized.current = true;
 
-    let isAuthenticated = false;
-
-    try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
-    } catch (err) {
-      console.error(err);
-    }
+    let isAuthenticated = Cookies.get('token') ? true : false
 
     if (isAuthenticated) {
       const user = JSON.parse(localStorage.getItem('user'));
@@ -110,7 +104,7 @@ export const AuthProvider = (props) => {
 
   const needRefreshToken = () => {
     const token = Cookies.get('token');
-    const tokenExpiryTime = parse(Cookies.get('token').expires, 'dd/MM/yyyy HH:mm:ss', new Date());
+    const tokenExpiryTime = parse(token?.expires, 'dd/MM/yyyy HH:mm:ss', new Date());
     const now = new Date();
     return token && tokenExpiryTime < now.getTime() + 60 * 1000;
   }
@@ -178,9 +172,6 @@ export const AuthProvider = (props) => {
         type: HANDLERS.SIGN_IN,
         payload: user
       });
-    }
-    catch (error) {
-      console.error(error);
     }
     finally {
       stopLoading();

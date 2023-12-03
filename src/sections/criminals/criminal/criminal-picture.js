@@ -16,7 +16,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState, useRef } from 'react';
 
-export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
+export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -74,7 +74,6 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
               <Avatar
                 sx={{
                   height: 250,
-                  mb: 2,
                   width: 250
                 }}
               />
@@ -101,8 +100,8 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
                       width: 50,
                       boxShadow: 11,
                       position: 'absolute',
-                      top: -20,
-                      right: 4,
+                      top: -10,
+                      right: -5,
                       '&:hover': {
                         transition: '0.2s all ease-in-out',
                         '& .MuiSvgIcon-root' : {
@@ -131,7 +130,6 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
                   borderWidth: 4,
                   boxShadow: 10,
                   height: 250,
-                  mb: 2,
                   width: 250
                 }}
               />
