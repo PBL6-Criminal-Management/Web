@@ -37,6 +37,15 @@ export const items = [
     )
   },
   {
+    title: 'Danh sách vụ án',
+    path: '/cases',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+  {
     title: 'Account',
     path: '/account',
     icon: (
