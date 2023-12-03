@@ -19,7 +19,23 @@ export const getAllCriminals = async () => {
     }
 };
 
-export const getCriminalByid = async (criminalId) => {
+export const getCriminalById = async (criminalId) => {
+    const token = Cookies.get('token');
+    try {
+        const response = await axios.get(`/api/v1/criminal/${criminalId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    }
+}
+
+export const getWantedCriminalById = async (criminalId) => {
     try {
         const response = await axios.get(`/api/v1/criminal/${criminalId}`);
         return response.data.data;
