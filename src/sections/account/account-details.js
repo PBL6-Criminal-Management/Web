@@ -117,8 +117,7 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
       noValidate
       onSubmit={handleSubmit}>
       <Card>
-        <CardContent sx={{ pt: 0, pb: 2 }}>
-          <Box sx={{ m: -1.5 }}>
+        <CardContent>
             <Grid container spacing={3}>
               {[
                 { label: 'Họ và tên', name: 'name' },
@@ -186,7 +185,6 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
                 </Grid>
               ))}
             </Grid>
-          </Box>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>

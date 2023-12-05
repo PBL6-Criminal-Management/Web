@@ -55,7 +55,7 @@ export function createComponents(config) {
         root: {
           borderRadius: 20,
           [`&.${paperClasses.elevation1}`]: {
-            boxShadow: '0px 5px 22px rgba(0, 0, 0, 0.04), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.03)'
+            boxShadow: '0px 5px 22px rgba(0, 0, 0, 0.08), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.04)'
           }
         }
       }
@@ -63,9 +63,9 @@ export function createComponents(config) {
     MuiCardContent: {
       styleOverrides: {
         root: {
-          padding: '32px 24px',
+          padding: '16px',
           '&:last-child': {
-            paddingBottom: '32px'
+            paddingBottom: '16px'
           }
         }
       }
@@ -82,6 +82,16 @@ export function createComponents(config) {
       styleOverrides: {
         root: {
           padding: '32px 24px 16px'
+        }
+      }
+    },
+    MuiCardActions: {
+      styleOverrides: {
+        root: {
+          padding: '12px',
+          // '&:last-child': {
+          //   paddingBottom: '24px'
+          // }
         }
       }
     },
@@ -302,7 +312,7 @@ export function createComponents(config) {
       styleOverrides: {
         root: {
           border: `1px solid ${palette.divider}`,
-          borderRadius: 12,
+          borderRadius: 20,
           '&:not(:last-child)': {
             marginBottom: '16px',
           },
@@ -337,7 +347,7 @@ export function createComponents(config) {
     MuiAccordionDetails: {
       styleOverrides: {
         root: {
-          padding: '12px'
+          padding: 0,
         }
       }
     },

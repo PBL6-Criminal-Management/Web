@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/material';
@@ -57,6 +58,9 @@ export const AccountPopover = (props) => {
           }
         }}
       >
+        <MenuItem component={NextLink} href='/account'>
+          Thông tin cá nhân
+        </MenuItem>
         <MenuItem onClick={handleSignOut}>
           Đăng xuất
         </MenuItem>
