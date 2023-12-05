@@ -105,7 +105,12 @@ const Page = () => {
       <Head>
         <title>Tội phạm | {criminal.name}</title>
       </Head>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          mb: 4
+        }}
+      >
         <Container maxWidth="lg">
           <Stack spacing={0}>
             <div>
@@ -117,6 +122,9 @@ const Page = () => {
                 </Skeleton>
               ) : (
                 <Breadcrumbs
+                  sx={{
+                    mb: 2.5
+                  }}
                   separator="›"
                   aria-label="breadcrumb">
                   <Link
@@ -163,15 +171,7 @@ const Page = () => {
                 </Grid>
               </Grid>
             </div>
-            <div
-              sx={{
-                position: 'fixed',
-                bottom: '0',
-                right: '0',
-                zIndex: '1000',
-                mb: 2,
-                mr: 2,
-              }}>
+            <div>
               {success &&
                 <Collapse in={open}>
                   <Alert
@@ -191,6 +191,7 @@ const Page = () => {
                       </IconButton>
                     }
                     sx={{
+                      mt: 2,
                       mb: 2,
                       borderRadius: '12px',
                     }}
@@ -224,6 +225,7 @@ const Page = () => {
                     }
                     sx={{
                       mb: 2,
+                      mt: 2,
                       borderRadius: '12px',
                     }}
                   >

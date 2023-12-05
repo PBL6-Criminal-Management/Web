@@ -8,6 +8,7 @@ import {
   IconButton,
   TextField,
   Typography,
+  Box,
   Unstable_Grid2 as Grid,
   Skeleton,
 } from '@mui/material';
@@ -62,7 +63,6 @@ const initialState = {
     vehicles: '',
     wantedCriminals: [],
   },
-  isFieldDisabled: true,
   originalCriminal: {},
   changesMade: false
 };
@@ -72,7 +72,6 @@ const reducer = (state, action) => {
     case 'ENABLE_EDIT':
       return {
         ...state,
-        isFieldDisabled: false,
         originalCriminal: { ...state.criminal }
       };
 
@@ -80,7 +79,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         criminal: { ...state.originalCriminal },
-        isFieldDisabled: true,
         changesMade: false
       };
 
@@ -196,7 +194,7 @@ export const CriminalDetails = ({ criminal: initialCriminal, loading, onUpdate }
     }
   };
 
-  const handleClick = () => {
+  const handleEdit = () => {
     dispatch({ type: 'ENABLE_EDIT' });
   };
 
@@ -209,100 +207,85 @@ export const CriminalDetails = ({ criminal: initialCriminal, loading, onUpdate }
       autoComplete="off"
       noValidate
       onSubmit={handleSubmit}>
-      <Card>
-        <CardContent sx={{ p: 0 }}>
-          {loading ? (
-            <>
-              <Skeleton
-                variant="rounded"
-                sx={{
-                  '&:not(:last-child)': {
-                    marginBottom: '16px',
-                  },
-                }}
-              >
-                <AccordionSection summary="Thông tin chung"></AccordionSection>
-              </Skeleton>
-              <Skeleton
-                variant="rounded"
-                sx={{
-                  '&:not(:last-child)': {
-                    marginBottom: '16px',
-                  },
-                }}
-              >
-                <AccordionSection summary="Thông tin tội phạm"></AccordionSection>
-              </Skeleton>
-              <Skeleton
-                variant="rounded"
-                sx={{
-                  '&:not(:last-child)': {
-                    marginBottom: '16px',
-                  },
-                }}
-              >
-                <AccordionSection summary="Thông tin truy nã"></AccordionSection>
-              </Skeleton>
-            </>
-          ) : (
-            <>
-              <AccordionSection summary="Thông tin chung">
-                <CriminalGeneral
-                  state={state}
-                  loading={loading}
-                  handleChange={handleChange}
-                  handleDateChange={handleDateChange}
-                />
-              </AccordionSection>
-              <AccordionSection
-                summary="Thông tin phạm tội"
-              >
-                <CriminalInfo
-                  state={state}
-                  loading={loading}
-                  handleChange={handleChange}
-                  handleDateChange={handleDateChange}
-                />
-              </AccordionSection>
-              {state.criminal.isWantedCriminal &&
-                <AccordionSection
-                  summary="Thông tin truy nã"
-                >
-                  <CriminalWanted
-                    state={state}
-                    loading={loading}
-                    handleChange={handleChange}
-                    handleDateChange={handleDateChange}
-                  />
-                </AccordionSection>
-              }
-            </>
-          )}
-        </CardContent>
-        <Divider />
-        <CardActions sx={{ pt: 2, pb: 2, pr: 2, justifyContent: 'flex-end' }}>
-          {loading && (
-            <Skeleton variant="rounded">
-              <Button variant="outlined">Skeleton button</Button>
+      <Box
+        sx={{
+          backgroundColor: 'transparent !important',
+        }}
+      >
+        {loading ? (
+          <>
+            <Skeleton
+              variant="rounded"
+              sx={{
+                '&:not(:last-child)': {
+                  marginBottom: '16px',
+                },
+              }}
+            >
+              <AccordionSection summary="Thông tin chung"></AccordionSection>
             </Skeleton>
-          )}
-          {!loading && (
-            <>
-              <Button
-                variant="contained"
-                onClick={state.isFieldDisabled ? handleClick : handleSubmit}
+            <Skeleton
+              variant="rounded"
+              sx={{
+                '&:not(:last-child)': {
+                  marginBottom: '16px',
+                },
+              }}
+            >
+              <AccordionSection summary="Thông tin tội phạm"></AccordionSection>
+            </Skeleton>
+            <Skeleton
+              variant="rounded"
+              sx={{
+                '&:not(:last-child)': {
+                  marginBottom: '16px',
+                },
+              }}
+            >
+              <AccordionSection summary="Thông tin truy nã"></AccordionSection>
+            </Skeleton>
+          </>
+        ) : (
+          <>
+            <AccordionSection summary="Thông tin chung">
+              <CriminalGeneral
+                state={state}
+                loading={loading}
+                handleChange={handleChange}
+                handleDateChange={handleDateChange}
+                handleSubmit={handleSubmit}
+                handleEdit={handleEdit}
+                handleCancel={handleCancel}
+              />
+            </AccordionSection>
+            <AccordionSection
+              summary="Thông tin phạm tội"
+            >
+              <CriminalInfo
+                state={state}
+                loading={loading}
+                handleChange={handleChange}
+                handleDateChange={handleDateChange}
+                handleSubmit={handleSubmit}
+                handleEdit={handleEdit}
+                handleCancel={handleCancel}
+              />
+            </AccordionSection>
+            {state.criminal.isWantedCriminal &&
+              <AccordionSection
+                summary="Thông tin truy nã"
               >
-                {state.isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-              </Button>
-              {!state.isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancel}>
-                  Hủy
-                </Button>
-              )}
-            </>
-          )}
-        </CardActions>
-      </Card>
+                <CriminalWanted
+                  state={state}
+                  loading={loading}
+                  handleChange={handleChange}
+                  handleDateChange={handleDateChange}
+                />
+              </AccordionSection>
+            }
+          </>
+        )}
+      </Box>
     </form>
   );
 };

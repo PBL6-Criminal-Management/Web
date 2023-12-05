@@ -60,7 +60,13 @@ export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
 
   return (
     <Card fullWidth>
-      <CardContent>
+      <CardContent
+        sx={{
+          p: 0,
+          mb: 3,
+          mt: 3
+        }}
+      >
         <Box
           sx={{
             alignItems: 'center',
@@ -104,7 +110,7 @@ export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
                       right: -5,
                       '&:hover': {
                         transition: '0.2s all ease-in-out',
-                        '& .MuiSvgIcon-root' : {
+                        '& .MuiSvgIcon-root': {
                           color: 'background.paper',
                         },
                         backgroundColor: 'primary.main'
@@ -138,33 +144,31 @@ export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
         </Box>
       </CardContent>
       <Divider />
-      <CardActions sx={{ justifyContent: 'center' }}>
-        {isImageChanged && (
-          <>
-            <Grid item xs={12} md={6}>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-                onClick={handleUpload}>
-                Tải ảnh lên
-              </Button>
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<CancelIcon />}
-                onClick={handleCancel}>
-                Hủy
-              </Button>
-            </Grid>
-          </>
-        )}
-      </CardActions>
+      {isImageChanged && (
+        <CardActions sx={{ justifyContent: 'center' }}>
+          <Grid item xs={12} md={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              onClick={handleUpload}>
+              Tải ảnh lên
+            </Button>
+          </Grid>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<CancelIcon />}
+              onClick={handleCancel}>
+              Hủy
+            </Button>
+          </Grid>
+        </CardActions>
+      )}
     </Card>
   );
 };

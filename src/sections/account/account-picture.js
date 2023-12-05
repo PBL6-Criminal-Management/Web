@@ -60,7 +60,13 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
 
   return (
     <Card fullWidth>
-      <CardContent>
+      <CardContent
+        sx={{
+          p: 0,
+          mb: 3.8,
+          mt: 3.8
+        }}
+      >
         <Box
           sx={{
             alignItems: 'center',
@@ -74,7 +80,6 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
               <Avatar
                 sx={{
                   height: 250,
-                  mb: 2,
                   width: 250
                 }}
               />
@@ -101,11 +106,11 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
                       width: 50,
                       boxShadow: 11,
                       position: 'absolute',
-                      top: -20,
+                      top: -10,
                       right: 4,
                       '&:hover': {
                         transition: '0.2s all ease-in-out',
-                        '& .MuiSvgIcon-root' : {
+                        '& .MuiSvgIcon-root': {
                           color: 'background.paper',
                         },
                         backgroundColor: 'primary.main'
@@ -131,7 +136,6 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
                   borderWidth: 4,
                   boxShadow: 10,
                   height: 250,
-                  mb: 2,
                   width: 250
                 }}
               />
@@ -140,33 +144,34 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
         </Box>
       </CardContent>
       <Divider />
-      <CardActions sx={{ justifyContent: 'center' }}>
-        {isImageChanged && (
-          <>
-            <Grid item xs={12} md={6}>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-                onClick={handleUpload}>
-                Tải ảnh lên
-              </Button>
-            </Grid>
-            <Grid
-              xs={12}
-              md={6}
-            >
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<CancelIcon />}
-                onClick={handleCancel}>
-                Hủy
-              </Button>
-            </Grid>
-          </>
-        )}
-      </CardActions>
+      {isImageChanged && (
+        <CardActions
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <Grid item xs={12} md={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              onClick={handleUpload}>
+              Tải ảnh lên
+            </Button>
+          </Grid>
+          <Grid
+            xs={12}
+            md={6}
+          >
+            <Button
+              fullWidth
+              variant="outlined"
+              startIcon={<CancelIcon />}
+              onClick={handleCancel}>
+              Hủy
+            </Button>
+          </Grid>
+        </CardActions>
+      )}
     </Card>
   );
 };

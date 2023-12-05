@@ -43,15 +43,6 @@ export const items = [
     )
   },
   {
-    title: 'Thông tin cá nhân',
-    path: '/account',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UserIcon />
-      </SvgIcon>
-    )
-  },
-  {
     title: 'Thông tin tội phạm',
     path: '/criminal',
     icon: (
