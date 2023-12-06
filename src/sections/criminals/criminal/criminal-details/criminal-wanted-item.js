@@ -9,12 +9,19 @@ import AccordionSection from 'src/layouts/dashboard/accordion-section';
 import { parse } from 'date-fns';
 
 
-const CriminalWantedItem = ({ title, index, state, wanted, loading, handleChange, handleDateChange }) => {
+const CriminalWantedItem = (props) => {
+    const { title, index, state, wanted, loading, handleChange, handleDateChange } = props;
 
     return (
         <AccordionSection
             summary={`Lần ${title}`}
             summaryVariant="h6"
+            sx={{
+                p: 0,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                m: '16px'
+            }}
         >
             <Grid container spacing={3}>
                 {[

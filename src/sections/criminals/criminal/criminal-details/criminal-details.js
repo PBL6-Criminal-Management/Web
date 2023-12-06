@@ -145,7 +145,8 @@ const reducer = (state, action) => {
   }
 };
 
-export const CriminalDetails = ({ criminal: initialCriminal, loading, onUpdate }) => {
+export const CriminalDetails = (props) => {
+  const { criminal: initialCriminal, loading, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {

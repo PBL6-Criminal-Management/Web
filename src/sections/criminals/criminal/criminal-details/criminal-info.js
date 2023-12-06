@@ -5,7 +5,8 @@ import * as constants from '../../../../constants/constants';
 import { format, parse } from 'date-fns';
 import { useState } from 'react';
 
-const CriminalInfo = ({ state, loading, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel }) => {
+const CriminalInfo = (props) => {
+    const { state, loading, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
 
     const handleEditInfo = () => {
@@ -24,7 +25,13 @@ const CriminalInfo = ({ state, loading, handleChange, handleDateChange, handleSu
     }
 
     return (
-        <Card>
+        <Card
+            sx={{
+                p: 0,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+            }}
+        >
             <CardContent>
                 <Grid container spacing={3}>
                     {[
@@ -101,21 +108,21 @@ const CriminalInfo = ({ state, loading, handleChange, handleDateChange, handleSu
                     ))}
                 </Grid>
             </CardContent>
-            <Divider/>
-            <CardActions 
+            <Divider />
+            <CardActions
                 sx={{ justifyContent: 'flex-end' }}
             >
                 <Button
-                variant="contained"
-                onClick={isFieldDisabled ? handleEditInfo : handleSubmitInfo}
-              >
-                {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-              </Button>
-              {!isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancelInfo}>
-                  Hủy
+                    variant="contained"
+                    onClick={isFieldDisabled ? handleEditInfo : handleSubmitInfo}
+                >
+                    {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
                 </Button>
-              )}
+                {!isFieldDisabled && (
+                    <Button variant="outlined" onClick={handleCancelInfo}>
+                        Hủy
+                    </Button>
+                )}
             </CardActions>
         </Card>
     )

@@ -5,7 +5,8 @@ import * as constants from '../../../../constants/constants';
 import { format, parse } from 'date-fns';
 import { useState } from 'react';
 
-const CriminalGeneral = ({ state, loading, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel }) => {
+const CriminalGeneral = (props) => {
+    const { state, loading, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
 
     const handleEditGeneral = () => {
@@ -24,10 +25,13 @@ const CriminalGeneral = ({ state, loading, handleChange, handleDateChange, handl
     }
 
     return (
-        <Card 
-        sx={{
-            p: 0
-        }}>
+        <Card
+            sx={{
+                p: 0,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+            }}
+        >
             <CardContent>
                 <Grid container spacing={3}>
                     {[
@@ -107,21 +111,21 @@ const CriminalGeneral = ({ state, loading, handleChange, handleDateChange, handl
                     ))}
                 </Grid>
             </CardContent>
-            <Divider/>
-            <CardActions 
+            <Divider />
+            <CardActions
                 sx={{ justifyContent: 'flex-end' }}
             >
                 <Button
-                variant="contained"
-                onClick={isFieldDisabled ? handleEditGeneral : handleSubmitGeneral}
-              >
-                {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-              </Button>
-              {!isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancelGeneral}>
-                  Hủy
+                    variant="contained"
+                    onClick={isFieldDisabled ? handleEditGeneral : handleSubmitGeneral}
+                >
+                    {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
                 </Button>
-              )}
+                {!isFieldDisabled && (
+                    <Button variant="outlined" onClick={handleCancelGeneral}>
+                        Hủy
+                    </Button>
+                )}
             </CardActions>
         </Card>
     )

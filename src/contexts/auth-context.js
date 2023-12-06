@@ -122,16 +122,16 @@ export const AuthProvider = (props) => {
       Cookies.set('token', token, { secure: true, expires: tokenExpiryTime });
       Cookies.set('refreshToken', refreshToken, { secure: true, expires: refreshTokenExpiryTime });
 
-      // window.sessionStorage.setItem('authenticated', true);
-      // window.sessionStorage.setItem('userId', response.userId);
+      window.sessionStorage.setItem('authenticated', true);
+      window.sessionStorage.setItem('userId', response.userId);
 
-      // const user = await accountsApi.getAccountById(response.userId);
-      // localStorage.setItem('user', JSON.stringify(user));
+      const user = await accountsApi.getAccountById(response.userId);
+      localStorage.setItem('user', JSON.stringify(user));
 
-      // dispatch({
-      //   type: HANDLERS.SIGN_IN,
-      //   payload: user
-      // });
+      dispatch({
+        type: HANDLERS.SIGN_IN,
+        payload: user
+      });
     }
     catch (error) {
       console.error(error);

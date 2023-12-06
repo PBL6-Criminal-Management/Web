@@ -10,7 +10,7 @@ import { LoadingProvider } from 'src/contexts/loading-context';
 import { useNProgress } from 'src/hooks/use-nprogress';
 import { createTheme } from 'src/theme';
 import { createEmotionCache } from 'src/utils/create-emotion-cache';
-import 'simplebar-react/dist/simplebar.min.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -41,13 +41,13 @@ const App = (props) => {
           <AuthProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <AuthConsumer>
-                {
-                  (auth) => auth.isFinished
-                    ? <SplashScreen />
-                    : getLayout(<Component {...pageProps} />)
-                }
-              </AuthConsumer>
+                <AuthConsumer>
+                  {
+                    (auth) => auth.isFinished
+                      ? <SplashScreen />
+                      : getLayout(<Component {...pageProps} />)
+                  }
+                </AuthConsumer>
             </ThemeProvider>
           </AuthProvider>
         </LoadingProvider>

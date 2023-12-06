@@ -67,7 +67,7 @@ export const SideNav = (props) => {
           sx={{
             flexGrow: 1,
             px: 2,
-            py: 3
+            py: 2
           }}
         >
           <Stack

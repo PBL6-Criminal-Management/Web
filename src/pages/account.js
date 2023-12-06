@@ -78,9 +78,11 @@ const Page = () => {
         setOpen(true);
         await updateDetails(updatedDetails);
         setSuccess("Cập nhật thông tin chi tiết thành công.");
+        // setError(null);
       }
       catch (error) {
         setError(error.message);
+        // setSuccess(null);
         console.log(error);
       }
     }, [setAccount, updateDetails]);
@@ -94,7 +96,7 @@ const Page = () => {
         ...user,
         image: response[0].filePath,
       };
-      
+
       await accountsApi.editAccount(updatedUser);
       updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
       getAccount();
@@ -106,12 +108,17 @@ const Page = () => {
 
   const updateAccountPicture = useCallback(
     async (newImage) => {
-      setAccount((prevAccount) => ({ ...prevAccount, image: newImage }));
-      setOpen(true);
-      await uploadImage(newImage);
-      setSuccess("Cập nhật ảnh đại diện thành công.");
-    },
-    [setAccount, uploadImage]
+      try {
+        setAccount((prevAccount) => ({ ...prevAccount, image: newImage }));
+        setOpen(true);
+        await uploadImage(newImage);
+        setSuccess("Cập nhật ảnh đại diện thành công.");
+      }
+      catch (error) {
+        setError(error.message);
+        console.log(error);
+      }
+    }, [setAccount, uploadImage]
   );
 
   return (

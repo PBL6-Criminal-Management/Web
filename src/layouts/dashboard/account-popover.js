@@ -6,11 +6,10 @@ import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/mate
 import { useAuth } from 'src/hooks/use-auth';
 
 export const AccountPopover = (props) => {
-  const { anchorEl, onClose, open } = props;
+  const { user, anchorEl, onClose, open } = props;
   const router = useRouter();
   const auth = useAuth();
-  const user = JSON.parse(localStorage.getItem('user'));
-
+  
   const handleSignOut = useCallback(
     () => {
       onClose?.();
@@ -29,7 +28,7 @@ export const AccountPopover = (props) => {
       }}
       onClose={onClose}
       open={open}
-      PaperProps={{ sx: { width: 200 } }}
+      PaperProps={{ sx: { width: 200, } }}
     >
       <Box
         sx={{
