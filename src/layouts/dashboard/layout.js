@@ -1,26 +1,35 @@
+// ... (existing imports)
+
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { styled } from '@mui/material/styles';
 import { withAuthGuard } from 'src/hocs/with-auth-guard';
 import { SideNav } from './side-nav';
 import { TopNav } from './top-nav';
+import { Scrollbar } from 'src/components/scrollbar';
 
 const SIDE_NAV_WIDTH = 280;
+
+const ScrollableContainer = styled(Scrollbar) ({
+  overflowY: 'auto',
+  maxHeight: '100vh',
+  // zIndex: 9999,
+});
 
 const LayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
   flex: '1 1 auto',
   maxWidth: '100%',
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: SIDE_NAV_WIDTH
-  }
+    paddingLeft: SIDE_NAV_WIDTH,
+  },
 }));
 
 const LayoutContainer = styled('div')({
   display: 'flex',
   flex: '1 1 auto',
   flexDirection: 'column',
-  width: '100%'
+  width: '100%',
 });
 
 export const Layout = withAuthGuard((props) => {
@@ -28,35 +37,27 @@ export const Layout = withAuthGuard((props) => {
   const pathname = usePathname();
   const [openNav, setOpenNav] = useState(false);
 
-  const handlePathnameChange = useCallback(
-    () => {
-      if (openNav) {
-        setOpenNav(false);
-      }
-    },
-    [openNav]
-  );
+  const handlePathnameChange = useCallback(() => {
+    if (openNav) {
+      setOpenNav(false);
+    }
+  }, [openNav]);
 
-  useEffect(
-    () => {
-      handlePathnameChange();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathname]
-  );
+  useEffect(() => {
+    handlePathnameChange();
+  }, [pathname]);
 
   return (
     <>
-      <TopNav onNavOpen={() => setOpenNav(true)} />
-      <SideNav
-        onClose={() => setOpenNav(false)}
-        open={openNav}
-      />
-      <LayoutRoot>
-        <LayoutContainer>
-          {children}
-        </LayoutContainer>
-      </LayoutRoot>
+      <SideNav onClose={() => setOpenNav(false)} open={openNav} />
+      <ScrollableContainer>
+        <TopNav onNavOpen={() => setOpenNav(true)} />
+        <LayoutRoot>
+          <LayoutContainer>
+            {children}
+          </LayoutContainer>
+        </LayoutRoot>
+      </ScrollableContainer>
     </>
   );
 });

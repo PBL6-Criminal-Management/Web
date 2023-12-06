@@ -18,7 +18,7 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
-  const criminalId = 24; // dung params de truyen id
+  const criminalId = 26; // dung params de truyen id
 
   const getCriminal = useCallback(async () => {
     setLoadingImage(true);
@@ -108,7 +108,7 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,
-          mb: 4
+          mb: 3
         }}
       >
         <Container maxWidth="lg">

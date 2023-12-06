@@ -69,7 +69,8 @@ const reducer = (state, action) => {
   }
 };
 
-export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) => {
+export const AccountDetails = (props) => {
+  const { account: initialAccount, loading, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -118,83 +119,88 @@ export const AccountDetails = ({ account: initialAccount, loading, onUpdate }) =
       onSubmit={handleSubmit}>
       <Card>
         <CardContent>
-            <Grid container spacing={3}>
-              {[
-                { label: 'Họ và tên', name: 'name' },
-                { label: 'Ngày sinh', name: 'birthday', md: 4, datePicker: true },
-                { label: 'Giới tính', name: 'gender', md: 4, select: true },
-                { label: 'CMND/CCCD', name: 'citizenId', md: 4 },
-                { label: 'Số điện thoại', name: 'phoneNumber', md: 4 },
-                { label: 'Email', name: 'email', md: 4 },
-                { label: 'Tên tài khoản', name: 'username', md: 4, disabled: true },
-                { label: 'Địa chỉ', name: 'address', md: 8 },
-                { label: 'Vai trò', name: 'role', md: 4, disabled: true }
-              ].map((field) => (
-                <Grid key={field.name} xs={12} md={field.md || 12}>
-                  {loading ? (
-                    <Skeleton variant="rounded">
-                      <TextField fullWidth />
-                    </Skeleton>
+          <Grid container spacing={3}>
+            {[
+              { label: 'Họ và tên', name: 'name' },
+              { label: 'Ngày sinh', name: 'birthday', md: 4, datePicker: true },
+              { label: 'Giới tính', name: 'gender', md: 4, select: true },
+              { label: 'CMND/CCCD', name: 'citizenId', md: 4 },
+              { label: 'Số điện thoại', name: 'phoneNumber', md: 4 },
+              { label: 'Email', name: 'email', md: 4 },
+              { label: 'Tên tài khoản', name: 'username', md: 4, disabled: true },
+              { label: 'Địa chỉ', name: 'address', md: 8 },
+              { label: 'Vai trò', name: 'role', md: 4, disabled: true }
+            ].map((field) => (
+              <Grid key={field.name} xs={12} md={field.md || 12}>
+                {loading ? (
+                  <Skeleton variant="rounded">
+                    <TextField fullWidth />
+                  </Skeleton>
+                ) : (
+                  field.datePicker ? (
+                    // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
+                    <DatePicker
+                      disabled={state.isFieldDisabled || field.disabled}
+                      label={field.label}
+                      value={state.account[field.name] ? parse(state.account.birthday, 'dd/MM/yyyy', new Date()) : null}
+                      onChange={(date) => handleDateChange(date)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          InputLabelProps={{ shrink: true }}
+                          required={!field.disabled}
+                          onKeyDown={(e) => e.preventDefault()}
+                        />
+                      )}
+                      maxDate={new Date()} // Assuming current date is the maximum allowed
+                    />
+                    // </LocalizationProvider>
                   ) : (
-                    field.datePicker ? (
-                      // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
-                      <DatePicker
-                        disabled={state.isFieldDisabled || field.disabled}
-                        label={field.label}
-                        value={state.account[field.name] ? parse(state.account.birthday, 'dd/MM/yyyy', new Date()) : null}
-                        onChange={(date) => handleDateChange(date)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                            required={!field.disabled}
-                            onKeyDown={(e) => e.preventDefault()}
-                          />
-                        )}
-                        maxDate={new Date()} // Assuming current date is the maximum allowed
-                      />
-                      // </LocalizationProvider>
-                    ) : (
-                      <TextField
-                        disabled={state.isFieldDisabled || field.disabled}
-                        fullWidth
-                        label={field.label}
-                        name={field.name}
-                        onChange={handleChange}
-                        required={!field.disabled}
-                        select={field.select}
-                        SelectProps={field.select ? { native: true } : undefined}
-                        value={field.name == 'role' ? constants.role[state.account[field.name]] : state.account[field.name]}
-                        sx={{
-                          "& .MuiInputBase-input": {
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                          }
-                        }}
-                      >
-                        {field.select &&
-                          Object.entries(constants.gender).map(([value, label]) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ))}
-                      </TextField>
-                    )
-                  )}
-                </Grid>
-              ))}
-            </Grid>
+                    <TextField
+                      disabled={state.isFieldDisabled || field.disabled}
+                      fullWidth
+                      label={field.label}
+                      name={field.name}
+                      onChange={handleChange}
+                      required={!field.disabled}
+                      select={field.select}
+                      SelectProps={field.select ? { native: true } : undefined}
+                      value={field.name == 'role' ? constants.role[state.account[field.name]] : state.account[field.name]}
+                      sx={{
+                        "& .MuiInputBase-input": {
+                          overflow: "hidden",
+                          textOverflow: "ellipsis"
+                        }
+                      }}
+                    >
+                      {field.select &&
+                        Object.entries(constants.gender).map(([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        ))}
+                    </TextField>
+                  )
+                )}
+              </Grid>
+            ))}
+          </Grid>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          {loading ? (
-            <Skeleton variant="rounded">
-              <Button variant="outlined">Skeleton button</Button>
-            </Skeleton>
-          ) : (
-            <Button variant="outlined">Đổi mật khẩu</Button>
-          )}
+
+          {loading &&
+            <LoadingButton
+              disabled
+              loading={loading}
+              fullWidth
+              size="large"
+              sx={{ mt: 3 }}
+              variant="contained">
+              Loading
+            </LoadingButton>}
+
           {!loading && (
             <>
               <Button

@@ -24,6 +24,7 @@ export const TopNav = (props) => {
   const { onNavOpen } = props;
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const accountPopover = usePopover();
+  const user = JSON.parse(localStorage.getItem('user'));
 
   return (
     <>
@@ -47,16 +48,16 @@ export const TopNav = (props) => {
           alignItems="center"
           direction="row"
           justifyContent="space-between"
-          spacing={2}
+          spacing={1}
           sx={{
             minHeight: TOP_NAV_HEIGHT,
-            px: 2
+            px: 3
           }}
         >
           <Stack
             alignItems="center"
             direction="row"
-            spacing={2}
+            spacing={1}
           >
             {!lgUp && (
               <IconButton onClick={onNavOpen}>
@@ -68,8 +69,9 @@ export const TopNav = (props) => {
           </Stack>
           <Stack
             alignItems="center"
+            alignContent="center"
             direction="row"
-            spacing={2}
+            spacing={1.2}
           >
             <Tooltip title="Notifications">
               <IconButton>
@@ -92,12 +94,13 @@ export const TopNav = (props) => {
                 height: 40,
                 width: 40
               }}
-              src="/assets/avatars/avatar-anika-visser.png"
+              src={user?.imageLink}
             />
           </Stack>
         </Stack>
       </Box>
       <AccountPopover
+        user={user}
         anchorEl={accountPopover.anchorRef.current}
         open={accountPopover.open}
         onClose={accountPopover.handleClose}

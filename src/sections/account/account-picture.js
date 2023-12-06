@@ -16,7 +16,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState, useRef } from 'react';
 
-export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
+export const AccountPicture = (props) => {
+  const { imageLink, loading, onUpdate } = props;
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -144,6 +145,16 @@ export const AccountPicture = ({ imageLink, loading, onUpdate }) => {
         </Box>
       </CardContent>
       <Divider />
+      {loading &&
+        <LoadingButton
+          disabled
+          loading={loading}
+          fullWidth
+          size="large"
+          sx={{ mt: 3 }}
+          variant="contained">
+          Loading
+        </LoadingButton>}
       {isImageChanged && (
         <CardActions
           sx={{

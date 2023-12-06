@@ -1,25 +1,35 @@
-import { Button, Unstable_Grid2 as Grid, Divider, Typography } from '@mui/material';
+import { Button, Unstable_Grid2 as Grid, Divider, Typography, Card, CardContent } from '@mui/material';
 import CriminalWantedItem from "./criminal-wanted-item";
 
-const CriminalWanted = ({ state, dispatch, loading, handleChange, handleDateChange }) => {
+const CriminalWanted = (props) => {
+    const { state, dispatch, loading, handleChange, handleDateChange } = props;
+
     return (
-        <div>
-            {state.criminal.wantedCriminals && state.criminal.wantedCriminals.map(
-                (wanted, index) => (
-                    <CriminalWantedItem
-                        key={index}
-                        title={index + 1}
-                        state={state}
-                        wanted={wanted}
-                        dispatch={dispatch}
-                        index={index}
-                        loading={loading}
-                        handleChange={(event) => handleChange(event, index)}
-                        handleDateChange={handleDateChange}
-                    />
-                )
-            )}
-        </div>
+        <Card
+            sx={{
+                p: 0,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+            }}
+        >
+            <CardContent>
+                {state.criminal.wantedCriminals && state.criminal.wantedCriminals.map(
+                    (wanted, index) => (
+                        <CriminalWantedItem
+                            key={index}
+                            title={index + 1}
+                            state={state}
+                            wanted={wanted}
+                            dispatch={dispatch}
+                            index={index}
+                            loading={loading}
+                            handleChange={(event) => handleChange(event, index)}
+                            handleDateChange={handleDateChange}
+                        />
+                    )
+                )}
+            </CardContent>
+        </Card>
     )
 };
 

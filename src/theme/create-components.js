@@ -6,7 +6,6 @@ import {
   paperClasses,
   tableCellClasses,
 } from '@mui/material';
-import { spacing } from '@mui/system';
 
 // Used only to create transitions
 const muiTheme = createTheme();
@@ -55,7 +54,7 @@ export function createComponents(config) {
         root: {
           borderRadius: 20,
           [`&.${paperClasses.elevation1}`]: {
-            boxShadow: '0px 5px 22px rgba(0, 0, 0, 0.08), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.04)'
+            boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.08), 0px 0px 0px 1px rgba(0, 0, 0, 0.04)'
           }
         }
       }
@@ -329,25 +328,26 @@ export function createComponents(config) {
     MuiAccordionSummary: {
       styleOverrides: {
         root: {
+          borderRadius: 20,
           flexDirection: 'row-reverse',
           backgroundColor: palette.divider,
           padding: '0 20px',
           '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
             transform: 'rotate(90deg)'
-          }
+          },
+          '&.Mui-expanded': {
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          },
         },
-        expandIconWrapper: {
-        },
-        content: {
-          '&$expanded': {
-          }
-        }
       }
     },
     MuiAccordionDetails: {
       styleOverrides: {
         root: {
           padding: 0,
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
         }
       }
     },
