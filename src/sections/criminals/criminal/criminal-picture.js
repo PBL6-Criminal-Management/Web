@@ -14,9 +14,11 @@ import {
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
+import { LoadingButton } from '@mui/lab';
 import { useEffect, useState, useRef } from 'react';
 
-export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
+export const CriminalPicture = (props) => {
+  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -75,7 +77,7 @@ export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
             position: 'relative'
           }}
         >
-          {loading ? (
+          {loadingSkeleton ? (
             <Skeleton variant="circular">
               <Avatar
                 sx={{
@@ -144,8 +146,26 @@ export const CriminalPicture = ({ imageLink, loading, onUpdate }) => {
         </Box>
       </CardContent>
       <Divider />
+      {loadingButtonPicture &&
+        <CardActions
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <LoadingButton
+            disabled
+            loading={loadingButtonPicture}
+            fullWidth
+            size="medium"
+            variant="contained">
+            Tải ảnh lên
+          </LoadingButton>
+        </CardActions>
+      }
       {isImageChanged && (
-        <CardActions sx={{ justifyContent: 'center' }}>
+        <CardActions
+          sx={{
+            justifyContent: 'center',
+          }}>
           <Grid item xs={12} md={6}>
             <Button
               fullWidth

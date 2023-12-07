@@ -9,22 +9,20 @@ import { CriminalDetails } from 'src/sections/criminals/criminal/criminal-detail
 import * as criminalsApi from '../api/criminals';
 import * as imagesApi from '../api/images';
 
-
 const Page = () => {
   const [criminal, setCriminal] = useState({});
-  const [loadingImage, setLoadingImage] = useState(false);
-  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [loadingSkeleton, setLoadingSkeleton] = useState(false);
+  const [loadingButtonPicture, setLoadingButtonPicture] = useState(false);
+  const [loadingButtonDetails, setLoadingButtonDetails] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
-  const criminalId = 26; // dung params de truyen id
+  const criminalId = 28; // dung params de truyen id
 
   const getCriminal = useCallback(async () => {
-    setLoadingImage(true);
-    setLoadingDetails(true);
+    setLoadingSkeleton(true);
     setError(null);
-
     try {
       const criminal = await criminalsApi.getCriminalById(criminalId)
       setCriminal(criminal);
@@ -32,8 +30,7 @@ const Page = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoadingImage(false);
-      setLoadingDetails(false);
+      setLoadingSkeleton(false);
     }
   }, []);
 
@@ -43,59 +40,91 @@ const Page = () => {
 
   const updateDetails = useCallback(async (updatedDetails) => {
     try {
-      const { avatarLink, ...criminalWithoutAvatarLink } = criminal;
       const updatedCriminal = {
         id: criminalId, // dung params de truyen id
-        ...criminalWithoutAvatarLink,
+        ...criminal,
         ...updatedDetails,
       };
-      console.log(updatedCriminal);
-      await criminalsApi.editCriminal(updatedCriminal);
-      getCriminal();
+
+      const {
+        relatedCases,
+        charge,
+        isWantedCriminal,
+        wantedCriminals,
+        avatarLink,
+        ...updated
+      } = updatedCriminal;
+      // console.log(updated);
+      await criminalsApi.editCriminal(updated);
+      // getCriminal();
+      setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
+      setError(null);
     } catch (error) {
       setError(error.message);
+      setSuccess(null);
       console.log(error);
     }
   }, [criminal]);
 
-  const updateAccountDetails = useCallback(
+  const updateCriminalDetails = useCallback(
     async (updatedDetails) => {
       try {
+        setLoadingButtonDetails(true);
         setCriminal((prevCriminal) => ({ ...prevCriminal, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-        setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
       }
       catch (error) {
-        setError(error.message);
         console.log(error);
+      }
+      finally {
+        setLoadingButtonDetails(false);
       }
     }, [setCriminal, updateDetails]);
 
   const uploadImage = useCallback(async (newImage) => {
     try {
       const response = await imagesApi.uploadImage(newImage);
-      const { avatarLink, ...criminalWithoutAvatarLink } = criminal;
       const updatedCriminal = {
         id: criminalId,
-        ...criminalWithoutAvatarLink,
+        ...criminal,
         avatar: response[0].filePath,
       };
-      console.log(updatedCriminal);
-      await criminalsApi.editCriminal(updatedCriminal);
-      getCriminal();
+
+      const {
+        relatedCases,
+        charge,
+        isWantedCriminal,
+        wantedCriminals,
+        avatarLink,
+        ...updated
+      } = updatedCriminal;
+      // console.log(updated);
+      await criminalsApi.editCriminal(updated);
+      // getCriminal();
+      setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
+      setError(null);
     } catch (error) {
       setError(error.message);
+      setSuccess(null);
       console.log(error);
     }
   }, [criminal]);
 
-  const updateAccountPicture = useCallback(
+  const updateCriminalPicture = useCallback(
     async (newImage) => {
-      setCriminal((prevCriminal) => ({ ...prevCriminal, avatar: newImage }));
-      setOpen(true);
-      await uploadImage(newImage);
-      setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
+      try {
+        setLoadingButtonPicture(true);
+        setCriminal((prevCriminal) => ({ ...prevCriminal, avatar: newImage }));
+        setOpen(true);
+        await uploadImage(newImage);
+      }
+      catch (error) {
+        console.log(error);
+      }
+      finally {
+        setLoadingButtonPicture(false);
+      }
     },
     [setCriminal, uploadImage]
   );
@@ -114,9 +143,13 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={0}>
             <div>
-              {loadingDetails || loadingImage ? (
+              {loadingSkeleton ? (
                 <Skeleton variant="rounded">
-                  <Typography variant='h4'>
+                  <Typography variant='h4'
+                    sx={{
+                      mb: 2.5
+                    }}
+                  >
                     Tội phạm
                   </Typography>
                 </Skeleton>
@@ -157,16 +190,20 @@ const Page = () => {
                 <Grid xs={12} md={12} lg={12}>
                   <CriminalPicture
                     imageLink={criminal.avatarLink}
-                    loading={loadingImage}
-                    onUpdate={updateAccountPicture}
+                    loadingSkeleton={loadingSkeleton}
+                    loadingButtonDetails={loadingButtonDetails}
+                    loadingButtonPicture={loadingButtonPicture}
+                    onUpdate={updateCriminalPicture}
                   />
                 </Grid>
 
                 <Grid xs={12} md={12} lg={12}>
                   <CriminalDetails
                     criminal={criminal}
-                    loading={loadingDetails}
-                    onUpdate={updateAccountDetails}
+                    loadingSkeleton={loadingSkeleton}
+                    loadingButtonDetails={loadingButtonDetails}
+                    loadingButtonPicture={loadingButtonPicture}
+                    onUpdate={updateCriminalDetails}
                   />
                 </Grid>
               </Grid>

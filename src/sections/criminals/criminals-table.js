@@ -16,16 +16,27 @@ import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
+import * as constants from '../../constants/constants';
+import Chip from '@mui/material/Chip';
 
 export const CriminalsTable = (props) => {
   const {
     count = 0,
     items = [],
-    onPageChange = () => {},
+    onPageChange = () => { },
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
   } = props;
+
+  const colorsCriminal = {
+    0: 'warning',
+    1: 'success',
+    2: 'error',
+    3: 'info',
+    4: 'secondary',
+    5: 'primary'
+  }
 
   return (
     <Card>
@@ -46,7 +57,11 @@ export const CriminalsTable = (props) => {
                 <TableCell>
                   Nơi ĐK HKTT
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Tình trạng
                 </TableCell>
                 <TableCell>
@@ -55,7 +70,11 @@ export const CriminalsTable = (props) => {
                 <TableCell sx={{ width: 150 }}>
                   Thời gian phạm tội gần nhất
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -69,12 +88,12 @@ export const CriminalsTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {criminal.id}
+                        {criminal.id}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {criminal.name}
+                        {criminal.name}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -83,8 +102,16 @@ export const CriminalsTable = (props) => {
                     <TableCell>
                       {criminal.permanentResidence}
                     </TableCell>
-                    <TableCell>
-                      {getCriminalStatusById(criminal.status)}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Chip
+                        label={constants.criminalStatus[criminal.status]}
+                        color={colorsCriminal[criminal.status]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell>
                       {criminal.charge}
@@ -92,25 +119,29 @@ export const CriminalsTable = (props) => {
                     <TableCell sx={{ width: 150 }}>
                       {criminal.dateOfMostRecentCrime}
                     </TableCell>
-                    <TableCell>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
                     >
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        spacing={1}
                       >
-                        <PencilSquareIcon />
-                      </SvgIcon>
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
-                      >
-                        <TrashIcon />
-                      </SvgIcon>
-                    </Stack>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <PencilSquareIcon />
+                        </SvgIcon>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <TrashIcon />
+                        </SvgIcon>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 );
@@ -143,9 +174,9 @@ CriminalsTable.propTypes = {
 
 export const getCriminalStatusById = (id) => {
   switch (id) {
-    case 0: 
+    case 0:
       return "Đang ngồi tù";
-    case 1: 
+    case 1:
       return "Đã được thả";
     case 2:
       return "Bị truy nã";

@@ -15,9 +15,10 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState, useRef } from 'react';
+import { LoadingButton } from '@mui/lab';
 
 export const AccountPicture = (props) => {
-  const { imageLink, loading, onUpdate } = props;
+  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -76,7 +77,7 @@ export const AccountPicture = (props) => {
             position: 'relative'
           }}
         >
-          {loading ? (
+          {loadingSkeleton ? (
             <Skeleton variant="circular">
               <Avatar
                 sx={{
@@ -99,6 +100,7 @@ export const AccountPicture = (props) => {
                     onChange={handleFileChange}
                   />
                   <IconButton
+                    disabled={loadingButtonDetails}
                     onClick={handleClick}
                     aria-label="edit"
                     sx={{
@@ -145,16 +147,21 @@ export const AccountPicture = (props) => {
         </Box>
       </CardContent>
       <Divider />
-      {loading &&
-        <LoadingButton
-          disabled
-          loading={loading}
-          fullWidth
-          size="large"
-          sx={{ mt: 3 }}
-          variant="contained">
-          Loading
-        </LoadingButton>}
+      {loadingButtonPicture &&
+        <CardActions
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <LoadingButton
+            disabled
+            loading={loadingButtonPicture}
+            fullWidth
+            size="medium"
+            variant="contained">
+            Tải ảnh lên
+          </LoadingButton>
+        </CardActions>
+      }
       {isImageChanged && (
         <CardActions
           sx={{

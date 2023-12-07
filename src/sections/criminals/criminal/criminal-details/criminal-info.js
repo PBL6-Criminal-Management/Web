@@ -1,25 +1,39 @@
 import { Unstable_Grid2 as Grid, TextField, Button, Card, CardContent, CardActions, Divider } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Skeleton from '@mui/material/Skeleton';
+import { LoadingButton } from '@mui/lab';
 import * as constants from '../../../../constants/constants';
 import { format, parse } from 'date-fns';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const CriminalInfo = (props) => {
-    const { state, loading, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel } = props;
+    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
+    const [isClicked, setIsClicked] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
+    useEffect(() => {
+        if (!loadingButtonDetails && hasSubmitted) {
+            setIsClicked(false);
+            setHasSubmitted(false);
+        }
+    }, [loadingButtonDetails, hasSubmitted]);
 
     const handleEditInfo = () => {
+        setIsClicked(false);
         setIsFieldDisabled(false);
         handleEdit();
     }
 
     const handleSubmitInfo = () => {
         setIsFieldDisabled(true);
+        setIsClicked(true);
+        setHasSubmitted(true);
         handleSubmit();
     }
 
     const handleCancelInfo = () => {
+        setIsClicked(false);
         setIsFieldDisabled(true);
         handleCancel();
     }
@@ -112,16 +126,31 @@ const CriminalInfo = (props) => {
             <CardActions
                 sx={{ justifyContent: 'flex-end' }}
             >
-                <Button
-                    variant="contained"
-                    onClick={isFieldDisabled ? handleEditInfo : handleSubmitInfo}
-                >
-                    {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-                </Button>
-                {!isFieldDisabled && (
-                    <Button variant="outlined" onClick={handleCancelInfo}>
-                        Hủy
-                    </Button>
+                {isClicked ? (
+                    loadingButtonDetails && (
+                        <LoadingButton
+                            disabled
+                            loading={loadingButtonDetails}
+                            size="medium"
+                            variant="contained">
+                            Chỉnh sửa thông tin
+                        </LoadingButton>
+                    )
+                ) : (
+                    <>
+                        <Button
+                            variant="contained"
+                            onClick={isFieldDisabled ? handleEditInfo : handleSubmitInfo}
+                            disabled={loadingButtonPicture}
+                        >
+                            {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
+                        </Button>
+                        {!isFieldDisabled && (
+                            <Button variant="outlined" onClick={handleCancelInfo}>
+                                Hủy
+                            </Button>
+                        )}
+                    </>
                 )}
             </CardActions>
         </Card>
