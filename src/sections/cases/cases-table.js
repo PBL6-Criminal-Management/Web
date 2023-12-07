@@ -16,16 +16,29 @@ import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
+import * as constants from '../../constants/constants';
+import Chip from '@mui/material/Chip';
 
 export const CasesTable = (props) => {
   const {
     count = 0,
     items = [],
-    onPageChange = () => {},
+    onPageChange = () => { },
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
   } = props;
+
+  const colorsViolation = {
+    0: 'warning',
+    1: 'error'
+  }
+
+  const colorsCase = {
+    0: 'info',
+    1: 'warning',
+    2: 'success'
+  }
 
   return (
     <Card>
@@ -46,16 +59,28 @@ export const CasesTable = (props) => {
                 <TableCell>
                   Lý do
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Loại vi phạm
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Trạng thái
                 </TableCell>
                 <TableCell>
                   Danh sách tội phạm
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -69,12 +94,12 @@ export const CasesTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {casee.id}
+                        {casee.id}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {casee.charge}
+                        {casee.charge}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -83,36 +108,55 @@ export const CasesTable = (props) => {
                     <TableCell>
                       {casee.reason}
                     </TableCell>
-                    <TableCell>
-                      {getTypeOfViolationById(casee.typeOfViolation)}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      <Chip
+                        label={constants.typeOfViolation[casee.typeOfViolation]}
+                        color={colorsViolation[casee.typeOfViolation]}
+                      />
                     </TableCell>
-                    <TableCell>
-                      {getCaseStatusById(casee.status)}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      <Chip
+                        label={constants.caseStatus[casee.status]}
+                        color={colorsCase[casee.status]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell>
                       {casee.criminalOfCase.map((c, index) => (
                         index > 0 ? `, ${c.name}` : c.name
                       ))}
                     </TableCell>
-                    <TableCell>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
                     >
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        spacing={1}
                       >
-                        <PencilSquareIcon />
-                      </SvgIcon>
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
-                      >
-                        <TrashIcon />
-                      </SvgIcon>
-                    </Stack>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <PencilSquareIcon />
+                        </SvgIcon>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <TrashIcon />
+                        </SvgIcon>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 );
@@ -143,22 +187,23 @@ CasesTable.propTypes = {
   rowsPerPage: PropTypes.number,
 };
 
-export const getCaseStatusById = (id) => {
-  switch (id) {
-    case 0: 
-      return "Chưa xét xử";
-    case 1: 
-      return "Đang điều tra";
-    case 2:
-      return "Đã xét xử";
-  }
-};
 
-export const getTypeOfViolationById = (id) => {
-  switch (id) {
-    case 0: 
-      return "Dân sự";
-    case 1: 
-      return "Hình sự";
-  }
-};
+// export const getCaseStatusById = (id) => {
+//   switch (id) {
+//     case 0:
+//       return "Chưa xét xử";
+//     case 1:
+//       return "Đang điều tra";
+//     case 2:
+//       return "Đã xét xử";
+//   }
+// };
+
+// export const getTypeOfViolationById = (id) => {
+//   switch (id) {
+//     case 0:
+//       return "Dân sự";
+//     case 1:
+//       return "Hình sự";
+//   }
+// };

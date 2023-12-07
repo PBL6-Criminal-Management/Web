@@ -11,25 +11,22 @@ import * as imagesApi from '../api/images';
 
 const Page = () => {
   const [account, setAccount] = useState({});
-  const [loadingImage, setLoadingImage] = useState(false);
-  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [loadingSkeleton, setLoadingSkeleton] = useState(false);
+  const [loadingButtonPicture, setLoadingButtonPicture] = useState(false);
+  const [loadingButtonDetails, setLoadingButtonDetails] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
   const getAccount = useCallback(async () => {
-    setLoadingImage(true);
-    setLoadingDetails(true);
-    setError(null);
-
+    setLoadingSkeleton(true);
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       setAccount(user);
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoadingImage(false);
-      setLoadingDetails(false);
+      setLoadingSkeleton(false);
     }
   }, []);
 
@@ -64,9 +61,12 @@ const Page = () => {
 
       await accountsApi.editAccount(updatedUser);
       updateLocalStorage(updatedDetails);
-      getAccount();
+      getAccount();      
+      setSuccess("Cập nhật thông tin chi tiết thành công.");
+      setError(null);
     } catch (error) {
       setError(error.message);
+      setSuccess(null);
       console.log(error);
     }
   }, [account]);
@@ -74,16 +74,16 @@ const Page = () => {
   const updateAccountDetails = useCallback(
     async (updatedDetails) => {
       try {
+        setLoadingButtonDetails(true);
         setAccount((prevAccount) => ({ ...prevAccount, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-        setSuccess("Cập nhật thông tin chi tiết thành công.");
-        // setError(null);
       }
       catch (error) {
-        setError(error.message);
-        // setSuccess(null);
         console.log(error);
+      }
+      finally {
+        setLoadingButtonDetails(false);
       }
     }, [setAccount, updateDetails]);
 
@@ -100,8 +100,11 @@ const Page = () => {
       await accountsApi.editAccount(updatedUser);
       updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
       getAccount();
+      setSuccess("Cập nhật thông tin chi tiết thành công.");
+      setError(null);
     } catch (error) {
       setError(error.message);
+      setSuccess(null);
       console.log(error);
     }
   }, [account]);
@@ -109,14 +112,16 @@ const Page = () => {
   const updateAccountPicture = useCallback(
     async (newImage) => {
       try {
+        setLoadingButtonPicture(true);
         setAccount((prevAccount) => ({ ...prevAccount, image: newImage }));
         setOpen(true);
         await uploadImage(newImage);
-        setSuccess("Cập nhật ảnh đại diện thành công.");
       }
       catch (error) {
-        setError(error.message);
         console.log(error);
+      }
+      finally {
+        setLoadingButtonPicture(false);
       }
     }, [setAccount, uploadImage]
   );
@@ -137,14 +142,18 @@ const Page = () => {
                 <Grid xs={12} md={6} lg={4}>
                   <AccountPicture
                     imageLink={account.imageLink}
-                    loading={loadingImage}
+                    loadingSkeleton={loadingSkeleton}
+                    loadingButtonDetails={loadingButtonDetails}
+                    loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateAccountPicture}
                   />
                 </Grid>
                 <Grid xs={12} md={6} lg={8}>
                   <AccountDetails
                     account={account}
-                    loading={loadingDetails}
+                    loadingSkeleton={loadingSkeleton}
+                    loadingButtonDetails={loadingButtonDetails}
+                    loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateAccountDetails}
                   />
                 </Grid>

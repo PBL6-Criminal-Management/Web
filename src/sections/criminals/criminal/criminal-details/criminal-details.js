@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import AccordionSection from 'src/layouts/dashboard/accordion-section';
 import { format, parse } from 'date-fns';
-import * as constants from '../../../../constants/constants';
 import CriminalGeneral from './criminal-general';
 import CriminalInfo from './criminal-info';
 import CriminalWanted from './criminal-wanted';
@@ -57,8 +56,8 @@ const initialState = {
     research: '',
     approachArrange: '',
     otherInformation: '',
-    image: '',
-    imageLink: '',
+    avatar: '',
+    avatarLink: '',
     isWantedCriminal: true,
     vehicles: '',
     wantedCriminals: [],
@@ -88,6 +87,7 @@ const reducer = (state, action) => {
         criminal: { ...state.criminal, ...action.payload },
         changesMade: true
       }
+      console.log(newObj);
       return newObj;
 
     case 'UPDATE_CRIMINAL_WANTED':
@@ -146,7 +146,7 @@ const reducer = (state, action) => {
 };
 
 export const CriminalDetails = (props) => {
-  const { criminal: initialCriminal, loading, onUpdate } = props;
+  const { criminal: initialCriminal, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -213,7 +213,7 @@ export const CriminalDetails = (props) => {
           backgroundColor: 'transparent !important',
         }}
       >
-        {loading ? (
+        {loadingSkeleton ? (
           <>
             <Skeleton
               variant="rounded"
@@ -251,7 +251,9 @@ export const CriminalDetails = (props) => {
             <AccordionSection summary="Thông tin chung">
               <CriminalGeneral
                 state={state}
-                loading={loading}
+                loading={loadingSkeleton}
+                loadingButtonDetails={loadingButtonDetails}
+                loadingButtonPicture={loadingButtonPicture}
                 handleChange={handleChange}
                 handleDateChange={handleDateChange}
                 handleSubmit={handleSubmit}
@@ -264,7 +266,9 @@ export const CriminalDetails = (props) => {
             >
               <CriminalInfo
                 state={state}
-                loading={loading}
+                loading={loadingSkeleton}
+                loadingButtonDetails={loadingButtonDetails}
+                loadingButtonPicture={loadingButtonPicture}
                 handleChange={handleChange}
                 handleDateChange={handleDateChange}
                 handleSubmit={handleSubmit}
@@ -278,7 +282,7 @@ export const CriminalDetails = (props) => {
               >
                 <CriminalWanted
                   state={state}
-                  loading={loading}
+                  loading={loadingSkeleton}
                   handleChange={handleChange}
                   handleDateChange={handleDateChange}
                 />

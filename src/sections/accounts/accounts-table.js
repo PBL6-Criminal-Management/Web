@@ -16,16 +16,24 @@ import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
+import * as constants from '../../constants/constants';
+import Chip from '@mui/material/Chip';
 
 export const AccountsTable = (props) => {
   const {
     count = 0,
     items = [],
-    onPageChange = () => {},
+    onPageChange = () => { },
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
   } = props;
+
+  const colorsAccount = {
+    0: 'success',
+    1: 'primary',
+    2: 'error'
+  }
 
   return (
     <Card>
@@ -43,13 +51,21 @@ export const AccountsTable = (props) => {
                 <TableCell>
                   Email
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Vai trò
                 </TableCell>
                 <TableCell>
                   Ngày tạo
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center'
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -63,42 +79,54 @@ export const AccountsTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {account.username}
+                        {account.username}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2">
-                          {account.name}
+                        {account.name}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       {account.email}
                     </TableCell>
-                    <TableCell>
-                      {getRoleById(account.roleId)}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
+                    >
+                      <Chip
+                        label={constants.role[account.roleId]}
+                        color={colorsAccount[account.roleId]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell>
                       {account.createdAt}
                     </TableCell>
-                    <TableCell>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center'
+                      }}
                     >
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        spacing={1}
                       >
-                        <PencilSquareIcon />
-                      </SvgIcon>
-                      <SvgIcon
-                        color="action"
-                        fontSize="small"
-                      >
-                        <TrashIcon />
-                      </SvgIcon>
-                    </Stack>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <PencilSquareIcon />
+                        </SvgIcon>
+                        <SvgIcon
+                          color="action"
+                          fontSize="small"
+                        >
+                          <TrashIcon />
+                        </SvgIcon>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 );
@@ -129,15 +157,15 @@ AccountsTable.propTypes = {
   rowsPerPage: PropTypes.number,
 };
 
-export const getRoleById = (id) => {
-  switch (id) {
-    case 0: 
-      return "Admin";
-    case 1: 
-      return "Người nhập liệu";
-    case 2:
-      return "Người điều tra";
-    default:
-      return "None";
-  }
-};
+// export const getRoleById = (id) => {
+//   switch (id) {
+//     case 0:
+//       return "Admin";
+//     case 1:
+//       return "Người nhập liệu";
+//     case 2:
+//       return "Người điều tra";
+//     default:
+//       return "None";
+//   }
+// };

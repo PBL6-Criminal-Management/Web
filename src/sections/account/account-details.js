@@ -13,6 +13,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format, parse } from 'date-fns';
 import * as constants from '../../constants/constants';
+import { LoadingButton } from '@mui/lab';
 
 const initialState = {
   account: {
@@ -70,7 +71,7 @@ const reducer = (state, action) => {
 };
 
 export const AccountDetails = (props) => {
-  const { account: initialAccount, loading, onUpdate } = props;
+  const { account: initialAccount, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -132,7 +133,7 @@ export const AccountDetails = (props) => {
               { label: 'Vai trò', name: 'role', md: 4, disabled: true }
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
-                {loading ? (
+                {loadingSkeleton ? (
                   <Skeleton variant="rounded">
                     <TextField fullWidth />
                   </Skeleton>
@@ -190,31 +191,37 @@ export const AccountDetails = (props) => {
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
 
-          {loading &&
-            <LoadingButton
-              disabled
-              loading={loading}
-              fullWidth
-              size="large"
-              sx={{ mt: 3 }}
-              variant="contained">
-              Loading
-            </LoadingButton>}
-
-          {!loading && (
-            <>
-              <Button
-                variant="contained"
-                onClick={state.isFieldDisabled ? handleClick : handleSubmit}
-              >
-                {state.isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
+          {loadingSkeleton ? (
+            <Skeleton>
+              <Button>
+                Chỉnh sửa thông tin
               </Button>
-              {!state.isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancel}>
-                  Hủy
+            </Skeleton>
+          ) : (
+            loadingButtonDetails ? (
+              <LoadingButton
+                disabled
+                loading={loadingButtonDetails}
+                size="medium"
+                variant="contained">
+                Chỉnh sửa thông tin
+              </LoadingButton>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={state.isFieldDisabled ? handleClick : handleSubmit}
+                  disabled={loadingButtonPicture}
+                >
+                  {state.isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
                 </Button>
-              )}
-            </>
+                {!state.isFieldDisabled && (
+                  <Button variant="outlined" onClick={handleCancel}>
+                    Hủy
+                  </Button>
+                )}
+              </>
+            )
           )}
         </CardActions>
       </Card>
