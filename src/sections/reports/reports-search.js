@@ -8,26 +8,9 @@ import {
   SvgIcon,
   Box,
 } from '@mui/material';
-import { CasesFilter } from './cases-filtler'; 
 
-export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
-  const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
+export const ReportsSearch = ({ onSearchChange }) => {
   const [inputValue, setInputValue] = React.useState('');
-  const [selectedFilter, setSelectedFilter] = React.useState({});
-
-  const handleOpenFilterPopup = () => {
-    setOpenFilterPopup(true);
-  };
-
-  const handleCloseFilterPopup = () => {
-    setOpenFilterPopup(false);
-  };
-
-  const handleSelectFilter = (filter) => {
-    setSelectedFilter(filter);
-    onFilterChange(filter);
-    handleCloseFilterPopup();
-  };
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -43,7 +26,7 @@ export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
           value={inputValue}
           onChange={handleInputChange}
           fullWidth
-          placeholder="Tìm kiếm vụ án"
+          placeholder="Tìm kiếm báo cáo"
           startAdornment={
             <InputAdornment position="start">
               <SvgIcon color="action" fontSize="small">
@@ -53,17 +36,8 @@ export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
           }
           sx={{ maxWidth: 800 }}
         />
-          <SvgIcon color="action" fontSize="small" sx={{ marginLeft: 2 }} onClick={handleOpenFilterPopup}>
-            <AdjustmentVerticalIcon />
-          </SvgIcon>
         </Box>
       </Card>
-
-      <CasesFilter
-        open={openFilterPopup}
-        onClose={handleCloseFilterPopup}
-        onSelectFilter={handleSelectFilter}
-      />
     </div>
   );
 };

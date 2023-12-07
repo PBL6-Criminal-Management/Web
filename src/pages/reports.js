@@ -1,21 +1,38 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import Head from 'next/head';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
+import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CasesTable } from 'src/sections/cases/cases-table';
-import { CasesSearch } from 'src/sections/cases/cases-search';
-import axios from 'axios';
-import * as casesApi from '../api/cases';
+import { ReportsTable } from 'src/sections/reports/reports-table';
+import { ReportsSearch } from 'src/sections/reports/reports-search';
+import { applyPagination } from 'src/utils/apply-pagination';
+import * as reportsApi from '../api/reports'
+
+const useReports = (data, page, rowsPerPage) => {
+  return useMemo(
+    () => {
+      return applyPagination(data, page, rowsPerPage);
+    },
+    [page, rowsPerPage]
+  );
+};
+
+const useReportIds = (reports) => {
+  return useMemo(
+    () => {
+      return reports.map((report) => report.id);
+    },
+    [reports]
+  );
+};
 
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [cases, setCases] = useState([]);
+  const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [filter, setFilter] = useState({});
+  const [searchValue, setSearchValue] = useState('');
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -35,18 +52,13 @@ const Page = () => {
     setSearchValue(searchValue);
   };
 
-  const handleFilterChange = (selectedFilter) => {
-    setFilter(selectedFilter);
-  };
-
-  const getCases = async () => {
+  const getReport = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const cases = await casesApi.getAllCases(searchValue, filter);
-      setCases(cases);
-      setIsLoading(false);
+      const reports = await reportsApi.getAllReports(searchValue);
+      setReportData(reports);
     }
     catch (error) {
       setError(error.message);
@@ -56,8 +68,8 @@ const Page = () => {
   }
   
   useEffect(() => {
-    getCases();
-  }, [searchValue, filter]);
+    getReport();
+  }, [searchValue]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       {<CircularProgress />}
@@ -68,7 +80,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Danh sách vụ án
+          Danh sách báo cáo
         </title>
       </Head>
       <Box
@@ -86,28 +98,15 @@ const Page = () => {
               spacing={4}
             >
               <Typography variant="h4">
-                  Danh sách vụ án
+                  Danh sách báo cáo
               </Typography>
-              <div>
-                <Button
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  )}
-                  variant="contained"
-                >
-                  Thêm vụ án
-                </Button>
-              </div>
             </Stack>
-            <CasesSearch
+            <ReportsSearch 
               onSearchChange={handleSearchChange}
-              onFilterChange={handleFilterChange} 
             />
-            <CasesTable
-              count={cases.length}
-              items={cases}
+            <ReportsTable
+              count={reportData.length}
+              items={reportData}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

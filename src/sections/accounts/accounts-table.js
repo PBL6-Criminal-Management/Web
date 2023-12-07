@@ -51,21 +51,13 @@ export const AccountsTable = (props) => {
                 <TableCell>
                   Email
                 </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: 'center'
-                  }}
-                >
+                <TableCell>
                   Vai trò
                 </TableCell>
                 <TableCell>
                   Ngày tạo
                 </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: 'center'
-                  }}
-                >
+                <TableCell>
                   Hành động
                 </TableCell>
               </TableRow>
@@ -90,16 +82,8 @@ export const AccountsTable = (props) => {
                     <TableCell>
                       {account.email}
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        textAlign: 'center'
-                      }}
-                    >
-                      <Chip
-                        label={constants.role[account.roleId]}
-                        color={colorsAccount[account.roleId]}
-                        variant='outlined'
-                      />
+                    <TableCell>
+                      {constants.role[account.roleId]}
                     </TableCell>
                     <TableCell>
                       {account.createdAt}
@@ -156,16 +140,3 @@ AccountsTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
 };
-
-// export const getRoleById = (id) => {
-//   switch (id) {
-//     case 0:
-//       return "Admin";
-//     case 1:
-//       return "Người nhập liệu";
-//     case 2:
-//       return "Người điều tra";
-//     default:
-//       return "None";
-//   }
-// };

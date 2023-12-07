@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';import {
+import {
   Box,
   Card,
   Table,
@@ -18,7 +18,7 @@ import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
 import Chip from '@mui/material/Chip';
 
-export const CriminalsTable = (props) => {
+export const ReportsTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -28,25 +28,6 @@ export const CriminalsTable = (props) => {
     rowsPerPage = 0,
   } = props;
 
-  const colorsCriminal = {
-    0: 'warning',
-    1: 'success',
-    2: 'error',
-    3: 'info',
-    4: 'secondary',
-    5: 'primary'
-  }
-
-  const router = useRouter();
-
-  const handleEditClick = (criminalId) => {
-    router.push(`/criminal/`);
-  };
-
-  const handleDeleteClick = (criminalId) => {
-    // Implement delete logic or redirect to delete page
-  };
-
   return (
     <Card>
       <Scrollbar>
@@ -55,29 +36,28 @@ export const CriminalsTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Mã tội phạm
+                  ID
                 </TableCell>
                 <TableCell>
-                  Họ và tên
+                  Tên người báo cáo
                 </TableCell>
                 <TableCell>
-                  Năm sinh
+                  Email người báo cáo
                 </TableCell>
                 <TableCell>
-                  Nơi ĐK HKTT
-                </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: 'center',
-                  }}
-                >
-                  Tình trạng
+                  SĐT người báo cáo
                 </TableCell>
                 <TableCell>
-                  Tội danh gần nhất
+                  Địa chỉ
                 </TableCell>
-                <TableCell sx={{ width: 150 }}>
-                  Thời gian phạm tội gần nhất
+                <TableCell>
+                  Nội dung
+                </TableCell>
+                <TableCell>
+                  Ngày gửi
+                </TableCell>
+                <TableCell>
+                  Trạng thái
                 </TableCell>
                 <TableCell>
                   Hành động
@@ -85,44 +65,39 @@ export const CriminalsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((criminal) => {
+              {items.map((report) => {
                 return (
                   <TableRow
                     hover
-                    key={criminal.id}
+                    key={report.id}
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {criminal.id}
+                        {report.id}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {criminal.name}
+                        {report.reporterName}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {criminal.yearOfBirth}
+                      {report.reporterEmail}
                     </TableCell>
                     <TableCell>
-                      {criminal.permanentResidence}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        textAlign: 'center',
-                      }}
-                    >
-                      <Chip
-                        label={constants.criminalStatus[criminal.status]}
-                        color={colorsCriminal[criminal.status]}
-                        variant='outlined'
-                      />
+                      {report.reporterPhone}
                     </TableCell>
                     <TableCell>
-                      {criminal.charge}
+                      {report.reporterAddress}
                     </TableCell>
-                    <TableCell sx={{ width: 150 }}>
-                      {criminal.dateOfMostRecentCrime}
+                    <TableCell>
+                      {report.content}
+                    </TableCell>
+                    <TableCell>
+                      {report.sendingTime}
+                    </TableCell>
+                    <TableCell>
+                      {constants.reportStatus[report.status]}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -137,7 +112,6 @@ export const CriminalsTable = (props) => {
                         <SvgIcon
                           color="action"
                           fontSize="small"
-                          onClick={() => handleEditClick(criminal.id)}
                         >
                           <PencilSquareIcon />
                         </SvgIcon>
@@ -169,26 +143,11 @@ export const CriminalsTable = (props) => {
   );
 };
 
-CriminalsTable.propTypes = {
+ReportsTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onPageChange: PropTypes.func,
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-};
-
-export const getCriminalStatusById = (id) => {
-  switch (id) {
-    case 0:
-      return "Đang ngồi tù";
-    case 1:
-      return "Đã được thả";
-    case 2:
-      return "Bị truy nã";
-    case 3:
-      return "Chưa kết án";
-    case 4:
-      return "Án treo";
-  }
 };

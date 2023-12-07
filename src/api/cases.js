@@ -1,12 +1,35 @@
 
 import axios from './axios';
 import Cookies from 'js-cookie';
+import { filter } from 'lodash';
 
-export const getAllCases = async () => {
+export const getAllCases = async (searchValue, filter) => {
     const token = Cookies.get('token');
     
     try {
+        const params = {};
+    
+        if (searchValue !== '' && searchValue !== undefined) {
+            params.Keyword = searchValue;
+        }
+
+        if (filter.status !== '') {
+            params.Status = filter.status;
+        }
+
+        if (filter.area !== '') {
+            params.Area = filter.area;
+        }
+
+        if (filter.timeTakesPlace !== '') {
+            params.TimeTakesPlace = filter.timeTakesPlace;
+        }
+
+        if (filter.typeOfViolation !== '') {
+            params.TypeOfViolation = filter.typeOfViolation;
+        }
         const response = await axios.get(`/api/v1/case`, {
+            params,
             headers: {
                 'Authorization': `Bearer ${token}`
             }
