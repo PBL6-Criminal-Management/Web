@@ -8,6 +8,7 @@ import {
   SvgIcon,
   Box,
 } from '@mui/material';
+import debounce from 'lodash/debounce';
 
 export const ReportsSearch = ({ onSearchChange }) => {
   const [inputValue, setInputValue] = React.useState('');
@@ -15,8 +16,12 @@ export const ReportsSearch = ({ onSearchChange }) => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
-    onSearchChange(value); 
+    debouncedSearch(value); 
   };
+
+  const debouncedSearch = debounce((value) => {
+    onSearchChange(value);
+  }, 1000);
 
   return (
     <div>

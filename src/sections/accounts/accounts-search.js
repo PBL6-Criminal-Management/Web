@@ -9,6 +9,7 @@ import {
   Box,
 } from '@mui/material';
 import { AccountsFilter } from './accounts-filter'; 
+import debounce from 'lodash/debounce';
 
 export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
   const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
@@ -32,8 +33,12 @@ export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
-    onSearchChange(value); 
+    debouncedSearch(value); 
   };
+
+  const debouncedSearch = debounce((value) => {
+    onSearchChange(value);
+  }, 1000);
 
   return (
     <div>
