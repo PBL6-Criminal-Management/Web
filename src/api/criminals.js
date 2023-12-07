@@ -1,12 +1,47 @@
 
 import axios from './axios';
 import Cookies from 'js-cookie';
+import { filter } from 'lodash';
 
-export const getAllCriminals = async () => {
+export const getAllCriminals = async (searchValue, filter) => {
     const token = Cookies.get('token');
     
     try {
+        const params = {};
+    
+        if (searchValue !== '' && searchValue !== undefined) {
+            params.Keyword = searchValue;
+        }
+
+        if (filter.status !== '') {
+            params.Status = filter.status;
+        }
+
+        if (filter.area !== '') {
+            params.Area = filter.area;
+        }
+
+        if (filter.yearOfBirth !== '' && !isNaN(filter.yearOfBirth)) {
+            params.YearOfBirth = filter.yearOfBirth;
+        }
+
+        if (filter.gender !== '') {
+            params.Gender = filter.gender;
+        }
+
+        if (filter.characteristic !== '') {
+            params.Characteristics = filter.characteristic;
+        }
+
+        if (filter.charge !== '') {
+            params.Charge = filter.charge;
+        }
+
+        if (filter.typeOfViolation !== '') {
+            params.TypeOfViolation = filter.typeOfViolation;
+        }
         const response = await axios.get(`/api/v1/criminal`, {
+            params,
             headers: {
                 'Authorization': `Bearer ${token}`
             }

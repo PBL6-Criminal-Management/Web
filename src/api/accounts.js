@@ -35,11 +35,30 @@ export const editAccount = async (account) => {
     } 
 }
 
-export const getAllAccounts = async () => {
+export const getAllAccounts = async (searchValue, filter) => {
     const token = Cookies.get('token');
     
     try {
+        const params = {};
+    
+        if (searchValue !== '' && searchValue !== undefined) {
+            params.Keyword = searchValue;
+        }
+
+        if (filter.role !== '') {
+            params.RoleId = filter.role;
+        }
+
+        if (filter.area !== '') {
+            params.Area = filter.area;
+        }
+
+        if (filter.yearOfBirth !== '' && !isNaN(filter.yearOfBirth)) {
+            params.YearOfBirth = filter.yearOfBirth;
+        }
+
         const response = await axios.get(`/api/v1/account`, {
+            params,
             headers: {
                 'Authorization': `Bearer ${token}`
             }

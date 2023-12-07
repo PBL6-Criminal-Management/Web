@@ -59,11 +59,7 @@ export const CasesTable = (props) => {
                 <TableCell>
                   Lý do
                 </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: 'center'
-                  }}
-                >
+                <TableCell>
                   Loại vi phạm
                 </TableCell>
                 <TableCell
@@ -76,11 +72,7 @@ export const CasesTable = (props) => {
                 <TableCell>
                   Danh sách tội phạm
                 </TableCell>
-                <TableCell
-                  sx={{
-                    textAlign: 'center'
-                  }}
-                >
+                <TableCell>
                   Hành động
                 </TableCell>
               </TableRow>
@@ -108,15 +100,8 @@ export const CasesTable = (props) => {
                     <TableCell>
                       {casee.reason}
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        textAlign: 'center'
-                      }}
-                    >
-                      <Chip
-                        label={constants.typeOfViolation[casee.typeOfViolation]}
-                        color={colorsViolation[casee.typeOfViolation]}
-                      />
+                    <TableCell>
+                      {constants.typeOfViolation[casee.typeOfViolation]}
                     </TableCell>
                     <TableCell
                       sx={{

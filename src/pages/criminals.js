@@ -14,6 +14,8 @@ const Page = () => {
   const [criminals, setCriminals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [filter, setFilter] = useState({});
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -29,12 +31,20 @@ const Page = () => {
     []
   );
 
+  const handleSearchChange = (searchValue) => {
+    setSearchValue(searchValue);
+  };
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
+
   const getCriminals = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const criminals = await criminalsApi.getAllCriminals();
+      const criminals = await criminalsApi.getAllCriminals(searchValue, filter);
       setCriminals(criminals);
       setIsLoading(false);
     }
@@ -47,7 +57,7 @@ const Page = () => {
   
   useEffect(() => {
     getCriminals();
-  }, []);
+  }, [searchValue, filter]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       {<CircularProgress />}
@@ -91,7 +101,10 @@ const Page = () => {
                 </Button>
               </div>
             </Stack>
-            <CriminalsSearch />
+            <CriminalsSearch 
+              onSearchChange={handleSearchChange}
+              onFilterChange={handleFilterChange}
+            />
             <CriminalsTable
               count={criminals.length}
               items={criminals}

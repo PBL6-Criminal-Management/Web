@@ -8,6 +8,7 @@ import { AccountsTable } from 'src/sections/accounts/accounts-table';
 import { AccountsSearch } from 'src/sections/accounts/accounts-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import * as accountsApi from '../api/accounts'
+import { filter } from 'lodash';
 
 const useAccounts = (data, page, rowsPerPage) => {
   return useMemo(
@@ -33,6 +34,8 @@ const Page = () => {
   const [accountData, setAccountData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [filter, setFilter] = useState({});
 
   const handlePageChange = useCallback(
     (event, value) => {
@@ -48,12 +51,20 @@ const Page = () => {
     []
   );
 
+  const handleSearchChange = (searchValue) => {
+    setSearchValue(searchValue);
+  };
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
+
   const getAccount = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const accounts = await accountsApi.getAllAccounts();
+      const accounts = await accountsApi.getAllAccounts(searchValue, filter);
       setAccountData(accounts);
       setIsLoading(false);
     }
@@ -66,7 +77,7 @@ const Page = () => {
   
   useEffect(() => {
     getAccount();
-  }, []);
+  }, [searchValue, filter]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       {<CircularProgress />}
@@ -110,7 +121,10 @@ const Page = () => {
                 </Button>
               </div>
             </Stack>
-            <AccountsSearch />
+            <AccountsSearch 
+              onSearchChange={handleSearchChange}
+              onFilterChange={handleFilterChange}
+            />
             <AccountsTable
               count={accountData.length}
               items={accountData}
