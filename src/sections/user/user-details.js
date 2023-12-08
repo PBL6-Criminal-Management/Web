@@ -16,7 +16,7 @@ import * as constants from '../../constants/constants';
 import { LoadingButton } from '@mui/lab';
 
 const initialState = {
-  account: {
+  user: {
     name: '',
     birthday: null,
     gender: false,
@@ -28,7 +28,7 @@ const initialState = {
     role: ''
   },
   isFieldDisabled: true,
-  originalAccount: {},
+  originalUser: {},
   changesMade: false
 };
 
@@ -38,28 +38,28 @@ const reducer = (state, action) => {
       return {
         ...state,
         isFieldDisabled: false,
-        originalAccount: { ...state.account }
+        originalUser: { ...state.user }
       };
 
     case 'CANCEL_EDIT':
       return {
         ...state,
-        account: { ...state.originalAccount },
+        user: { ...state.originalUser },
         isFieldDisabled: true,
         changesMade: false
       };
 
-    case 'UPDATE_ACCOUNT':
+    case 'UPDATE_USER':
       return {
         ...state,
-        account: { ...state.account, ...action.payload },
+        user: { ...state.user, ...action.payload },
         changesMade: true
       };
 
     case 'UPDATE_BIRTHDAY':
       return {
         ...state,
-        account: { ...state.account, birthday: format(action.payload, 'dd/MM/yyyy') },
+        user: { ...state.user, birthday: format(action.payload, 'dd/MM/yyyy') },
         changesMade: true
       };
     case 'SUBMIT_FORM':
@@ -70,16 +70,16 @@ const reducer = (state, action) => {
   }
 };
 
-export const AccountDetails = (props) => {
-  const { account: initialAccount, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+export const UserDetails = (props) => {
+  const { user: initialUser, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    if (initialAccount) {
+    if (initialUser) {
       dispatch({ type: 'CANCEL_EDIT' });
-      dispatch({ type: 'UPDATE_ACCOUNT', payload: initialAccount });
+      dispatch({ type: 'UPDATE_USER', payload: initialUser });
     }
-  }, [initialAccount]);
+  }, [initialUser]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -88,7 +88,7 @@ export const AccountDetails = (props) => {
     const updatedValue = name === 'gender' ? value === 'true' : value;
 
     // Update the state
-    dispatch({ type: 'UPDATE_ACCOUNT', payload: { [name]: updatedValue } });
+    dispatch({ type: 'UPDATE_USER', payload: { [name]: updatedValue } });
   };
 
 
@@ -98,10 +98,10 @@ export const AccountDetails = (props) => {
 
   const handleSubmit = () => {
     // Additional logic for form submission if needed.
-    // For now, we're just updating the account.
+    // For now, we're just updating the user.
     dispatch({ type: 'SUBMIT_FORM' });
     if (state.changesMade) {
-      onUpdate(state.account);
+      onUpdate(state.user);
     }
   };
 
@@ -143,7 +143,7 @@ export const AccountDetails = (props) => {
                     <DatePicker
                       disabled={state.isFieldDisabled || field.disabled}
                       label={field.label}
-                      value={state.account[field.name] ? parse(state.account.birthday, 'dd/MM/yyyy', new Date()) : null}
+                      value={state.user[field.name] ? parse(state.user.birthday, 'dd/MM/yyyy', new Date()) : null}
                       onChange={(date) => handleDateChange(date)}
                       renderInput={(params) => (
                         <TextField
@@ -167,7 +167,7 @@ export const AccountDetails = (props) => {
                       required={!field.disabled}
                       select={field.select}
                       SelectProps={field.select ? { native: true } : undefined}
-                      value={field.name == 'role' ? constants.role[state.account[field.name]] : state.account[field.name]}
+                      value={field.name == 'role' ? constants.role[state.user[field.name]] : state.user[field.name]}
                       sx={{
                         "& .MuiInputBase-input": {
                           overflow: "hidden",

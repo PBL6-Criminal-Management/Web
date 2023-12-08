@@ -6,7 +6,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { ReportsTable } from 'src/sections/reports/reports-table';
 import { ReportsSearch } from 'src/sections/reports/reports-search';
 import { applyPagination } from 'src/utils/apply-pagination';
-import * as reportsApi from '../api/reports'
+import * as reportsApi from '../../api/reports'
 
 const useReports = (data, page, rowsPerPage) => {
   return useMemo(

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { gender } from './../../constants/constants';
+import * as constants from './../../constants/constants';
 import {
   Dialog,
   DialogTitle,
@@ -22,6 +22,33 @@ export const CasesFilter = ({ open, onClose, onSelectFilter }) => {
     setArea(event.target.value);
   };
 
+  const handleChange = (event) => {
+    if (event && event.target) {
+      const { name, value } = event.target;
+
+      let updatedValue;
+
+      if (name === 'status' || name === 'typeOfViolation') {
+        // Handle status and typeOfViolation
+        // Convert the value to a number, use an empty string if it's falsy
+        updatedValue = value ? parseInt(value, 10) : '';
+        name === 'status' ? setStatus(updatedValue) : setTypeOfViolation(updatedValue);
+      } else {
+        // Handle other fields
+        switch (name) {
+          case 'area':
+            setArea(value);
+            break;
+          case 'timeTakesPlace':
+            setTimeTakesPlace(value);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  };
+
   const handleApplyFilter = () => {
     const selectedFilters = {
       status: status,
@@ -30,6 +57,7 @@ export const CasesFilter = ({ open, onClose, onSelectFilter }) => {
       typeOfViolation: typeOfViolation
     };
 
+    // console.log(selectedFilters);
     onSelectFilter(selectedFilters);
     onClose();
   };
@@ -41,49 +69,75 @@ export const CasesFilter = ({ open, onClose, onSelectFilter }) => {
     setTypeOfViolation('');
   };
 
+  const handleClose = () => {
+    handleResetFilter();
+    onClose();
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Tìm kiếm nâng cao</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ pb: 0.5 }}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Select
-                label="Trang thai" 
-                value={status}
-                onChange={(event) => setStatus(event.target.value)} 
-                fullWidth
+            <TextField
+              name='typeOfViolation'
+              onChange={handleChange}
+              value={typeOfViolation}
+              fullWidth
+              select
+              label="Loại vi phạm"
+              SelectProps={{
+                native: true,
+              }}
+              margin="dense"
             >
-              <MenuItem value={0}>Chưa xét xử</MenuItem>
-              <MenuItem value={1}>Đang điều tra</MenuItem>
-              <MenuItem value={2}>Đã xét xử</MenuItem>
-            </Select>
+              <option key="" value=""></option>
+              {Object.entries(constants.typeOfViolation).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <TextField
-                label="Khu vực"
-                value={area}
-                onChange={handleAreaChange}
-                fullWidth
-                />
+              name='status'
+              onChange={handleChange}
+              value={status}
+              fullWidth
+              select
+              label="Tình trạng"
+              SelectProps={{
+                native: true,
+              }}
+              margin="dense"
+            >
+              <option key="" value=""></option>
+              {Object.entries(constants.caseStatus).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <TextField
-                label="Thời gian diễn ra"
-                value={timeTakesPlace}
-                onChange={(event) => setTimeTakesPlace(event.target.value)}
-                fullWidth
-                />
+              name="area"
+              label="Khu vực"
+              value={area}
+              onChange={handleChange}
+              fullWidth
+            />
           </Grid>
           <Grid item xs={6}>
-            <Select
-                label="Loai vi pham" 
-                value={typeOfViolation}
-                onChange={(event) => setTypeOfViolation(event.target.value)} 
-                fullWidth
-            >
-              <MenuItem value={0}>Vi phạm dân sự</MenuItem>
-              <MenuItem value={1}>Vi phạm hình sự</MenuItem>
-            </Select>
+            <TextField
+              name="timeTakesPlace"
+              label="Thời gian diễn ra"
+              value={timeTakesPlace}
+              onChange={handleChange}
+              fullWidth
+            />
           </Grid>
         </Grid>
       </DialogContent>
@@ -91,7 +145,7 @@ export const CasesFilter = ({ open, onClose, onSelectFilter }) => {
         <Button onClick={handleResetFilter} color="secondary">
           Khôi phục
         </Button>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={handleClose} color="primary">
           Thoát
         </Button>
         <Button onClick={handleApplyFilter} color="primary">

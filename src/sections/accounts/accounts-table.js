@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import Link from 'next/link';
 import {
   Box,
   Card,
@@ -10,10 +11,13 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  SvgIcon
+  IconButton,
+  Tooltip
 } from '@mui/material';
-import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
+// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -51,7 +55,11 @@ export const AccountsTable = (props) => {
                 <TableCell>
                   Email
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Vai trò
                 </TableCell>
                 <TableCell>
@@ -82,8 +90,16 @@ export const AccountsTable = (props) => {
                     <TableCell>
                       {account.email}
                     </TableCell>
-                    <TableCell>
-                      {constants.role[account.roleId]}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Chip
+                        label={constants.role[account.roleId]}
+                        color={colorsAccount[account.roleId]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell>
                       {account.createdAt}
@@ -96,9 +112,26 @@ export const AccountsTable = (props) => {
                       <Stack
                         alignItems="center"
                         direction="row"
-                        spacing={1}
+                        spacing={-1}
                       >
-                        <SvgIcon
+                        <Tooltip title="Chỉnh sửa tài khoản">
+                          <IconButton
+                            LinkComponent={Link}
+                            href={{
+                              pathname: '/accounts/[id]',
+                              query: { id: account.id },
+                            }}
+                          >
+                            <BorderColorIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Xóa tài khoản">
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {/* <SvgIcon
                           color="action"
                           fontSize="small"
                         >
@@ -109,7 +142,7 @@ export const AccountsTable = (props) => {
                           fontSize="small"
                         >
                           <TrashIcon />
-                        </SvgIcon>
+                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>

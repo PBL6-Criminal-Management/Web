@@ -3,15 +3,15 @@ import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CasesTable } from 'src/sections/cases/cases-table';
-import { CasesSearch } from 'src/sections/cases/cases-search';
+import { CriminalsTable } from 'src/sections/criminals/criminals-table';
+import { CriminalsSearch } from 'src/sections/criminals/criminals-search';
 import axios from 'axios';
-import * as casesApi from '../api/cases';
+import * as criminalsApi from '../../api/criminals';
 
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [cases, setCases] = useState([]);
+  const [criminals, setCriminals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -39,14 +39,14 @@ const Page = () => {
     setFilter(selectedFilter);
   };
 
-  const getCases = async () => {
+  const getCriminals = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const cases = await casesApi.getAllCases(searchValue, filter);
-      setCases(cases);
-      setIsLoading(false);
+      const criminals = await criminalsApi.getAllCriminals(searchValue, filter);
+      setCriminals(criminals);
+      setLoading(false);
     }
     catch (error) {
       setError(error.message);
@@ -54,21 +54,22 @@ const Page = () => {
 
     setLoading(false);
   }
-  
+
   useEffect(() => {
-    getCases();
+    getCriminals();
   }, [searchValue, filter]);
-  {if (loading) 
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {<CircularProgress />}
-    </div>
+  {
+    if (loading)
+      return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        {<CircularProgress />}
+      </div>
   }
 
   return (
     <>
       <Head>
         <title>
-          Danh sách vụ án
+          Danh sách tội phạm
         </title>
       </Head>
       <Box
@@ -86,7 +87,7 @@ const Page = () => {
               spacing={4}
             >
               <Typography variant="h4">
-                  Danh sách vụ án
+                Danh sách tội phạm
               </Typography>
               <div>
                 <Button
@@ -97,17 +98,17 @@ const Page = () => {
                   )}
                   variant="contained"
                 >
-                  Thêm vụ án
+                  Thêm tội phạm
                 </Button>
               </div>
             </Stack>
-            <CasesSearch
+            <CriminalsSearch
               onSearchChange={handleSearchChange}
-              onFilterChange={handleFilterChange} 
+              onFilterChange={handleFilterChange}
             />
-            <CasesTable
-              count={cases.length}
-              items={cases}
+            <CriminalsTable
+              count={criminals.length}
+              items={criminals}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

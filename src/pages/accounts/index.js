@@ -7,7 +7,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { AccountsTable } from 'src/sections/accounts/accounts-table';
 import { AccountsSearch } from 'src/sections/accounts/accounts-search';
 import { applyPagination } from 'src/utils/apply-pagination';
-import * as accountsApi from '../api/accounts'
+import * as accountsApi from '../../api/accounts'
 import { filter } from 'lodash';
 
 const useAccounts = (data, page, rowsPerPage) => {

@@ -3,14 +3,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { Alert, Box, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { AccountPicture } from 'src/sections/account/account-picture';
-import { AccountDetails } from 'src/sections/account/account-details';
+import { UserPicture } from 'src/sections/user/user-picture';
+import { UserDetails } from 'src/sections/user/user-details';
 import * as accountsApi from '../api/accounts';
 import * as imagesApi from '../api/images';
 
 
 const Page = () => {
-  const [account, setAccount] = useState({});
+  const [user, setUser] = useState({});
   const [loadingSkeleton, setLoadingSkeleton] = useState(false);
   const [loadingButtonPicture, setLoadingButtonPicture] = useState(false);
   const [loadingButtonDetails, setLoadingButtonDetails] = useState(false);
@@ -18,11 +18,11 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
-  const getAccount = useCallback(async () => {
+  const getUser = useCallback(async () => {
     setLoadingSkeleton(true);
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      setAccount(user);
+      setUser(user);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -31,15 +31,15 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    getAccount();
+    getUser();
   }, []);
 
-  const updateLocalStorage = (updatedAccount) => {
+  const updateLocalStorage = (updatedUser) => {
     try {
       // Merge the updated account with the existing user data
       const updatedUserData = {
-        ...account,
-        ...updatedAccount,
+        ...user,
+        ...updatedUser,
       };
 
       // Update the user data in local storage
@@ -52,30 +52,30 @@ const Page = () => {
 
   const updateDetails = useCallback(async (updatedDetails) => {
     try {
-      const { imageLink, ...user } = account;
+      const { imageLink, ...userWithoutImageLink } = user;
       const updatedUser = {
         id: window.sessionStorage.getItem('userId'),
-        ...user,
+        ...userWithoutImageLink,
         ...updatedDetails,
       };
 
       await accountsApi.editAccount(updatedUser);
       updateLocalStorage(updatedDetails);
-      getAccount();      
-      setSuccess("Cập nhật thông tin chi tiết thành công.");
+      getUser();      
+      setSuccess("Cập nhật thông tin cá nhân thành công.");
       setError(null);
     } catch (error) {
       setError(error.message);
       setSuccess(null);
       console.log(error);
     }
-  }, [account]);
+  }, [user]);
 
-  const updateAccountDetails = useCallback(
+  const updateUserDetails = useCallback(
     async (updatedDetails) => {
       try {
         setLoadingButtonDetails(true);
-        setAccount((prevAccount) => ({ ...prevAccount, ...updatedDetails }));
+        setUser((prevUser) => ({ ...prevUser, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
       }
@@ -85,35 +85,35 @@ const Page = () => {
       finally {
         setLoadingButtonDetails(false);
       }
-    }, [setAccount, updateDetails]);
+    }, [setUser, updateDetails]);
 
   const uploadImage = useCallback(async (newImage) => {
     try {
       const response = await imagesApi.uploadImage(newImage);
-      const { imageLink, ...user } = account;
+      const { imageLink, ...userWithoutImageLink } = user;
       const updatedUser = {
         id: window.sessionStorage.getItem('userId'),
-        ...user,
+        ...userWithoutImageLink,
         image: response[0].filePath,
       };
 
       await accountsApi.editAccount(updatedUser);
       updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
-      getAccount();
-      setSuccess("Cập nhật thông tin chi tiết thành công.");
+      getUser();
+      setSuccess("Cập nhật ảnh đại diện thành công.");
       setError(null);
     } catch (error) {
       setError(error.message);
       setSuccess(null);
       console.log(error);
     }
-  }, [account]);
+  }, [user]);
 
-  const updateAccountPicture = useCallback(
+  const updateUserPicture = useCallback(
     async (newImage) => {
       try {
         setLoadingButtonPicture(true);
-        setAccount((prevAccount) => ({ ...prevAccount, image: newImage }));
+        setUser((prevUser) => ({ ...prevUser, image: newImage }));
         setOpen(true);
         await uploadImage(newImage);
       }
@@ -123,7 +123,7 @@ const Page = () => {
       finally {
         setLoadingButtonPicture(false);
       }
-    }, [setAccount, uploadImage]
+    }, [setUser, uploadImage]
   );
 
   return (
@@ -140,21 +140,21 @@ const Page = () => {
             <div>
               <Grid container spacing={3}>
                 <Grid xs={12} md={6} lg={4}>
-                  <AccountPicture
-                    imageLink={account.imageLink}
+                  <UserPicture
+                    imageLink={user.imageLink}
                     loadingSkeleton={loadingSkeleton}
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
-                    onUpdate={updateAccountPicture}
+                    onUpdate={updateUserPicture}
                   />
                 </Grid>
                 <Grid xs={12} md={6} lg={8}>
-                  <AccountDetails
-                    account={account}
+                  <UserDetails
+                    user={user}
                     loadingSkeleton={loadingSkeleton}
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
-                    onUpdate={updateAccountDetails}
+                    onUpdate={updateUserDetails}
                   />
                 </Grid>
               </Grid>

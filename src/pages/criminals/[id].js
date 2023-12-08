@@ -6,8 +6,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { CriminalPicture } from 'src/sections/criminals/criminal/criminal-picture';
 import { CriminalDetails } from 'src/sections/criminals/criminal/criminal-details/criminal-details';
-import * as criminalsApi from '../api/criminals';
-import * as imagesApi from '../api/images';
+import * as criminalsApi from '../../api/criminals';
+import * as imagesApi from '../../api/images';
+import { useRouter } from 'next/router'
 
 const Page = () => {
   const [criminal, setCriminal] = useState({});
@@ -18,13 +19,14 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
 
-  const criminalId = 28; // dung params de truyen id
+  const router = useRouter();
+  const criminalId = router.query.id; // dung params de truyen id
 
   const getCriminal = useCallback(async () => {
     setLoadingSkeleton(true);
     setError(null);
     try {
-      const criminal = await criminalsApi.getCriminalById(criminalId)
+      const criminal = await criminalsApi.getCriminalById(criminalId);
       setCriminal(criminal);
       console.log(criminal);
     } catch (error) {
@@ -137,7 +139,7 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,
-          mb: 3
+          mb: 2
         }}
       >
         <Container maxWidth="lg">
