@@ -1,7 +1,6 @@
 
 import axios from './axios';
 import Cookies from 'js-cookie';
-import { filter } from 'lodash';
 
 export const getAllCases = async (searchValue, filter) => {
     const token = Cookies.get('token');
@@ -41,4 +40,21 @@ export const getAllCases = async (searchValue, filter) => {
         }
     }
 };
+
+export const getCaseById = async (caseId) => {
+    const token = Cookies.get('token');
+
+    try {
+        const response = await axios.get(`/api/v1/case/${caseId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    }
+}
 

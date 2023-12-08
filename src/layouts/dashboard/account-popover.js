@@ -62,7 +62,7 @@ export const AccountPopover = (props) => {
           }
         }}
       >
-        <MenuItem component={NextLink} href='/account'>
+        <MenuItem component={NextLink} href='/user'>
           Thông tin cá nhân
         </MenuItem>
         <MenuItem onClick={handleSignOut}>

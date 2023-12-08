@@ -52,13 +52,4 @@ export const items = [
       </SvgIcon>
     )
   },
-  {
-    title: 'Thông tin tội phạm',
-    path: '/criminal',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UserIcon />
-      </SvgIcon>
-    )
-  },
 ];

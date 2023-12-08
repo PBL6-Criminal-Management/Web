@@ -3,15 +3,15 @@ import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CriminalsTable } from 'src/sections/criminals/criminals-table';
-import { CriminalsSearch } from 'src/sections/criminals/criminals-search';
+import { CasesTable } from 'src/sections/cases/cases-table';
+import { CasesSearch } from 'src/sections/cases/cases-search';
 import axios from 'axios';
-import * as criminalsApi from '../api/criminals';
+import * as casesApi from '../../api/cases';
 
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [criminals, setCriminals] = useState([]);
+  const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -39,13 +39,13 @@ const Page = () => {
     setFilter(selectedFilter);
   };
 
-  const getCriminals = async () => {
+  const getCases = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const criminals = await criminalsApi.getAllCriminals(searchValue, filter);
-      setCriminals(criminals);
+      const cases = await casesApi.getAllCases(searchValue, filter);
+      setCases(cases);
       setIsLoading(false);
     }
     catch (error) {
@@ -56,7 +56,7 @@ const Page = () => {
   }
   
   useEffect(() => {
-    getCriminals();
+    getCases();
   }, [searchValue, filter]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -68,7 +68,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Danh sách tội phạm
+          Danh sách vụ án
         </title>
       </Head>
       <Box
@@ -86,7 +86,7 @@ const Page = () => {
               spacing={4}
             >
               <Typography variant="h4">
-                  Danh sách tội phạm
+                  Danh sách vụ án
               </Typography>
               <div>
                 <Button
@@ -97,17 +97,17 @@ const Page = () => {
                   )}
                   variant="contained"
                 >
-                  Thêm tội phạm
+                  Thêm vụ án
                 </Button>
               </div>
             </Stack>
-            <CriminalsSearch 
+            <CasesSearch
               onSearchChange={handleSearchChange}
-              onFilterChange={handleFilterChange}
+              onFilterChange={handleFilterChange} 
             />
-            <CriminalsTable
-              count={criminals.length}
-              items={criminals}
+            <CasesTable
+              count={cases.length}
+              items={cases}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 import {
   Box,
   Card,
@@ -9,10 +10,13 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  SvgIcon
+  IconButton,
+  Tooltip
 } from '@mui/material';
-import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
+// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -107,9 +111,26 @@ export const ReportsTable = (props) => {
                       <Stack
                         alignItems="center"
                         direction="row"
-                        spacing={1}
+                        spacing={-1}
                       >
-                        <SvgIcon
+                        <Tooltip title="Chỉnh sửa báo cáo">
+                          <IconButton
+                            LinkComponent={Link}
+                          // href={{
+                          //   pathname: '/criminals/[id]',
+                          //   query: { id: criminal.id },
+                          // }}
+                          >
+                            <BorderColorIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Xóa báo cáo">
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {/* <SvgIcon
                           color="action"
                           fontSize="small"
                         >
@@ -120,7 +141,7 @@ export const ReportsTable = (props) => {
                           fontSize="small"
                         >
                           <TrashIcon />
-                        </SvgIcon>
+                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>

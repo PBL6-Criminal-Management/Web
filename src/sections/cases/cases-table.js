@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { React } from 'react';
+import Link from 'next/link';
 import {
   Box,
   Card,
@@ -10,10 +11,13 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  SvgIcon
+  IconButton,
+  Tooltip
 } from '@mui/material';
-import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
+// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -59,12 +63,16 @@ export const CasesTable = (props) => {
                 <TableCell>
                   Lý do
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Loại vi phạm
                 </TableCell>
                 <TableCell
                   sx={{
-                    textAlign: 'center'
+                    textAlign: 'center',
                   }}
                 >
                   Trạng thái
@@ -72,7 +80,11 @@ export const CasesTable = (props) => {
                 <TableCell>
                   Danh sách tội phạm
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -101,7 +113,11 @@ export const CasesTable = (props) => {
                       {casee.reason}
                     </TableCell>
                     <TableCell>
-                      {constants.typeOfViolation[casee.typeOfViolation]}
+                    <Chip
+                        label={constants.typeOfViolation[casee.typeOfViolation]}
+                        color={colorsViolation[casee.typeOfViolation]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell
                       sx={{
@@ -127,9 +143,26 @@ export const CasesTable = (props) => {
                       <Stack
                         alignItems="center"
                         direction="row"
-                        spacing={1}
+                        spacing={-1}
                       >
-                        <SvgIcon
+                        <Tooltip title="Chỉnh sửa vụ án">
+                          <IconButton
+                            LinkComponent={Link}
+                          // href={{
+                          //   pathname: '/criminals/[id]',
+                          //   query: { id: criminal.id },
+                          // }}
+                          >
+                            <BorderColorIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Xóa vụ án">
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {/* <SvgIcon
                           color="action"
                           fontSize="small"
                         >
@@ -140,7 +173,7 @@ export const CasesTable = (props) => {
                           fontSize="small"
                         >
                           <TrashIcon />
-                        </SvgIcon>
+                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>

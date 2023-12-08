@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { gender } from './../../constants/constants';
+import * as constants from './../../constants/constants';
 import {
   Dialog,
   DialogTitle,
@@ -7,8 +7,6 @@ import {
   TextField,
   DialogActions,
   Button,
-  Select,
-  MenuItem,
   Grid,
 } from '@mui/material';
 
@@ -21,25 +19,57 @@ export const CriminalsFilter = ({ open, onClose, onSelectFilter }) => {
   const [typeOfViolation, setTypeOfViolation] = useState('');
   const [charge, setCharge] = useState('');
 
-  const handleAreaChange = (event) => {
-    setArea(event.target.value);
-  };
+  const handleChange = (event) => {
+    if (event && event.target) {
+      const { name, value } = event.target;
 
-  const handleYearOfBirthChange = (event) => {
-    setYearOfBirth(event.target.value);
+      let updatedValue;
+
+      if (name === 'gender') {
+        updatedValue = value === 'true'; // Convert string to boolean
+        setGender(updatedValue);
+      } else if (name === 'status' || name === 'typeOfViolation') {
+        // Handle status and typeOfViolation
+        // Convert the value to a number, use an empty string if it's falsy
+        updatedValue = value ? parseInt(value, 10) : '';
+        name === 'status' ? setStatus(updatedValue) : setTypeOfViolation(updatedValue);
+      } else {
+        // Handle other fields
+        switch (name) {
+          case 'area':
+            setArea(value);
+            break;
+          case 'yearOfBirth':
+            setYearOfBirth(value);
+            break;
+          case 'characteristic':
+            setCharacteristic(value);
+            break;
+          case 'charge':
+            setCharge(value);
+            break;
+          default:
+            break;
+        }
+      }
+    }
   };
 
   const handleApplyFilter = () => {
+    // Convert yearOfBirth to an integer if it's a valid integer, otherwise set it to an empty string
+    const yearOfBirthValue = /^\d+$/.test(yearOfBirth) ? parseInt(yearOfBirth, 10) : '';
+
     const selectedFilters = {
-      status: status,
-      area: area,
-      yearOfBirth: parseInt(yearOfBirth, 10),
-      gender: gender,
-      characteristic: characteristic,
-      charge: charge,
-      typeOfViolation: typeOfViolation
+      status,
+      area,
+      yearOfBirth: yearOfBirthValue,
+      gender,
+      characteristic,
+      charge,
+      typeOfViolation,
     };
 
+    // console.log(selectedFilters);
     onSelectFilter(selectedFilters);
     onClose();
   };
@@ -54,79 +84,119 @@ export const CriminalsFilter = ({ open, onClose, onSelectFilter }) => {
     setTypeOfViolation('');
   };
 
+  const handleClose = () => {
+    handleResetFilter();
+    onClose();
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Tìm kiếm nâng cao</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ pb: 0.5 }}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Select
-                label="Trang thai" 
-                value={status}
-                onChange={(event) => setStatus(event.target.value)} 
-                fullWidth
+            <TextField
+              name="status"
+              onChange={handleChange}
+              value={status}
+              fullWidth
+              select
+              label="Trạng thái"
+              SelectProps={{ native: true }}
+              margin="dense"
             >
-              <MenuItem value={0}>Đang ngồi tù</MenuItem>
-              <MenuItem value={1}>Đã được thả</MenuItem>
-              <MenuItem value={2}>Bị truy nã</MenuItem>
-              <MenuItem value={3}>Chưa kết án</MenuItem>
-              <MenuItem value={4}>Án treo</MenuItem>
-              <MenuItem value={5}>Đã bị bắt</MenuItem>
-            </Select>
+              <option key="" value=""></option>
+              {Object.entries(constants.criminalStatus).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <TextField
-                label="Khu vực"
-                value={area}
-                onChange={handleAreaChange}
-                fullWidth
-                />
+              name="area"
+              margin="dense"
+              label="Khu vực"
+              value={area}
+              onChange={handleChange}
+              fullWidth
+            />
           </Grid>
           <Grid item xs={6}>
             <TextField
-                label="Năm sinh"
-                value={yearOfBirth}
-                onChange={handleYearOfBirthChange}
-                fullWidth
-                />
+              name="yearOfBirth"
+              label="Năm sinh"
+              value={yearOfBirth}
+              onChange={handleChange}
+              fullWidth
+            />
           </Grid>
           <Grid item xs={6}>
-            <Select
-                label="Gioi tinh" 
-                value={gender}
-                onChange={(event) => setGender(event.target.value)} 
-                fullWidth
+            <TextField
+              name="gender"
+              value={gender}
+              fullWidth
+              select
+              label="Giới tính"
+              SelectProps={{ native: true }}
+              onChange={handleChange}
             >
-              <MenuItem value={false}>Nam</MenuItem>
-              <MenuItem value={true}>Nu</MenuItem>
-            </Select>
+              <option key="" value=""></option>
+              {Object.entries(constants.gender).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={6}>
-            <Select
-                label="Loai vi pham" 
-                value={typeOfViolation}
-                onChange={(event) => setTypeOfViolation(event.target.value)} 
-                fullWidth
+            <TextField
+              name="typeOfViolation"
+              value={typeOfViolation}
+              fullWidth
+              select
+              label="Loại vi phạm"
+              SelectProps={{ native: true }}
+              onChange={handleChange}
             >
-              <MenuItem value={0}>Vi phạm dân sự</MenuItem>
-              <MenuItem value={1}>Vi phạm hình sự</MenuItem>
-            </Select>
+              <option key="" value=""></option>
+              {Object.entries(constants.typeOfViolation).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={6}>
             <TextField
-                label="Dac diem nhan dang"
-                value={characteristic}
-                onChange={(event) => setCharacteristic(event.target.value)}
-                fullWidth
-                />
+              name="characteristic"
+              label="Đặc điểm nhận dạng"
+              value={characteristic}
+              onChange={handleChange}
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
+            />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
-                label="Toi danh"
-                value={charge}
-                onChange={(event) => setCharge(event.target.value)}
-                fullWidth
-                />
+              name="charge"
+              label="Tội danh"
+              value={charge}
+              onChange={handleChange}
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
+            />
           </Grid>
         </Grid>
       </DialogContent>
@@ -134,7 +204,7 @@ export const CriminalsFilter = ({ open, onClose, onSelectFilter }) => {
         <Button onClick={handleResetFilter} color="secondary">
           Khôi phục
         </Button>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={handleClose} color="primary">
           Thoát
         </Button>
         <Button onClick={handleApplyFilter} color="primary">
