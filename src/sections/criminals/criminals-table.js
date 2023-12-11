@@ -13,11 +13,15 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button
 } from '@mui/material';
+import React from 'react';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -31,6 +35,7 @@ export const CriminalsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    onDeleteCriminal
   } = props;
 
   const colorsCriminal = {
@@ -42,8 +47,22 @@ export const CriminalsTable = (props) => {
     5: 'primary'
   };
 
-  const handleDeleteClick = (criminalId) => {
-    // Implement delete logic or redirect to delete page
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState('');
+
+  const handleDeleteConfirm = () => {
+    onDeleteCriminal(selectedId);
+    setOpenDeletePopup(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeletePopup(false);
+    setSelectedId('');
+  };
+
+  const handleDeleteClick = (id) => {
+    setOpenDeletePopup(true);
+    setSelectedId(id);
   };
 
   return (
@@ -146,23 +165,10 @@ export const CriminalsTable = (props) => {
                         </Tooltip>
 
                         <Tooltip title="Xóa tội phạm">
-                          <IconButton>
+                          <IconButton onClick={() => handleDeleteClick(criminal.id)}>
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
-                        {/* <SvgIcon
-                          color="action"
-                          fontSize="small"
-                          onClick={() => handleEditClick(criminal.id)}
-                        >
-                          <PencilSquareIcon />
-                        </SvgIcon>
-                        <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <TrashIcon />
-                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -172,6 +178,20 @@ export const CriminalsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
+      <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
+        <DialogTitle>Xác nhận xóa tội phạm</DialogTitle>
+        <DialogContent>
+          Bạn có chắc chắn muốn xóa tội phạm này?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Hủy
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* <TablePagination
         component="div"
         count={count}
@@ -192,19 +212,6 @@ CriminalsTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  onDeleteCriminal: PropTypes.func,
 };
 
-export const getCriminalStatusById = (id) => {
-  switch (id) {
-    case 0:
-      return "Đang ngồi tù";
-    case 1:
-      return "Đã được thả";
-    case 2:
-      return "Bị truy nã";
-    case 3:
-      return "Chưa kết án";
-    case 4:
-      return "Án treo";
-  }
-};

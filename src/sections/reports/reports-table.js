@@ -11,12 +11,16 @@ import {
   TableRow,
   Typography,
   IconButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
+import React from 'react';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -30,7 +34,26 @@ export const ReportsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    onDeleteReport
   } = props;
+
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState('');
+
+  const handleDeleteConfirm = () => {
+    onDeleteReport(selectedId);
+    setOpenDeletePopup(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeletePopup(false);
+    setSelectedId('');
+  };
+
+  const handleDeleteClick = (id) => {
+    setOpenDeletePopup(true);
+    setSelectedId(id);
+  };
 
   return (
     <Card>
@@ -126,7 +149,7 @@ export const ReportsTable = (props) => {
                         </Tooltip>
 
                         <Tooltip title="Xóa báo cáo">
-                          <IconButton>
+                          <IconButton onClick={() => handleDeleteClick(report.id)}>
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
@@ -151,15 +174,20 @@ export const ReportsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
-      {/* <TablePagination
-        component="div"
-        count={count}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      /> */}
+      <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
+        <DialogTitle>Xác nhận xóa báo cáo</DialogTitle>
+        <DialogContent>
+          Bạn có chắc chắn muốn xóa báo cáo này?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Hủy
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
@@ -171,4 +199,5 @@ ReportsTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  onDeleteReport: PropTypes.func,
 };

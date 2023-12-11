@@ -74,6 +74,19 @@ const Page = () => {
 
     setLoading(false);
   }
+
+  const handleDelete = async (id) => {
+    setLoading(true);
+    try {
+      console.log(id);
+      await accountsApi.deleteAccount(id);
+      getAccount();
+    }
+    catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  }
   
   useEffect(() => {
     getAccount();
@@ -132,6 +145,7 @@ const Page = () => {
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
               rowsPerPage={rowsPerPage}
+              onDeleteAccount={handleDelete}
             />
           </Stack>
         </Container>

@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 import Link from 'next/link';
 import {
   Box,
@@ -8,16 +7,19 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   IconButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
+import React from 'react';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -31,6 +33,7 @@ export const AccountsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    onDeleteAccount
   } = props;
 
   const colorsAccount = {
@@ -38,6 +41,24 @@ export const AccountsTable = (props) => {
     1: 'primary',
     2: 'error'
   }
+
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState('');
+
+  const handleDeleteConfirm = () => {
+    onDeleteAccount(selectedId);
+    setOpenDeletePopup(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeletePopup(false);
+    setSelectedId('');
+  };
+
+  const handleDeleteClick = (id) => {
+    setOpenDeletePopup(true);
+    setSelectedId(id);
+  };
 
   return (
     <Card>
@@ -127,22 +148,10 @@ export const AccountsTable = (props) => {
                         </Tooltip>
 
                         <Tooltip title="Xóa tài khoản">
-                          <IconButton>
+                          <IconButton onClick={() => handleDeleteClick(account.id)}>
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
-                        {/* <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <PencilSquareIcon />
-                        </SvgIcon>
-                        <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <TrashIcon />
-                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -152,15 +161,20 @@ export const AccountsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
-      {/* <TablePagination
-        component="div"
-        count={count}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      /> */}
+      <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
+        <DialogTitle>Xác nhận xóa tài khoản</DialogTitle>
+        <DialogContent>
+          Bạn có chắc chắn muốn xóa tài khoản này?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Hủy
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
@@ -172,4 +186,5 @@ AccountsTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  onDeleteAccount: PropTypes.func,
 };

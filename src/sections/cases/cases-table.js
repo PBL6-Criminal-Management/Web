@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { React } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Box,
@@ -12,12 +12,15 @@ import {
   TableRow,
   Typography,
   IconButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Button
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import PencilSquareIcon from '@heroicons/react/24/solid/PencilSquareIcon';
-// import TrashIcon from '@heroicons/react/24/solid/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -31,6 +34,7 @@ export const CasesTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    onDeleteCase
   } = props;
 
   const colorsViolation = {
@@ -43,6 +47,24 @@ export const CasesTable = (props) => {
     1: 'warning',
     2: 'success'
   }
+
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState('');
+
+  const handleDeleteConfirm = () => {
+    onDeleteCase(selectedId);
+    setOpenDeletePopup(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeletePopup(false);
+    setSelectedId('');
+  };
+
+  const handleDeleteClick = (id) => {
+    setOpenDeletePopup(true);
+    setSelectedId(id);
+  };
 
   return (
     <Card>
@@ -158,7 +180,7 @@ export const CasesTable = (props) => {
                         </Tooltip>
 
                         <Tooltip title="Xóa vụ án">
-                          <IconButton>
+                          <IconButton onClick={() => handleDeleteClick(casee.id)}>
                             <DeleteIcon />
                           </IconButton>
                         </Tooltip>
@@ -183,15 +205,20 @@ export const CasesTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
-      {/* <TablePagination
-        component="div"
-        count={count}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      /> */}
+      <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
+        <DialogTitle>Xác nhận xóa vụ án</DialogTitle>
+        <DialogContent>
+          Bạn có chắc chắn muốn xóa vụ án này?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Hủy
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
@@ -203,25 +230,5 @@ CasesTable.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  onDeleteCase: PropTypes.func,
 };
-
-
-// export const getCaseStatusById = (id) => {
-//   switch (id) {
-//     case 0:
-//       return "Chưa xét xử";
-//     case 1:
-//       return "Đang điều tra";
-//     case 2:
-//       return "Đã xét xử";
-//   }
-// };
-
-// export const getTypeOfViolationById = (id) => {
-//   switch (id) {
-//     case 0:
-//       return "Dân sự";
-//     case 1:
-//       return "Hình sự";
-//   }
-// };

@@ -58,7 +58,11 @@ export const CriminalsSearch = ({ onSearchChange, onFilterChange }) => {
           }
           sx={{ maxWidth: 800 }}
         />
-          <SvgIcon color="action" fontSize="small" sx={{ marginLeft: 2 }} onClick={handleOpenFilterPopup}>
+          <SvgIcon 
+            color="action" 
+            fontSize="small" 
+            sx={{ marginLeft: 2, cursor: 'pointer' }} 
+            onClick={handleOpenFilterPopup}>
             <AdjustmentVerticalIcon />
           </SvgIcon>
         </Box>
