@@ -52,6 +52,19 @@ const Page = () => {
     setSearchValue(searchValue);
   };
 
+  const handleDelete = async (id) => {
+    setLoading(true);
+    try {
+      console.log(id);
+      await reportsApi.deleteReport(id);
+      getReport();
+    }
+    catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  }
+
   const getReport = async () => {
     setLoading(true);
     setError(null);
@@ -111,6 +124,7 @@ const Page = () => {
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
               rowsPerPage={rowsPerPage}
+              onDeleteReport={handleDelete}
             />
           </Stack>
         </Container>

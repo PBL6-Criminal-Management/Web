@@ -39,6 +39,19 @@ const Page = () => {
     setFilter(selectedFilter);
   };
 
+  const handleDelete = async (id) => {
+    setLoading(true);
+    try {
+      console.log(id);
+      await criminalsApi.deleteCriminal(id);
+      getCriminals();
+    }
+    catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  }
+
   const getCriminals = async () => {
     setLoading(true);
     setError(null);
@@ -113,6 +126,7 @@ const Page = () => {
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
               rowsPerPage={rowsPerPage}
+              onDeleteCriminal={handleDelete}
             />
           </Stack>
         </Container>
