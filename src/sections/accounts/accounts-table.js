@@ -33,7 +33,8 @@ export const AccountsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    onDeleteAccount
+    onDeleteAccount,
+    isFetching
   } = props;
 
   const colorsAccount = {
@@ -187,4 +188,5 @@ AccountsTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   onDeleteAccount: PropTypes.func,
+  isFetching: PropTypes.bool
 };
