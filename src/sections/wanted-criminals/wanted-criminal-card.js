@@ -1,10 +1,8 @@
 // components/WantedCriminalCard.js
 import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Rating, Box } from '@mui/material';
-import CircleIcon from '@mui/icons-material/Circle';
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
-import { styled } from '@mui/material/styles';
-
+import MaximizeIcon from '@mui/icons-material/Maximize';
+import MaximizeOutlinedIcon from '@mui/icons-material/MaximizeOutlined';
 const WantedCriminalCard = ({ criminal }) => {
   return (
     <Card
@@ -49,16 +47,16 @@ const WantedCriminalCard = ({ criminal }) => {
           max={3}
           readOnly
           sx={{
-            marginTop: 1,
+            marginTop: 2,
             '.MuiRating-iconFilled': {
-              color: '#ff3d47',
+              color: '#e80915',
             },
             '.MuiRating-iconHover': {
-              color: '#ff3d47',
+              color: '#e80915',
             },
           }}
-          icon={<CircleIcon fontSize="small" />}
-          emptyIcon={<CircleOutlinedIcon fontSize="small" />}
+          icon={<MaximizeIcon fontSize="big" />}
+          emptyIcon={<MaximizeOutlinedIcon fontSize="big" />}
         />
         <Typography variant="body2" sx={{ color: '#666' }}>
           <strong>Mức độ nguy hiểm</strong>

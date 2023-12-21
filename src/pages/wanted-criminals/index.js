@@ -26,7 +26,7 @@ const WantedCriminalsPage = () => {
   }
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <Header />
       <AdvancedSearchBox 
         onSearch={handleFilterChange}
@@ -34,17 +34,16 @@ const WantedCriminalsPage = () => {
       <Grid container 
         rowSpacing={1} 
         display="flex"
-        columnSpacing={{ xs: 3, sm: 2, md: 1 }} 
-        margin={2}
-        padding={3}
-        sx={{alignItems: 'center', justifyContent: 'space-around'}}
+        columnSpacing={{ xs: 3, md: 5 }} 
+        maxWidth={900}
+        sx={{ alignItems: 'center', justifyContent: 'space-around' }}
       >
         {wantedCriminals.map((criminal) => (
           <Grid 
             item 
             key={criminal.id} 
             xs={12} 
-            md={4}>
+            md={6}>
             <WantedCriminalCard criminal={criminal} />
           </Grid>
         ))}

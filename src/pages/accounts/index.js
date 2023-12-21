@@ -91,11 +91,6 @@ const Page = () => {
   useEffect(() => {
     getAccount();
   }, [searchValue, filter]);
-  {if (loading) 
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {<CircularProgress />}
-    </div>
-  }
 
   return (
     <>
@@ -146,6 +141,7 @@ const Page = () => {
               page={page}
               rowsPerPage={rowsPerPage}
               onDeleteAccount={handleDelete}
+              isFetching={loading}
             />
           </Stack>
         </Container>

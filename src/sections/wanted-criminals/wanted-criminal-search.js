@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Paper } from '@mui/material';
+import { TextField, Button, Grid, Paper, Typography } from '@mui/material';
 import * as constants from './../../constants/constants';
 const AdvancedSearchBox = ({ onSearch, onResetFilter }) => {
   const [name, setName] = useState('');
@@ -38,8 +38,13 @@ const AdvancedSearchBox = ({ onSearch, onResetFilter }) => {
   }
 
   return (
-    <Paper elevation={3} sx={{ p: 3, borderRadius: 2, margin: 4 }}>
-      <Grid container spacing={2}>
+    <Paper elevation={3} sx={{ p: 3, borderRadius: 2, margin: 4, width: '100%', maxWidth: 850 }}>
+      <Typography 
+        variant="h6" 
+        sx={{marginBottom: 2}}>
+        Tìm kiếm đối tượng truy nã
+      </Typography>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={3}>
           <TextField
             label="Họ và tên"
@@ -114,7 +119,7 @@ const AdvancedSearchBox = ({ onSearch, onResetFilter }) => {
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={2}>
           <Button 
             variant="outlined" 
             onClick={handleReset} 
@@ -122,7 +127,7 @@ const AdvancedSearchBox = ({ onSearch, onResetFilter }) => {
             Khôi phục
           </Button>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2}>
           <Button 
             variant="contained" 
             onClick={handleSearch} 
