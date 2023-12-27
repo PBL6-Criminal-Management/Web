@@ -174,6 +174,15 @@ export const ReportsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
+      <TablePagination
+        component="div"
+        count={count}
+        page={page}
+        onPageChange={onPageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={onRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 20]}
+      />
       <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
         <DialogTitle>Xác nhận xóa báo cáo</DialogTitle>
         <DialogContent>

@@ -10,12 +10,16 @@ import {
   Button
 } from '@mui/material';
 import { AccountsFilter } from './accounts-filter'; 
-import debounce from 'lodash/debounce';
 
-export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
+export const AccountsSearch = ({ onSearchChange, onFilterChange, onSearchButtonClick }) => {
   const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
   const [selectedFilter, setSelectedFilter] = React.useState({});
+
+  const handleSearchButtonClick = () => {
+    onSearchChange(inputValue);
+    onSearchButtonClick(); 
+  };
 
   const handleOpenFilterPopup = () => {
     setOpenFilterPopup(true);
@@ -57,7 +61,7 @@ export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
           </SvgIcon>
           <Button 
             variant="outlined" 
-            sx={{marginLeft: 2}} onClick={() => onSearchChange(inputValue)}>
+            sx={{marginLeft: 2}} onClick={handleSearchButtonClick}>
             Tìm kiếm
           </Button>
         </Box>
