@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import {
   Button,
   Card,
@@ -17,23 +17,43 @@ import { LoadingButton } from "@mui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+const initialState = {
+  isFieldDisabled: true,
+  changesMade: false,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "ENABLE_EDIT":
+      return {
+        ...state,
+        isFieldDisabled: false,
+        changesMade: false,
+      };
+
+    case "CANCEL_EDIT":
+      return {
+        ...state,
+        isFieldDisabled: true,
+        changesMade: false,
+      };
+
+    case "UPDATE_ACCOUNT":
+      return {
+        ...state,
+        changesMade: true,
+      };
+    case "SUBMIT_FORM":
+      return { ...state, isFieldDisabled: true, changesMade: false };
+
+    default:
+      return state;
+  }
+};
+
 export const AccountDetails = (props) => {
-  const initialState = {
-    account: {
-      name: "",
-      birthday: null,
-      gender: false,
-      citizenId: "",
-      phoneNumber: "",
-      email: "",
-      username: "",
-      address: "",
-      role: "",
-    },
-    isFieldDisabled: true,
-    originalAccount: {},
-    changesMade: false,
-  };
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [originalAccount, setOriginalAccount] = useState({});
 
   const {
     account: initialAccount,
@@ -44,14 +64,18 @@ export const AccountDetails = (props) => {
   } = props;
 
   const formik = useFormik({
-    initialValues: initialAccount,
+    enableReinitialize: true,
+    initialValues: initialAccount
+      ? {
+          ...initialAccount,
+          birthday: parse(initialAccount.birthday, "dd/MM/yyyy", new Date()),
+        }
+      : null,
     validationSchema: Yup.object({
       name: Yup.string()
         .max(100, messages.LIMIT_NAME)
         .required(messages.REQUIRED_NAME)
         .matches(/^[ '\p{L}]+$/u, messages.NAME_CONTAINS_VALID_CHARACTER),
-      birthday: null,
-      gender: false,
       citizenId: Yup.string()
         .max(12, messages.LIMIT_CITIZEN_ID)
         .required(messages.REQUIRED_CITIZEN_ID)
@@ -68,7 +92,6 @@ export const AccountDetails = (props) => {
         .max(200, messages.LIMIT_ADDRESS)
         .required(messages.REQUIRED_ADDRESS)
         .matches(/^[0-9,. \p{L}]+$/u, messages.ADDRESS_VALID_CHARACTER),
-      role: "",
     }),
     onSubmit: async (values, helpers) => {
       try {
@@ -81,65 +104,9 @@ export const AccountDetails = (props) => {
     },
   });
 
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "ENABLE_EDIT":
-        return {
-          ...state,
-          isFieldDisabled: false,
-          originalAccount: { ...formik.values },
-        };
-
-      case "CANCEL_EDIT":
-        return {
-          ...state,
-          account: { ...state.originalAccount },
-          isFieldDisabled: true,
-          changesMade: false,
-        };
-
-      case "UPDATE_ACCOUNT":
-        return {
-          ...state,
-          account: { ...formik.values, ...action.payload },
-          changesMade: true,
-        };
-
-      case "UPDATE_BIRTHDAY":
-        return {
-          ...state,
-          account: { ...formik.values, birthday: format(action.payload, "dd/MM/yyyy") },
-          changesMade: true,
-        };
-      case "SUBMIT_FORM":
-        return { ...state, isFieldDisabled: true, changesMade: false };
-
-      default:
-        return state;
-    }
-  };
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    if (initialAccount) {
-      dispatch({ type: "CANCEL_EDIT" });
-      dispatch({ type: "UPDATE_ACCOUNT", payload: initialAccount });
-    }
-  }, [initialAccount]);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    // Convert the string value to a boolean if the field is 'gender'
-    const updatedValue =
-      name === "gender" ? value === "true" : name === "role" ? parseInt(value, 10) : value;
-
-    // Update the state
-    dispatch({ type: "UPDATE_ACCOUNT", payload: { [name]: updatedValue } });
-  };
-
-  const handleDateChange = (date) => {
-    dispatch({ type: "UPDATE_BIRTHDAY", payload: date });
+  const handleChange = (e) => {
+    dispatch({ type: "UPDATE_ACCOUNT" });
+    formik.handleChange(e);
   };
 
   const handleSubmit = () => {
@@ -147,17 +114,24 @@ export const AccountDetails = (props) => {
     // For now, we're just updating the user.
     dispatch({ type: "SUBMIT_FORM" });
     if (state.changesMade) {
-      onUpdate(formik.values);
+      onUpdate({
+        ...formik.values,
+        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
+        gender: formik.values.gender === "true",
+        role: parseInt(formik.values.role, 10),
+      });
     }
     dispatch({ type: 'SUBMIT_FORM', payload: !!success });
   };
 
   const handleClick = () => {
     dispatch({ type: "ENABLE_EDIT" });
+    setOriginalAccount(formik.values);
   };
 
   const handleCancel = () => {
     dispatch({ type: "CANCEL_EDIT" });
+    formik.setValues(originalAccount);
   };
 
   return (
@@ -183,21 +157,26 @@ export const AccountDetails = (props) => {
               { label: "Vai trò", name: "role", md: 4, select: true, selectProps: constants.role },
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
-                {loadingSkeleton ? (
+                {loadingSkeleton || formik.values === null || formik.values.name === undefined ? (
                   <Skeleton variant="rounded">
                     <TextField fullWidth />
                   </Skeleton>
                 ) : field.datePicker ? (
                   // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
                   <DatePicker
+                    error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                    fullWidth
+                    helperText={formik.touched[field.name] && formik.errors[field.name]}
                     disabled={state.isFieldDisabled || field.disabled}
                     label={field.label}
-                    value={
-                      formik.values[field.name]
-                        ? parse(formik.values[field.name], "dd/MM/yyyy", new Date())
-                        : null
-                    }
-                    onChange={(date) => handleDateChange(date)}
+                    name={field.name}
+                    onBlur={formik.handleBlur}
+                    onChange={(date) => {
+                      dispatch({ type: "UPDATE_USER" });
+                      formik.setFieldValue("birthday", date);
+                    }}
+                    type={field.name}
+                    value={formik.values[field.name]}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -209,19 +188,9 @@ export const AccountDetails = (props) => {
                     )}
                     maxDate={new Date()} // Assuming current date is the maximum allowed
                   />
-                ) : // </LocalizationProvider>
-                field.name !== "username" ? (
+                ) : (
+                  // </LocalizationProvider>
                   <TextField
-                    // error={!!(formik.touched.username && formik.errors.username)}
-                    // fullWidth
-                    // helperText={formik.touched.username && formik.errors.username}
-                    // label="Tên tài khoản"
-                    // name="username"
-                    // onBlur={formik.handleBlur}
-                    // onChange={formik.handleChange}
-                    // type="username"
-                    // value={formik.values.username}
-
                     error={!!(formik.touched[field.name] && formik.errors[field.name])}
                     fullWidth
                     helperText={formik.touched[field.name] && formik.errors[field.name]}
@@ -229,39 +198,12 @@ export const AccountDetails = (props) => {
                     label={field.label}
                     name={field.name}
                     onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    onChange={handleChange}
                     type={field.name}
                     value={formik.values[field.name]}
-                    // onChange={handleChange}
                     required={!field.disabled}
                     select={field.select}
                     SelectProps={field.select ? { native: true } : undefined}
-                    // value={state.account[field.name]}
-                    sx={{
-                      "& .MuiInputBase-input": {
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                  >
-                    {field.select &&
-                      Object.entries(field.selectProps).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                  </TextField>
-                ) : (
-                  <TextField
-                    disabled={state.isFieldDisabled || field.disabled}
-                    fullWidth
-                    label={field.label}
-                    name={field.name}
-                    onChange={handleChange}
-                    required={!field.disabled}
-                    select={field.select}
-                    SelectProps={field.select ? { native: true } : undefined}
-                    value={state.account[field.name]}
                     sx={{
                       "& .MuiInputBase-input": {
                         overflow: "hidden",
