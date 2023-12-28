@@ -1,5 +1,4 @@
 import axios from "./axios";
-import Cookies from "js-cookie";
 
 export const getAllReports = async (searchValue, auth) => {
   let result = await auth.refreshToken();

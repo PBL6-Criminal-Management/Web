@@ -149,6 +149,7 @@ export const AccountDetails = (props) => {
     if (state.changesMade) {
       onUpdate(formik.values);
     }
+    dispatch({ type: 'SUBMIT_FORM', payload: !!success });
   };
 
   const handleClick = () => {

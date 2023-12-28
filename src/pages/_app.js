@@ -11,6 +11,9 @@ import { useNProgress } from 'src/hooks/use-nprogress';
 import { createTheme } from 'src/theme';
 import { createEmotionCache } from 'src/utils/create-emotion-cache';
 import 'react-perfect-scrollbar/dist/css/styles.css';
+import classes from './_app.module.css';
+import { ConfigProvider, Image } from 'antd';
+import viVN from 'antd/lib/locale/vi_VN';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -26,33 +29,47 @@ const App = (props) => {
   const theme = createTheme();
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>
-          Quản lý tội phạm
-        </title>
-        <meta
-          name="viewport"
-          content="initial-scale=1, width=device-width"
-        />
-      </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
-        <LoadingProvider>
-          <AuthProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-                <AuthConsumer>
-                  {
-                    (auth) => auth.isFinished
-                      ? <SplashScreen />
-                      : getLayout(<Component {...pageProps} />)
-                  }
-                </AuthConsumer>
-            </ThemeProvider>
-          </AuthProvider>
-        </LoadingProvider>
-      </LocalizationProvider>
-    </CacheProvider>
+    <div className={classes.globalStyle}>
+      <CacheProvider value={emotionCache}>
+        <Head>
+          <title>
+            Quản lý tội phạm
+          </title>
+          <meta
+            name="viewport"
+            content="initial-scale=1, width=device-width"
+          />
+        </Head>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
+          <ConfigProvider
+            locale={viVN}
+            theme={{
+              components: {
+                Image: {
+                  zIndexPopupBase: 1300,
+                },
+              }
+            }}
+          >
+            <LoadingProvider>
+              <AuthProvider>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <AuthConsumer>
+                    {
+                      (auth) => auth.isFinished
+                        ? <SplashScreen />
+                        : getLayout(<Component {...pageProps} />)
+                    }
+                  </AuthConsumer>
+                </ThemeProvider>
+              </AuthProvider>
+            </LoadingProvider>
+          </ConfigProvider>
+        </LocalizationProvider>
+      </CacheProvider >
+    </div>
   );
 };
 

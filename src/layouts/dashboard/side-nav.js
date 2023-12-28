@@ -9,8 +9,6 @@ import {
   Divider,
   Drawer,
   Stack,
-  SvgIcon,
-  Typography,
   useMediaQuery
 } from '@mui/material';
 import { Logo } from 'src/components/logo';
@@ -42,9 +40,9 @@ export const SideNav = (props) => {
           height: '100%',
         }}
       >
-        <Box 
-          sx={{ 
-            p: 3,  
+        <Box
+          sx={{
+            p: 3,
             display: 'flex',
             justifyContent: 'center'
           }}>
@@ -80,7 +78,8 @@ export const SideNav = (props) => {
             }}
           >
             {items.map((item) => {
-              const active = item.path ? (pathname === item.path) : false;
+              const itemPath = item.path || '/';
+              const active = pathname === itemPath || (itemPath !== '/' && pathname.startsWith(`${itemPath}/`));
 
               return (
                 <SideNavItem

@@ -18,7 +18,7 @@ import { useEffect, useState, useRef } from 'react';
 import { LoadingButton } from '@mui/lab';
 
 export const UserPicture = (props) => {
-  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -55,8 +55,9 @@ export const UserPicture = (props) => {
     if (isImageChanged && file) {
       const formData = new FormData();
       formData.append('Files', file);
-      onUpdate(formData);
       setIsImageChanged(false);
+      onUpdate(formData);
+      setIsImageChanged(!success);
     }
   };
 
@@ -162,7 +163,7 @@ export const UserPicture = (props) => {
           </LoadingButton>
         </CardActions>
       }
-      {isImageChanged && (
+      {isImageChanged && !loadingButtonPicture && (
         <CardActions
           sx={{
             justifyContent: 'center',

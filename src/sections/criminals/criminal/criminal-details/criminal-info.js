@@ -7,7 +7,7 @@ import { format, parse } from 'date-fns';
 import { useState, useEffect } from 'react';
 
 const CriminalInfo = (props) => {
-    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel } = props;
+    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel, success } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
     const [isClicked, setIsClicked] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -30,6 +30,7 @@ const CriminalInfo = (props) => {
         setIsClicked(true);
         setHasSubmitted(true);
         handleSubmit();
+        setIsFieldDisabled(!!success);
     }
 
     const handleCancelInfo = () => {

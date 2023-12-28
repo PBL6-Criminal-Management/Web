@@ -33,7 +33,8 @@ const Page = () => {
   const [open, setOpen] = useState(true);
 
   const router = useRouter();
-  const accountId = router.query.id;
+  const accountId = decodeURIComponent(router.query.id);
+  const accountName = decodeURIComponent(router.query.name);
 
   const auth = useAuth();
 

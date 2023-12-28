@@ -147,9 +147,16 @@ const Page = () => {
       <Head>
         <title>Thông tin cá nhân</title>
       </Head>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          mt: 0.5,
+          mb: 1
+        }}>
         <Container maxWidth="lg">
-          <Stack spacing={3}>
+          <Stack
+            spacing={2}
+          >
             <div>
               <Typography variant="h4">Thông tin cá nhân</Typography>
             </div>
@@ -162,6 +169,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateUserPicture}
+                    success={success}
                   />
                 </Grid>
                 <Grid xs={12} md={6} lg={8}>
@@ -171,6 +179,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateUserDetails}
+                    success={success}
                   />
                 </Grid>
               </Grid>
@@ -204,8 +213,8 @@ const Page = () => {
                       </IconButton>
                     }
                     sx={{
-                      mb: 2,
-                      borderRadius: "12px",
+                      mb: 1.5,
+                      borderRadius: '12px',
                     }}
                   >
                     <Typography color="success" variant="subtitle2">
@@ -233,8 +242,8 @@ const Page = () => {
                       </IconButton>
                     }
                     sx={{
-                      mb: 2,
-                      borderRadius: "12px",
+                      mb: 1.5,
+                      borderRadius: '12px',
                     }}
                   >
                     <Typography color="error" variant="subtitle2">

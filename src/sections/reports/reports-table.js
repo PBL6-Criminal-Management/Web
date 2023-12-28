@@ -16,8 +16,11 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button
+  Button,
+  SvgIcon
 } from '@mui/material';
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
+import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
@@ -63,7 +66,7 @@ export const ReportsTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  ID
+                  Mã báo cáo
                 </TableCell>
                 <TableCell>
                   Tên người báo cáo
@@ -86,7 +89,11 @@ export const ReportsTable = (props) => {
                 <TableCell>
                   Trạng thái
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -128,10 +135,12 @@ export const ReportsTable = (props) => {
                     </TableCell>
                     <TableCell
                       sx={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <Stack
+                        justifyContent="center"
                         alignItems="center"
                         direction="row"
                         spacing={-1}

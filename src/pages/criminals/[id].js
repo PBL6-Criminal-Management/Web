@@ -32,7 +32,8 @@ const Page = () => {
   const [error, setError] = useState(null);
 
   const router = useRouter();
-  const criminalId = router.query.id; // dung params de truyen id
+  const criminalId = decodeURIComponent(router.query.id); // dung params de truyen id
+  const criminalName = decodeURIComponent(router.query.name);
   const [open, setOpen] = useState(true);
 
   const auth = useAuth();
@@ -106,8 +107,7 @@ const Page = () => {
           avatar: response[0].filePath,
         };
 
-        const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } =
-          updatedCriminal;
+        const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } = updatedCriminal;
         // console.log(updated);
         await criminalsApi.EditCriminal(updated, auth);
         // getCriminal();
@@ -141,7 +141,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Tội phạm | {criminal.name}</title>
+        <title>Tội phạm | {criminal?.name}</title>
       </Head>
       <Box
         sx={{
@@ -150,7 +150,10 @@ const Page = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Stack spacing={0}>
+          <Stack
+            spacing={0}
+            pb={1}
+          >
             <div>
               {loadingSkeleton ? (
                 <Skeleton variant="rounded">
@@ -173,7 +176,7 @@ const Page = () => {
                 >
                   <Link
                     component={NextLink}
-                    underline="hover"
+                    underline="none"
                     sx={{
                       display: "flex",
                       alignItems: "center",
@@ -181,7 +184,22 @@ const Page = () => {
                     href="/criminals"
                     color="text.primary"
                   >
-                    <Typography variant="h4">Tội phạm</Typography>
+                    <Typography
+                      variant='h4'
+                      sx={{
+                        marginLeft: '-8px',
+                        marginRight: '-8px',
+                        padding: '6px 8px',
+                        '&:hover': {
+                          transition: '0.2s all ease-in-out',
+                          backgroundColor: 'divider',
+                          padding: '6px 8px',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
+                      Tội phạm
+                    </Typography>
                   </Link>
                   <Typography
                     variant="h4"
@@ -189,7 +207,7 @@ const Page = () => {
                       color: "primary.main",
                     }}
                   >
-                    {criminal.name}
+                    {criminal?.name}
                   </Typography>
                 </Breadcrumbs>
               )}
@@ -203,6 +221,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateCriminalPicture}
+                    success={success}
                   />
                 </Grid>
 
@@ -213,6 +232,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateCriminalDetails}
+                    success={success}
                   />
                 </Grid>
               </Grid>
@@ -238,8 +258,7 @@ const Page = () => {
                     }
                     sx={{
                       mt: 2,
-                      mb: 2,
-                      borderRadius: "12px",
+                      borderRadius: '12px',
                     }}
                   >
                     <Typography color="success" variant="subtitle2">
@@ -267,7 +286,6 @@ const Page = () => {
                       </IconButton>
                     }
                     sx={{
-                      mb: 2,
                       mt: 2,
                       borderRadius: "12px",
                     }}

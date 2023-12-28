@@ -132,6 +132,9 @@ export function createComponents(config) {
           top: 0,
           width: '100%',
           zIndex: 2000
+        },
+        '&.MuiFormLabel-asterisk': {
+          color: palette.error.main
         }
       }
     },
@@ -141,7 +144,7 @@ export function createComponents(config) {
           '&::placeholder': {
             opacity: 1
           }
-        }
+        },
       }
     },
     MuiInput: {
@@ -189,7 +192,7 @@ export function createComponents(config) {
           [`&.${filledInputClasses.error}`]: {
             borderColor: palette.error.main,
             boxShadow: `${palette.error.main} 0 0 0 2px`
-          }
+          }, 
         },
         input: {
           fontSize: 14,
@@ -310,7 +313,6 @@ export function createComponents(config) {
     MuiAccordion: {
       styleOverrides: {
         root: {
-          border: `1px solid ${palette.divider}`,
           borderRadius: 20,
           '&:not(:last-child)': {
             marginBottom: '16px',
@@ -321,6 +323,10 @@ export function createComponents(config) {
           },
           '&:before': {
             display: 'none'
+          },
+          '&:last-of-type': {
+            borderBottomRightRadius: 20,
+            borderBottomLeftRadius: 20,
           },
         }
       }
@@ -385,6 +391,26 @@ export function createComponents(config) {
         root: {
           '--Grid-columnSpacing1': '12px',
           '--Grid-rowSpacing1': '12px',
+        }
+      }
+    },
+    MuiIconButton: { 
+      styleOverrides: {
+        root: {
+          color: 'rgba(0, 0, 0, 0.88)',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.06)'
+          }
+        }
+      }
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          '& .MuiAutocomplete-tag': {
+            marginBottom: '12px',
+            marginTop: '10px',
+          }
         }
       }
     }

@@ -40,7 +40,7 @@ const Page = () => {
         router.push("/");
       } catch (err) {
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        helpers.setErrors({ submit: error.message });
         helpers.setSubmitting(false);
       }
     },

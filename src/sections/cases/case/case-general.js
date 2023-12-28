@@ -1,13 +1,14 @@
 import { Unstable_Grid2 as Grid, TextField, Button, Card, CardContent, CardActions, Divider } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Skeleton from '@mui/material/Skeleton';
 import { LoadingButton } from '@mui/lab';
-import * as constants from '../../../../constants/constants';
+import * as constants from '../../../constants/constants';
 import { parse } from 'date-fns';
 import { useState, useEffect } from 'react';
 
-const CriminalGeneral = (props) => {
-    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChange, handleDateChange, handleSubmit, handleEdit, handleCancel, success } = props;
+
+const CaseGeneral = (props) => {
+    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChangeGeneral, handleDateTimeChange, handleSubmit, handleEdit, handleCancel } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
     const [isClicked, setIsClicked] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -30,7 +31,6 @@ const CriminalGeneral = (props) => {
         setIsClicked(true);
         setHasSubmitted(true);
         handleSubmit();
-        setIsFieldDisabled(!!success);
     }
 
     const handleCancelGeneral = () => {
@@ -38,6 +38,8 @@ const CriminalGeneral = (props) => {
         setIsFieldDisabled(true);
         handleCancel();
     }
+
+    console.log
 
     return (
         <Card
@@ -50,26 +52,13 @@ const CriminalGeneral = (props) => {
             <CardContent>
                 <Grid container spacing={3}>
                     {[
-                        { label: 'Họ và tên', name: 'name', md: 3, required: true },
-                        { label: 'Tên khác', name: 'anotherName', md: 3 },
-                        { label: 'Ngày sinh', name: 'birthday', md: 2, datePicker: true, required: true },
-                        { label: 'Giới tính', name: 'gender', md: 1.5, select: true, required: true, selectProps: constants.gender },
-                        { label: 'CMND/CCCD', name: 'citizenId', md: 2.5, required: true },
-                        { label: 'Số điện thoại', name: 'phoneNumber', md: 2 },
-                        { label: 'Quê quán', name: 'homeTown', md: 7, required: true },
-                        { label: 'Quốc tịch', name: 'nationality', md: 3, required: true },
-                        { label: 'Dân tộc', name: 'ethnicity', md: 3 },
-                        { label: 'Tôn giáo', name: 'religion', md: 3 },
-                        { label: 'Nghề nghiệp, nơi làm việc', name: 'careerAndWorkplace', md: 6 },
-                        { label: 'Nơi ĐKTT', name: 'permanentResidence', md: 6, required: true },
-                        { label: 'Nơi ở hiện tại', name: 'currentAccommodation', md: 6, required: true },
-                        { label: 'Họ và tên cha', name: 'fatherName', md: 6 },
-                        { label: 'Ngày sinh cha', name: 'fatherBirthday', md: 3, datePicker: true },
-                        { label: 'CMND/CCCD cha', name: 'fatherCitizenId', md: 3 },
-                        { label: 'Họ và tên mẹ', name: 'motherName', md: 6 },
-                        { label: 'Ngày sinh mẹ', name: 'motherBirthday', md: 3, datePicker: true },
-                        { label: 'CMND/CCCD mẹ', name: 'motherCitizenId', md: 3 },
-                        { label: 'Đặc điểm nhận dạng', name: 'characteristics', textArea: true, required: true },
+                        { label: 'Tình trạng', name: 'status', md: 3, select: true, required: true, selectProps: constants.caseStatus },
+                        { label: 'Loại vi phạm', name: 'typeOfViolation', md: 3, select: true, required: true, selectProps: constants.typeOfViolation },
+                        { label: 'Thời gian bắt đầu', name: 'startDate', md: 3, dateTimePicker: true, required: true },
+                        { label: 'Thời gian kết thúc', name: 'endDate', md: 3, dateTimePicker: true },
+                        { label: 'Tội danh chính', name: 'charge', required: true, md: 9 },
+                        { label: 'Khu vực xảy ra', name: 'area', md: 3 },
+                        { label: 'Chi tiết vụ án', name: 'description', textArea: true },
                     ].map((field) => (
                         <Grid key={field.name} xs={12} md={field.md || 12}>
                             {loading ? (
@@ -77,12 +66,12 @@ const CriminalGeneral = (props) => {
                                     <TextField fullWidth />
                                 </Skeleton>
                             ) : (
-                                field.datePicker ? (
-                                    <DatePicker
+                                field.dateTimePicker ? (
+                                    <DateTimePicker
                                         disabled={isFieldDisabled || field.disabled}
                                         label={field.label}
-                                        value={state.criminal[field.name] ? parse(state.criminal[field.name], 'dd/MM/yyyy', new Date()) : null}
-                                        onChange={(date) => handleDateChange(field.name, date)}
+                                        value={state.casee[field.name] ? parse(state.casee[field.name], 'HH:mm dd/MM/yyyy', new Date()) : null}
+                                        onChange={(date) => handleDateTimeChange(field.name, date)}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
@@ -92,7 +81,7 @@ const CriminalGeneral = (props) => {
                                                 onKeyDown={(e) => e.preventDefault()}
                                             />
                                         )}
-                                        maxDate={new Date()} // Assuming current date is the maximum allowed
+                                        maxDate={new Date()} 
                                     />
                                 ) : (
                                     <TextField
@@ -101,11 +90,11 @@ const CriminalGeneral = (props) => {
                                         fullWidth
                                         label={field.label}
                                         name={field.name}
-                                        onChange={handleChange}
+                                        onChange={e => handleChangeGeneral(e)}
                                         required={field.required || false}
                                         select={field.select}
                                         SelectProps={field.select ? { native: true } : undefined}
-                                        value={state.criminal[field.name]}
+                                        value={state.casee[field.name]}
                                         sx={{
                                             "& .MuiInputBase-input": {
                                                 overflow: "hidden",
@@ -161,4 +150,4 @@ const CriminalGeneral = (props) => {
     )
 };
 
-export default CriminalGeneral;
+export default CaseGeneral;

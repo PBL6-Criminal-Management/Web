@@ -18,7 +18,7 @@ import { useEffect, useState, useRef } from 'react';
 import { LoadingButton } from '@mui/lab';
 
 export const AccountPicture = (props) => {
-  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [image, setImage] = useState(imageLink);
   const [file, setFile] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
@@ -45,7 +45,6 @@ export const AccountPicture = (props) => {
   };
 
   const handleCancel = () => {
-    // Reset the image and file when canceling
     setImage(imageLink);
     setFile(null);
     setIsImageChanged(false);
@@ -55,10 +54,12 @@ export const AccountPicture = (props) => {
     if (isImageChanged && file) {
       const formData = new FormData();
       formData.append('Files', file);
-      onUpdate(formData);
       setIsImageChanged(false);
+      onUpdate(formData);
+      setIsImageChanged(!success);
     }
   };
+
 
   return (
     <Card fullWidth>
@@ -162,7 +163,7 @@ export const AccountPicture = (props) => {
           </LoadingButton>
         </CardActions>
       }
-      {isImageChanged && (
+      {isImageChanged && !loadingButtonPicture &&  (
         <CardActions
           sx={{
             justifyContent: 'center',

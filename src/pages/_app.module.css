@@ -1,0 +1,8 @@
+.globalStyle :global .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    align-items: center !important;
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 400;
+}
+
+
