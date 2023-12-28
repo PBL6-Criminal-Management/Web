@@ -1,12 +1,21 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
-import Head from 'next/head';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CriminalsTable } from 'src/sections/criminals/criminals-table';
-import { CriminalsSearch } from 'src/sections/criminals/criminals-search';
-import axios from 'axios';
-import * as criminalsApi from '../../api/criminals';
+import { useCallback, useMemo, useState, useEffect } from "react";
+import Head from "next/head";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { CriminalsTable } from "src/sections/criminals/criminals-table";
+import { CriminalsSearch } from "src/sections/criminals/criminals-search";
+import axios from "axios";
+import * as criminalsApi from "../../api/criminals";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -17,6 +26,7 @@ const Page = () => {
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
+  const auth = useAuth();
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -43,30 +53,28 @@ const Page = () => {
     setLoading(true);
     try {
       console.log(id);
-      await criminalsApi.deleteCriminal(id);
+      await criminalsApi.deleteCriminal(id, auth);
       getCriminals();
-    }
-    catch (err) {
+    } catch (err) {
       setError(err.message);
     }
     setLoading(false);
-  }
+  };
 
   const getCriminals = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const criminals = await criminalsApi.getAllCriminals(searchValue, filter);
+      const criminals = await criminalsApi.getAllCriminals(searchValue, filter, auth);
       setCriminals(criminals);
       setLoading(false);
-    }
-    catch (error) {
+    } catch (error) {
       setError(error.message);
     }
 
     setLoading(false);
-  }
+  };
 
   useEffect(() => {
     if (searchButtonClicked) {
@@ -76,42 +84,43 @@ const Page = () => {
   }, [searchButtonClicked]);
   {
     if (loading)
-      return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        {<CircularProgress />}
-      </div>
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          {<CircularProgress />}
+        </div>
+      );
   }
 
   return (
     <>
       <Head>
-        <title>
-          Danh sách tội phạm
-        </title>
+        <title>Danh sách tội phạm</title>
       </Head>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          py: 3
+          py: 3,
         }}
       >
         <Container maxWidth="xl">
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
-              <Typography variant="h4">
-                Danh sách tội phạm
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" spacing={4}>
+              <Typography variant="h4">Danh sách tội phạm</Typography>
               <div>
                 <Button
-                  startIcon={(
+                  startIcon={
                     <SvgIcon fontSize="small">
                       <PlusIcon />
                     </SvgIcon>
-                  )}
+                  }
                   variant="contained"
                 >
                   Thêm tội phạm
@@ -139,10 +148,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

@@ -1,13 +1,23 @@
-import Head from 'next/head';
-import { useState, useEffect, useCallback } from 'react';
-import { Alert, Box, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { UserPicture } from 'src/sections/user/user-picture';
-import { UserDetails } from 'src/sections/user/user-details';
-import * as accountsApi from '../api/accounts';
-import * as imagesApi from '../api/images';
-
+import Head from "next/head";
+import { useState, useEffect, useCallback } from "react";
+import {
+  Alert,
+  Box,
+  Collapse,
+  Container,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  Unstable_Grid2 as Grid,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { UserPicture } from "src/sections/user/user-picture";
+import { UserDetails } from "src/sections/user/user-details";
+import * as accountsApi from "../api/accounts";
+import * as imagesApi from "../api/images";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [user, setUser] = useState({});
@@ -17,11 +27,12 @@ const Page = () => {
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
+  const auth = useAuth();
 
   const getUser = useCallback(async () => {
     setLoadingSkeleton(true);
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(localStorage.getItem("user"));
       setUser(user);
     } catch (error) {
       setError(error.message);
@@ -43,33 +54,36 @@ const Page = () => {
       };
 
       // Update the user data in local storage
-      localStorage.setItem('user', JSON.stringify(updatedUserData));
+      localStorage.setItem("user", JSON.stringify(updatedUserData));
     } catch (error) {
-      console.error('Error updating local storage:', error);
-      setError('Error updating local storage:', error);
+      console.error("Error updating local storage:", error);
+      setError("Error updating local storage:", error);
     }
   };
 
-  const updateDetails = useCallback(async (updatedDetails) => {
-    try {
-      const { imageLink, ...userWithoutImageLink } = user;
-      const updatedUser = {
-        id: window.sessionStorage.getItem('userId'),
-        ...userWithoutImageLink,
-        ...updatedDetails,
-      };
+  const updateDetails = useCallback(
+    async (updatedDetails) => {
+      try {
+        const { imageLink, ...userWithoutImageLink } = user;
+        const updatedUser = {
+          id: window.sessionStorage.getItem("userId"),
+          ...userWithoutImageLink,
+          ...updatedDetails,
+        };
 
-      await accountsApi.editAccount(updatedUser);
-      updateLocalStorage(updatedDetails);
-      getUser();      
-      setSuccess("Cập nhật thông tin cá nhân thành công.");
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-      setSuccess(null);
-      console.log(error);
-    }
-  }, [user]);
+        await accountsApi.editAccount(updatedUser, auth);
+        updateLocalStorage(updatedDetails);
+        getUser();
+        setSuccess("Cập nhật thông tin cá nhân thành công.");
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setSuccess(null);
+        console.log(error);
+      }
+    },
+    [user]
+  );
 
   const updateUserDetails = useCallback(
     async (updatedDetails) => {
@@ -78,36 +92,39 @@ const Page = () => {
         setUser((prevUser) => ({ ...prevUser, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-      }
-      finally {
+      } finally {
         setLoadingButtonDetails(false);
       }
-    }, [setUser, updateDetails]);
+    },
+    [setUser, updateDetails]
+  );
 
-  const uploadImage = useCallback(async (newImage) => {
-    try {
-      const response = await imagesApi.uploadImage(newImage);
-      const { imageLink, ...userWithoutImageLink } = user;
-      const updatedUser = {
-        id: window.sessionStorage.getItem('userId'),
-        ...userWithoutImageLink,
-        image: response[0].filePath,
-      };
+  const uploadImage = useCallback(
+    async (newImage) => {
+      try {
+        const response = await imagesApi.uploadImage(newImage, auth);
+        const { imageLink, ...userWithoutImageLink } = user;
+        const updatedUser = {
+          id: window.sessionStorage.getItem("userId"),
+          ...userWithoutImageLink,
+          image: response[0].filePath,
+        };
 
-      await accountsApi.editAccount(updatedUser);
-      updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
-      getUser();
-      setSuccess("Cập nhật ảnh đại diện thành công.");
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-      setSuccess(null);
-      console.log(error);
-    }
-  }, [user]);
+        await accountsApi.editAccount(updatedUser, auth);
+        updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
+        getUser();
+        setSuccess("Cập nhật ảnh đại diện thành công.");
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setSuccess(null);
+        console.log(error);
+      }
+    },
+    [user]
+  );
 
   const updateUserPicture = useCallback(
     async (newImage) => {
@@ -116,14 +133,13 @@ const Page = () => {
         setUser((prevUser) => ({ ...prevUser, image: newImage }));
         setOpen(true);
         await uploadImage(newImage);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-      }
-      finally {
+      } finally {
         setLoadingButtonPicture(false);
       }
-    }, [setUser, uploadImage]
+    },
+    [setUser, uploadImage]
   );
 
   return (
@@ -161,17 +177,18 @@ const Page = () => {
             </div>
             <div
               sx={{
-                position: 'fixed',
-                bottom: '0',
-                right: '0',
-                zIndex: '1000',
+                position: "fixed",
+                bottom: "0",
+                right: "0",
+                zIndex: "1000",
                 mb: 2,
                 mr: 2,
-              }}>
-              {success &&
+              }}
+            >
+              {success && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="success"
                     action={
@@ -188,22 +205,19 @@ const Page = () => {
                     }
                     sx={{
                       mb: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="success"
-                      variant="subtitle2"
-                    >
+                    <Typography color="success" variant="subtitle2">
                       {success}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
-              {error &&
+              )}
+              {error && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="error"
                     action={
@@ -220,18 +234,15 @@ const Page = () => {
                     }
                     sx={{
                       mb: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="error"
-                      variant="subtitle2"
-                    >
+                    <Typography color="error" variant="subtitle2">
                       {error}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
+              )}
             </div>
           </Stack>
         </Container>
