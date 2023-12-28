@@ -16,20 +16,16 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
@@ -37,6 +33,10 @@ const Page = () => {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
   };
 
   const handleDelete = async (id) => {
@@ -69,8 +69,11 @@ const Page = () => {
   }
 
   useEffect(() => {
-    getCriminals();
-  }, [searchValue, filter]);
+    if (searchButtonClicked) {
+      getCriminals();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
   {
     if (loading)
       return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -118,10 +121,11 @@ const Page = () => {
             <CriminalsSearch
               onSearchChange={handleSearchChange}
               onFilterChange={handleFilterChange}
+              onSearchButtonClick={handleSearchButtonClick}
             />
             <CriminalsTable
               count={criminals.length}
-              items={criminals}
+              items={criminals.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

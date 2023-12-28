@@ -7,14 +7,20 @@ import {
   OutlinedInput,
   SvgIcon,
   Box,
+  Button
 } from '@mui/material';
 import { CriminalsFilter } from './criminals-filter'; 
 import debounce from 'lodash/debounce';
 
-export const CriminalsSearch = ({ onSearchChange, onFilterChange }) => {
+export const CriminalsSearch = ({ onSearchChange, onFilterChange, onSearchButtonClick }) => {
   const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
   const [selectedFilter, setSelectedFilter] = React.useState({});
+
+  const handleSearchButtonClick = () => {
+    onSearchChange(inputValue);
+    onSearchButtonClick(); 
+  };
 
   const handleOpenFilterPopup = () => {
     setOpenFilterPopup(true);
@@ -46,7 +52,7 @@ export const CriminalsSearch = ({ onSearchChange, onFilterChange }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <OutlinedInput
           value={inputValue}
-          onChange={handleInputChange}
+          onChange={(e) => setInputValue(e.target.value)}
           fullWidth
           placeholder="Tìm kiếm tội phạm"
           startAdornment={
@@ -59,12 +65,16 @@ export const CriminalsSearch = ({ onSearchChange, onFilterChange }) => {
           sx={{ maxWidth: 800 }}
         />
           <SvgIcon 
-            color="action" 
-            fontSize="small" 
+            color="action" fontSize="small" 
             sx={{ marginLeft: 2, cursor: 'pointer' }} 
             onClick={handleOpenFilterPopup}>
             <AdjustmentVerticalIcon />
           </SvgIcon>
+          <Button 
+            variant="outlined" 
+            sx={{marginLeft: 2}} onClick={handleSearchButtonClick}>
+            Tìm kiếm
+          </Button>
         </Box>
       </Card>
 

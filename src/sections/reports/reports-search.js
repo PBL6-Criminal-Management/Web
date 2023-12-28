@@ -7,21 +7,17 @@ import {
   OutlinedInput,
   SvgIcon,
   Box,
+  Button
 } from '@mui/material';
 import debounce from 'lodash/debounce';
 
-export const ReportsSearch = ({ onSearchChange }) => {
+export const ReportsSearch = ({ onSearchChange, onSearchButtonClick }) => {
   const [inputValue, setInputValue] = React.useState('');
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    setInputValue(value);
-    debouncedSearch(value); 
+  const handleSearchButtonClick = () => {
+    onSearchChange(inputValue);
+    onSearchButtonClick(); 
   };
-
-  const debouncedSearch = debounce((value) => {
-    onSearchChange(value);
-  }, 1000);
 
   return (
     <div>
@@ -29,7 +25,7 @@ export const ReportsSearch = ({ onSearchChange }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <OutlinedInput
           value={inputValue}
-          onChange={handleInputChange}
+          onChange={(e) => setInputValue(e.target.value)}
           fullWidth
           placeholder="Tìm kiếm báo cáo"
           startAdornment={
@@ -41,6 +37,11 @@ export const ReportsSearch = ({ onSearchChange }) => {
           }
           sx={{ maxWidth: 800 }}
         />
+          <Button 
+            variant="outlined" 
+            sx={{marginLeft: 2}} onClick={handleSearchButtonClick}>
+            Tìm kiếm
+          </Button>
         </Box>
       </Card>
     </div>

@@ -8,25 +8,7 @@ import { AccountsTable } from 'src/sections/accounts/accounts-table';
 import { AccountsSearch } from 'src/sections/accounts/accounts-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import * as accountsApi from '../../api/accounts'
-import { filter } from 'lodash';
 
-const useAccounts = (data, page, rowsPerPage) => {
-  return useMemo(
-    () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
-};
-
-const useAccountIds = (accounts) => {
-  return useMemo(
-    () => {
-      return accounts.map((account) => account.id);
-    },
-    [accounts]
-  );
-};
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -36,20 +18,16 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
@@ -57,6 +35,10 @@ const Page = () => {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
   };
 
   const getAccount = async () => {
@@ -89,8 +71,11 @@ const Page = () => {
   }
   
   useEffect(() => {
-    getAccount();
-  }, [searchValue, filter]);
+    if (searchButtonClicked) {
+      getAccount();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
 
   return (
     <>
@@ -132,10 +117,11 @@ const Page = () => {
             <AccountsSearch 
               onSearchChange={handleSearchChange}
               onFilterChange={handleFilterChange}
+              onSearchButtonClick={handleSearchButtonClick}
             />
             <AccountsTable
               count={accountData.length}
-              items={accountData}
+              items={accountData.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

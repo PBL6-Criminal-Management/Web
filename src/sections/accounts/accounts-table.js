@@ -15,7 +15,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button
+  Button,
+  TablePagination
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -162,6 +163,15 @@ export const AccountsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
+      <TablePagination
+        component="div"
+        count={count}
+        page={page}
+        onPageChange={onPageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={onRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 20]}
+      />
       <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
         <DialogTitle>Xác nhận xóa tài khoản</DialogTitle>
         <DialogContent>

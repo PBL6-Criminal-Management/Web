@@ -16,20 +16,20 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
@@ -69,8 +69,11 @@ const Page = () => {
   }
   
   useEffect(() => {
-    getCases();
-  }, [searchValue, filter]);
+    if (searchButtonClicked) {
+      getCases();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       {<CircularProgress />}
@@ -116,11 +119,12 @@ const Page = () => {
             </Stack>
             <CasesSearch
               onSearchChange={handleSearchChange}
-              onFilterChange={handleFilterChange} 
+              onFilterChange={handleFilterChange}
+              onSearchButtonClick={handleSearchButtonClick} 
             />
             <CasesTable
               count={cases.length}
-              items={cases}
+              items={cases.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}

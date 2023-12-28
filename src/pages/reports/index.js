@@ -8,24 +8,6 @@ import { ReportsSearch } from 'src/sections/reports/reports-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import * as reportsApi from '../../api/reports'
 
-const useReports = (data, page, rowsPerPage) => {
-  return useMemo(
-    () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
-};
-
-const useReportIds = (reports) => {
-  return useMemo(
-    () => {
-      return reports.map((report) => report.id);
-    },
-    [reports]
-  );
-};
-
 const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -33,23 +15,23 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState('');
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
   };
 
   const handleDelete = async (id) => {
@@ -81,8 +63,11 @@ const Page = () => {
   }
   
   useEffect(() => {
-    getReport();
-  }, [searchValue]);
+    if (searchButtonClicked) {
+      getReport();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
   {if (loading) 
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       {<CircularProgress />}
@@ -116,10 +101,11 @@ const Page = () => {
             </Stack>
             <ReportsSearch 
               onSearchChange={handleSearchChange}
+              onSearchButtonClick={handleSearchButtonClick}
             />
             <ReportsTable
               count={reportData.length}
-              items={reportData}
+              items={reportData.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
