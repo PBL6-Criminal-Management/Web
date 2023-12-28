@@ -94,14 +94,52 @@ export const MAX_IMAGE_SIZE_FOR_FREE_AISERVER = 2300000;
 export const DEFAULT_FRAMES_NUMBER_EACH_SECOND = 3;
 
 //Required
-
-//Limit length
 export const REQUIRED_NAME = "Họ và tên không được để trống";
 export const REQUIRED_CITIZEN_ID = "CMND/CCCD không được để trống";
 export const REQUIRED_ADDRESS = "Địa chỉ không được để trống";
 export const REQUIRED_PHONENUMBER = "Số điện thoại không được để trống";
 export const REQUIRED_EMAIL = "Email không được để trống";
 export const REQUIRED_USERNAME = "Tên người dùng không được để trống";
+export const REQUIRED_PASSWORD = "Mật khẩu chỉ có thể có từ 8 đến 100 ký tự!";
+export const REQUIRED_IMAGE = "Đường dẫn ảnh không được để trống";
+export const REQUIRED_DESCRIPTION = "Mô tả không được để trống";
+export const REQUIRED_NOTE = "Nội dung không được để trống";
+export const REQUIRED_ANOTHER_NAME = "Tên khác không được để trống";
+export const REQUIRED_PHONE_MODEL = "Model điện thoại không được để trống";
+export const REQUIRED_CAREER_AND_WORKPLACE = "Nghề nghiệp và nơi làm việc không được để trống";
+export const REQUIRED_CHARACTERISTICS = "Tính cách không được để trống";
+export const REQUIRED_HOME_TOWN = "Quê quán không được để trống";
+export const REQUIRED_ETHNICITY = "Dân tộc không được để trống";
+export const REQUIRED_RELIGION = "Tôn giáo không được để trống";
+export const REQUIRED_NATIONALITY = "Quốc tịch không được để trống";
+export const REQUIRED_FATHER_NAME = "Tên bố của tội phạm không được để trống";
+export const REQUIRED_FATHER_CITIZEN_ID = "CMND/CCCD của bố tội phạm không được để trống";
+export const REQUIRED_MOTHER_NAME = "Tên mẹ của tội phạm không được để trống";
+export const REQUIRED_MOTHER_CITIZEN_ID = "CMND/CCCD của mẹ tội phạm không được để trống";
+export const REQUIRED_PERMANENT_RESIDENCE = "Địa chỉ thường trú không được để trống";
+export const REQUIRED_CURRENT_ACCOMMODATION = "Địa chỉ hiện tại không được để trống";
+export const REQUIRED_CURRENT_ACTIVITY = "Hoạt động hiện hành không được để trống";
+export const REQUIRED_WANTED_DECISION_NO = "Số ra quyết định không được để trống";
+export const REQUIRED_DECISION_MAKING_UNIT = "Đơn vị ra quyết định không được để trống";
+export const REQUIRED_ENTRY_AND_EXIT_INFORMATION = "Thông tin xuất nhập cảnh không được để trống";
+export const REQUIRED_FACEBOOK = "Facebook không được để trống";
+export const REQUIRED_ZALO = "Zalo không được để trống";
+export const REQUIRED_OTHER_SOCIAL_NETWORKS = "Mạng xã hội khác không được để trống";
+export const REQUIRED_GAME_ACCOUNT = "Tài khoản game không được để trống";
+export const REQUIRED_BANK_ACCOUNT = "Tài khoản ngân hàng không được để trống";
+export const REQUIRED_VEHICLES = "Phương tiện không được để trống";
+export const REQUIRED_DANGEROUS_LEVEL = "Mức độ nguy hiểm không được để trống";
+export const REQUIRED_OTHER_INFORMATION = "Thông tin khác không được để trống";
+export const REQUIRED_REASON = "Lí do không được để trống";
+export const REQUIRED_MURDER_WEAPON = "Hung khí không được để trống";
+export const REQUIRED_WEAPON = "Vũ khí không được để trống";
+export const REQUIRED_CHARGE = "Tội danh không được để trống";
+export const REQUIRED_CRIME_SCENE = "Địa điểm xảy ra vụ án không được để trống";
+export const REQUIRED_REPORTER_NAME = "Họ và tên của người tố giác tội phạm không được để trống";
+export const REQUIRED_REPORTER_EMAIL = "Email của người tố giác tội phạm không được để trống";
+export const REQUIRED_REPORTER_PHONE =
+  "Số điện thoại của người tố giác tội phạm không được để trống";
+export const REQUIRED_REPORTER_ADDRESS = "Địa chỉ của người tố giác tội phạm không được để trống";
 
 //Limit length
 export const LIMIT_NAME = "Tên không được vượt quá 100 ký tự!";

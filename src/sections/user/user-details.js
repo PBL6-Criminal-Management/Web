@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useReducer } from "react";
 import {
   Box,
   Button,
@@ -8,67 +8,46 @@ import {
   Divider,
   TextField,
   Unstable_Grid2 as Grid,
-  Skeleton
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { format, parse } from 'date-fns';
-import * as constants from '../../constants/constants';
-import { LoadingButton } from '@mui/lab';
-import _ from 'lodash';
+  Skeleton,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format, parse } from "date-fns";
+import * as constants from "../../constants/constants";
+import { LoadingButton } from "@mui/lab";
+import _ from "lodash";
+import * as messages from "../../constants/messages";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const initialState = {
-  user: {
-    name: '',
-    birthday: null,
-    gender: false,
-    citizenId: '',
-    phoneNumber: '',
-    email: '',
-    username: '',
-    address: '',
-    role: ''
-  },
   isFieldDisabled: true,
-  originalUser: {},
-  changesMade: false
+  changesMade: false,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'ENABLE_EDIT':
+    case "ENABLE_EDIT":
       return {
         ...state,
         isFieldDisabled: false,
-        originalUser: { ...state.user }
+        changesMade: false,
       };
 
-    case 'CANCEL_EDIT':
+    case "CANCEL_EDIT":
       return {
         ...state,
-        user: { ...state.originalUser },
         isFieldDisabled: true,
-        changesMade: false
+        changesMade: false,
       };
 
-    case 'UPDATE_USER':
+    case "UPDATE_USER":
       return {
         ...state,
-        user: { ...state.user, ...action.payload },
-        changesMade: true
+        changesMade: true,
       };
 
-    case 'UPDATE_BIRTHDAY':
-      return {
-        ...state,
-        user: { ...state.user, birthday: format(action.payload, 'dd/MM/yyyy') },
-        changesMade: true
-      };
-
-    case 'ON_SUBMIT':
+    case "SUBMIT_FORM":
       return { ...state, isFieldDisabled: true, changesMade: false };
-
-    case 'SUBMIT_FORM':
-      return { ...state, isFieldDisabled: action.payload, changesMade: false };
 
     default:
       return state;
@@ -76,173 +55,233 @@ const reducer = (state, action) => {
 };
 
 export const UserDetails = (props) => {
-  const { user: initialUser, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [originalUser, setOriginalUser] = useState({});
 
-  useEffect(() => {
-    if (initialUser) {
-      dispatch({ type: 'CANCEL_EDIT' });
-      dispatch({ type: 'UPDATE_USER', payload: initialUser });
-    }
-  }, [initialUser]);
+  const {
+    user: initialUser,
+    loadingSkeleton,
+    loadingButtonDetails,
+    loadingButtonPicture,
+    onUpdate,
+  } = props;
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: initialUser
+      ? {
+          ...initialUser,
+          birthday: parse(initialUser.birthday, "dd/MM/yyyy", new Date()),
+        }
+      : null,
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .max(100, messages.LIMIT_NAME)
+        .required(messages.REQUIRED_NAME)
+        .matches(/^[ '\p{L}]+$/u, messages.NAME_CONTAINS_VALID_CHARACTER),
+      citizenId: Yup.string()
+        .max(12, messages.LIMIT_CITIZEN_ID)
+        .required(messages.REQUIRED_CITIZEN_ID)
+        .matches(/^[0-9]+$/, messages.CITIZEN_ID_VALID_CHARACTER),
+      phoneNumber: Yup.string()
+        .matches(/^(?:\+84|84|0)(3|5|7|8|9|1[2689])([0-9]{8,10})\b$/, messages.INVALID_PHONE_NUMBER)
+        .max(15, messages.LIMIT_PHONENUMBER)
+        .required(messages.REQUIRED_PHONENUMBER),
+      email: Yup.string()
+        .email(messages.INVALID_EMAIL)
+        .max(100, messages.LIMIT_EMAIL)
+        .required(messages.REQUIRED_EMAIL),
+      address: Yup.string()
+        .max(200, messages.LIMIT_ADDRESS)
+        .required(messages.REQUIRED_ADDRESS)
+        .matches(/^[0-9,. \p{L}]+$/u, messages.ADDRESS_VALID_CHARACTER),
+    }),
+    onSubmit: async (values, helpers) => {
+      try {
+        handleSubmit();
+      } catch (err) {
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: err.message });
+        helpers.setSubmitting(false);
+      }
+    },
+  });
 
-    // Convert the string value to a boolean if the field is 'gender'
-    const updatedValue = name === 'gender' ? value === 'true' : value;
-
-    // Update the state
-    dispatch({ type: 'UPDATE_USER', payload: { [name]: updatedValue } });
-  };
-
-
-  const handleDateChange = (date) => {
-    dispatch({ type: 'UPDATE_BIRTHDAY', payload: date });
+  const handleChange = (e) => {
+    dispatch({ type: "UPDATE_USER" });
+    formik.handleChange(e);
   };
 
   const handleSubmit = () => {
     // Additional logic for form submission if needed.
     // For now, we're just updating the user.
-    dispatch({ type: 'ON_SUBMIT' });
-    if (state.changesMade && _.isEqual(state.user, state.originalUser) === false) {
-      onUpdate(state.user);
+    dispatch({ type: "SUBMIT_FORM" });
+    if (state.changesMade) {
+      onUpdate({
+        name: formik.values.name,
+        citizenId: formik.values.citizenId,
+        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
+        gender: formik.values.gender === "true",
+        address: formik.values.address,
+        email: formik.values.email,
+        phoneNumber: formik.values.phoneNumber,
+        image: formik.values.image,
+      });
     }
-    dispatch({ type: 'SUBMIT_FORM', payload: !!success });
+    dispatch({ type: "SUBMIT_FORM", payload: !!success });
   };
 
   const handleClick = () => {
-    dispatch({ type: 'ENABLE_EDIT' });
+    dispatch({ type: "ENABLE_EDIT" });
+    setOriginalUser(formik.values);
   };
 
   const handleCancel = () => {
-    dispatch({ type: 'CANCEL_EDIT' });
+    dispatch({ type: "CANCEL_EDIT" });
+    formik.setValues(originalUser);
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      onSubmit={handleSubmit}>
+    <form autoComplete="off" noValidate onSubmit={formik.handleSubmit}>
       <Card>
         <CardContent>
           <Grid container spacing={3}>
             {[
-              { label: 'Họ và tên', name: 'name' },
-              { label: 'Ngày sinh', name: 'birthday', md: 4, datePicker: true },
-              { label: 'Giới tính', name: 'gender', md: 4, select: true },
-              { label: 'CMND/CCCD', name: 'citizenId', md: 4 },
-              { label: 'Số điện thoại', name: 'phoneNumber', md: 4 },
-              { label: 'Email', name: 'email', md: 4 },
-              { label: 'Tên tài khoản', name: 'username', md: 4, disabled: true },
-              { label: 'Địa chỉ', name: 'address', md: 8 },
-              { label: 'Vai trò', name: 'role', md: 4, disabled: true }
+              { label: "Họ và tên", name: "name" },
+              { label: "Ngày sinh", name: "birthday", md: 4, datePicker: true },
+              { label: "Giới tính", name: "gender", md: 4, select: true },
+              { label: "CMND/CCCD", name: "citizenId", md: 4 },
+              { label: "Số điện thoại", name: "phoneNumber", md: 4 },
+              { label: "Email", name: "email", md: 4 },
+              { label: "Tên tài khoản", name: "username", md: 4, disabled: true },
+              { label: "Địa chỉ", name: "address", md: 8 },
+              { label: "Vai trò", name: "role", md: 4, disabled: true },
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
-                {loadingSkeleton ? (
+                {loadingSkeleton || formik.values === null || formik.values.name === undefined ? (
                   <Skeleton variant="rounded">
                     <TextField fullWidth />
                   </Skeleton>
+                ) : field.datePicker ? (
+                  // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
+                  <DatePicker
+                    error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                    fullWidth
+                    helperText={formik.touched[field.name] && formik.errors[field.name]}
+                    disabled={state.isFieldDisabled || field.disabled}
+                    label={field.label}
+                    name={field.name}
+                    onBlur={formik.handleBlur}
+                    onChange={(date) => {
+                      dispatch({ type: "UPDATE_USER" });
+                      formik.setFieldValue("birthday", date);
+                    }}
+                    type={field.name}
+                    value={formik.values[field.name]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        required={!field.disabled}
+                        onKeyDown={(e) => e.preventDefault()}
+                      />
+                    )}
+                    maxDate={new Date()} // Assuming current date is the maximum allowed
+                  />
                 ) : (
-                  field.datePicker ? (
-                    // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
-                    <DatePicker
-                      disabled={state.isFieldDisabled || field.disabled}
-                      label={field.label}
-                      value={state.user[field.name] ? parse(state.user.birthday, 'dd/MM/yyyy', new Date()) : null}
-                      onChange={(date) => handleDateChange(date)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          InputLabelProps={{ shrink: true }}
-                          required={!field.disabled}
-                          onKeyDown={(e) => e.preventDefault()}
-                        />
-                      )}
-                      maxDate={new Date()} // Assuming current date is the maximum allowed
-                    />
-                    // </LocalizationProvider>
-                  ) : (
-                    <TextField
-                      disabled={state.isFieldDisabled || field.disabled}
-                      fullWidth
-                      label={field.label}
-                      name={field.name}
-                      onChange={handleChange}
-                      required={!field.disabled}
-                      select={field.select}
-                      SelectProps={field.select ? { native: true } : undefined}
-                      value={field.name == 'role' ? constants.role[state.user[field.name]] : state.user[field.name]}
-                      sx={{
-                        "& .MuiInputBase-input": {
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }
-                      }}
-                    >
-                      {field.select &&
-                        Object.entries(constants.gender).map(([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        ))}
-                    </TextField>
-                  )
+                  // </LocalizationProvider>
+                  <TextField
+                    error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                    fullWidth
+                    helperText={formik.touched[field.name] && formik.errors[field.name]}
+                    disabled={state.isFieldDisabled || field.disabled}
+                    label={field.label}
+                    name={field.name}
+                    onBlur={formik.handleBlur}
+                    onChange={handleChange}
+                    type={field.name}
+                    value={
+                      field.name === "role"
+                        ? constants.role[formik.values[field.name]]
+                        : formik.values[field.name]
+                    }
+                    required={!field.disabled}
+                    select={field.select}
+                    SelectProps={field.select ? { native: true } : undefined}
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      },
+                    }}
+                  >
+                    {/* {field.select &&
+                      Object.entries(field.selectProps).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))} */}
+
+                    {field.select &&
+                      Object.entries(constants.gender).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                  </TextField>
                 )}
               </Grid>
             ))}
           </Grid>
         </CardContent>
         <Divider />
-        <CardActions sx={{ justifyContent: 'flex-end' }}>
-
+        <CardActions sx={{ justifyContent: "flex-end" }}>
           {loadingSkeleton ? (
             <Skeleton>
-              <Button>
-                Chỉnh sửa thông tin
-              </Button>
+              <Button>Chỉnh sửa thông tin</Button>
             </Skeleton>
+          ) : loadingButtonDetails ? (
+            <LoadingButton
+              disabled
+              loading={loadingButtonDetails}
+              size="medium"
+              variant="contained"
+            >
+              Chỉnh sửa thông tin
+            </LoadingButton>
+          ) : loadingButtonDetails ? (
+            <>
+              <Button variant="outlined" disabled={loadingButtonDetails}>
+                Đổi mật khẩu
+              </Button>
+              <LoadingButton
+                disabled
+                loading={loadingButtonDetails}
+                size="medium"
+                variant="contained"
+              >
+                Chỉnh sửa thông tin
+              </LoadingButton>
+            </>
           ) : (
-            loadingButtonDetails ? (
-              <>
-                <Button
-                  variant="outlined"
-                  disabled={loadingButtonDetails}
-                >
-                  Đổi mật khẩu
+            <>
+              <Button variant="outlined" disabled={loadingButtonPicture}>
+                Đổi mật khẩu
+              </Button>
+              <Button
+                variant="contained"
+                onClick={state.isFieldDisabled ? handleClick : formik.handleSubmit}
+                disabled={loadingButtonPicture}
+              >
+                {state.isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
+              </Button>
+              {!state.isFieldDisabled && (
+                <Button variant="outlined" onClick={handleCancel}>
+                  Hủy
                 </Button>
-                <LoadingButton
-                  disabled
-                  loading={loadingButtonDetails}
-                  size="medium"
-                  variant="contained">
-                  Chỉnh sửa thông tin
-                </LoadingButton>
-              </>
-
-            ) : (
-              <>
-                <Button
-                  variant="outlined"
-                  disabled={loadingButtonPicture}
-                >
-                  Đổi mật khẩu
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={state.isFieldDisabled ? handleClick : handleSubmit}
-                  disabled={loadingButtonPicture}
-                >
-                  {state.isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-                </Button>
-                {!state.isFieldDisabled && (
-                  <Button variant="outlined" onClick={handleCancel}>
-                    Hủy
-                  </Button>
-                )}
-              </>
-            )
+              )}
+            </>
           )}
         </CardActions>
       </Card>

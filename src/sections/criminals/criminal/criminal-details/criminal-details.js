@@ -1,298 +1,144 @@
-import { useEffect, useReducer, useState } from 'react';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  IconButton,
-  TextField,
-  Typography,
-  Box,
-  Unstable_Grid2 as Grid,
-  Skeleton,
-} from '@mui/material';
-import AccordionSection from 'src/layouts/dashboard/accordion-section';
-import { format, parse } from 'date-fns';
-import CriminalGeneral from './criminal-general';
-import CriminalInfo from './criminal-info';
-import CriminalWanted from './criminal-wanted/criminal-wanted';
-import _ from 'lodash';
-
-const initialState = {
-  criminal: {
-    name: '',
-    birthday: null,
-    gender: true,
-    anotherName: '',
-    phoneNumber: '',
-    homeTown: '',
-    nationality: '',
-    ethnicity: '',
-    religion: '',
-    citizenId: '',
-    careerAndWorkplace: '',
-    permanentResidence: '',
-    currentAccommodation: '',
-    fatherName: '',
-    fatherBirthday: null,
-    fatherCitizenId: '',
-    motherName: '',
-    motherBirthday: null,
-    motherCitizenId: '',
-    characteristics: '',
-    status: 0,
-    relatedCases: '',
-    dangerousLevel: '',
-    dateOfMostRecentCrime: null,
-    releaseDate: '2023-11-30',
-    entryAndExitInformation: '',
-    bankAccount: '',
-    gameAccount: '',
-    facebook: '',
-    zalo: '',
-    otherSocialNetworks: '',
-    phoneModel: '',
-    research: '',
-    approachArrange: '',
-    otherInformation: '',
-    avatar: '',
-    avatarLink: '',
-    isWantedCriminal: true,
-    vehicles: '',
-    wantedCriminals: [],
-  },
-  originalCriminal: {},
-  changesMade: false
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'ENABLE_EDIT':
-      return {
-        ...state,
-        originalCriminal: { ...state.criminal }
-      };
-
-    case 'CANCEL_EDIT':
-      return {
-        ...state,
-        criminal: { ...state.originalCriminal },
-        changesMade: false
-      };
-
-    case 'UPDATE_CRIMINAL':
-      const newObj = {
-        ...state,
-        criminal: { ...state.criminal, ...action.payload },
-        changesMade: true
-      }
-      console.log(newObj);
-      return newObj;
-
-    case 'UPDATE_CRIMINAL_WANTED':
-      const currentWantedCriminals = state.criminal.wantedCriminals || [];
-      const wantedCriminals = _.cloneDeep(currentWantedCriminals);
-      const indexToUpdate = action.payload.index;
-
-      if (indexToUpdate !== undefined && indexToUpdate !== null) {
-        wantedCriminals[indexToUpdate] = {
-          ...wantedCriminals[indexToUpdate],
-          ...action.payload,
-        };
-      }
-
-      const newObj1 = {
-        ...state,
-        criminal: { ...state.criminal, wantedCriminals: wantedCriminals },
-        changesMade: true
-      }
-      return newObj1;
-
-    case 'UPDATE_DATE':
-      const { fieldName, date } = action.payload;
-      return {
-        ...state,
-        criminal: { ...state.criminal, [fieldName]: format(date, 'dd/MM/yyyy') },
-        changesMade: true
-      };
-
-    case 'UPDATE_DATE_WANTED':
-      const { fieldNameWanted, dateWanted, indexToUpdateDate } = action.payload
-      const currentWantedCriminalsDate = state.criminal.wantedCriminals || [];
-      const wantedCriminalsDate = _.cloneDeep(currentWantedCriminalsDate);
-
-      if (indexToUpdateDate !== undefined && indexToUpdateDate !== null) {
-        wantedCriminalsDate[indexToUpdateDate] = {
-          ...wantedCriminalsDate[indexToUpdateDate],
-          [fieldNameWanted]: format(dateWanted, 'dd/MM/yyyy'),
-        };
-      }
-
-      const newObj2 = {
-        ...state,
-        criminal: { ...state.criminal, wantedCriminals: wantedCriminalsDate },
-        changesMade: true
-      }
-      // console.log(newObj2);
-      return newObj2;
-
-    case 'SUBMIT_FORM':
-      return { ...state, changesMade: false };
-
-    default:
-      return state;
-  }
-};
+import { useEffect, useState } from "react";
+import { Box, Skeleton } from "@mui/material";
+import AccordionSection from "src/layouts/dashboard/accordion-section";
+import CriminalGeneral from "./criminal-general";
+import CriminalInfo from "./criminal-info";
+import CriminalWanted from "./criminal-wanted/criminal-wanted";
 
 export const CriminalDetails = (props) => {
-  const { criminal: initialCriminal, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [generalInformation, setGeneralInformation] = useState(null);
+  const [criminalInformation, setCriminalInformation] = useState(null);
+  const [wantedInformation, setWantedInformation] = useState(null);
+
+  const {
+    criminal: initialCriminal,
+    loadingSkeleton,
+    loadingButtonDetails,
+    loadingButtonPicture,
+    onUpdate,
+  } = props;
 
   useEffect(() => {
+    console.log("inint", initialCriminal);
     if (initialCriminal) {
-      dispatch({ type: 'CANCEL_EDIT' });
-      dispatch({ type: 'UPDATE_CRIMINAL', payload: initialCriminal });
+      setGeneralInformation({
+        name: initialCriminal.name,
+        anotherName: initialCriminal.anotherName,
+        birthday: initialCriminal.birthday,
+        gender: initialCriminal.gender,
+        citizenId: initialCriminal.citizenId,
+        phoneNumber: initialCriminal.phoneNumber,
+        homeTown: initialCriminal.homeTown,
+        nationality: initialCriminal.nationality,
+        ethnicity: initialCriminal.ethnicity,
+        religion: initialCriminal.religion,
+        careerAndWorkplace: initialCriminal.careerAndWorkplace,
+        permanentResidence: initialCriminal.permanentResidence,
+        currentAccommodation: initialCriminal.currentAccommodation,
+        fatherName: initialCriminal.fatherName,
+        fatherBirthday: initialCriminal.fatherBirthday,
+        fatherCitizenId: initialCriminal.fatherCitizenId,
+        motherName: initialCriminal.motherName,
+        motherBirthday: initialCriminal.motherBirthday,
+        motherCitizenId: initialCriminal.motherCitizenId,
+        characteristics: initialCriminal.characteristics,
+      });
+      setCriminalInformation({
+        status: initialCriminal.status,
+        dangerousLevel: initialCriminal.dangerousLevel,
+        dateOfMostRecentCrime: initialCriminal.dateOfMostRecentCrime,
+        releaseDate: initialCriminal.releaseDate,
+        charge: initialCriminal.charge,
+        relatedCases: initialCriminal.relatedCases,
+        entryAndExitInformation: initialCriminal.entryAndExitInformation,
+        vehicles: initialCriminal.vehicles,
+        bankAccount: initialCriminal.bankAccount,
+        gameAccount: initialCriminal.gameAccount,
+        facebook: initialCriminal.facebook,
+        zalo: initialCriminal.zalo,
+        otherSocialNetworks: initialCriminal.otherSocialNetworks,
+        phoneModel: initialCriminal.phoneModel,
+        research: initialCriminal.research,
+        approachArrange: initialCriminal.approachArrange,
+        otherInformation: initialCriminal.otherInformation,
+      });
+      setWantedInformation({
+        isWantedCriminal: initialCriminal.isWantedCriminal,
+        wantedCriminals: initialCriminal.wantedCriminals,
+      });
     }
   }, [initialCriminal]);
 
-  const handleChange = (event, index) => {
-    if (event && event.target) {
-      const { name, value } = event.target;
-      console.log('Field Name:', name);
-      console.log('Event:', event);
-
-      // Convert the string value to a boolean if the field is 'gender'
-      const updatedValue = name === 'gender' ? value === 'true' : name === 'status' ? parseInt(value, 10) : value;
-
-      if (index !== undefined && index !== null) {
-        dispatch({ type: 'UPDATE_CRIMINAL_WANTED', payload: { [name]: updatedValue, index } });
-      }
-      else {
-        dispatch({ type: 'UPDATE_CRIMINAL', payload: { [name]: updatedValue } });
-      }
-      // console.log(state)
-    }
-  };
-
-  const handleDateChange = (fieldName, date, index) => {
-    console.log('Field Name:', fieldName);
-    console.log('Date:', date);
-    if (index !== undefined && index !== null) {
-      dispatch({ type: 'UPDATE_DATE_WANTED', payload: { fieldNameWanted: fieldName, dateWanted: date, indexToUpdateDate: index } });
-    }
-    else {
-      dispatch({ type: 'UPDATE_DATE', payload: { fieldName, date } });
-    }
-  };
-
-  const handleSubmit = () => {
-    // Additional logic for form submission if needed.
-    // For now, we're just updating the criminal.
-    dispatch({ type: 'SUBMIT_FORM' });
-    if (state.changesMade && _.isEqual(state.criminal, state.originalCriminal) === false) {
-      onUpdate(state.criminal);
-    }
-  };
-
-  const handleEdit = () => {
-    dispatch({ type: 'ENABLE_EDIT' });
-  };
-
-  const handleCancel = () => {
-    dispatch({ type: 'CANCEL_EDIT' });
+  const handleSubmit = (values) => {
+    onUpdate({ ...generalInformation, ...criminalInformation, ...wantedInformation, ...values });
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      onSubmit={handleSubmit}>
-      <Box
-        sx={{
-          backgroundColor: 'transparent !important',
-        }}
-      >
-        {loadingSkeleton ? (
-          <>
-            <Skeleton
-              variant="rounded"
-              sx={{
-                '&:not(:last-child)': {
-                  marginBottom: '16px',
-                },
-              }}
-            >
-              <AccordionSection summary="Thông tin chung"></AccordionSection>
-            </Skeleton>
-            <Skeleton
-              variant="rounded"
-              sx={{
-                '&:not(:last-child)': {
-                  marginBottom: '16px',
-                },
-              }}
-            >
-              <AccordionSection summary="Thông tin tội phạm"></AccordionSection>
-            </Skeleton>
-            <Skeleton
-              variant="rounded"
-              sx={{
-                '&:not(:last-child)': {
-                  marginBottom: '16px',
-                },
-              }}
-            >
-              <AccordionSection summary="Thông tin truy nã"></AccordionSection>
-            </Skeleton>
-          </>
-        ) : (
-          <>
-            <AccordionSection summary="Thông tin chung">
-              <CriminalGeneral
-                state={state}
-                loading={loadingSkeleton}
-                loadingButtonDetails={loadingButtonDetails}
-                loadingButtonPicture={loadingButtonPicture}
-                handleChange={handleChange}
-                handleDateChange={handleDateChange}
-                handleSubmit={handleSubmit}
-                handleEdit={handleEdit}
-                handleCancel={handleCancel}
-                success={success}
-              />
+    <Box
+      sx={{
+        backgroundColor: "transparent !important",
+      }}
+    >
+      {loadingSkeleton ? (
+        <>
+          <Skeleton
+            variant="rounded"
+            sx={{
+              "&:not(:last-child)": {
+                marginBottom: "16px",
+              },
+            }}
+          >
+            <AccordionSection summary="Thông tin chung"></AccordionSection>
+          </Skeleton>
+          <Skeleton
+            variant="rounded"
+            sx={{
+              "&:not(:last-child)": {
+                marginBottom: "16px",
+              },
+            }}
+          >
+            <AccordionSection summary="Thông tin tội phạm"></AccordionSection>
+          </Skeleton>
+          <Skeleton
+            variant="rounded"
+            sx={{
+              "&:not(:last-child)": {
+                marginBottom: "16px",
+              },
+            }}
+          >
+            <AccordionSection summary="Thông tin truy nã"></AccordionSection>
+          </Skeleton>
+        </>
+      ) : (
+        <>
+          <AccordionSection summary="Thông tin chung">
+            <CriminalGeneral
+              generalInfo={generalInformation}
+              loading={loadingSkeleton}
+              loadingButtonDetails={loadingButtonDetails}
+              loadingButtonPicture={loadingButtonPicture}
+              handleSubmit={handleSubmit}
+            />
+          </AccordionSection>
+          <AccordionSection summary="Thông tin phạm tội">
+            <CriminalInfo
+              criminalInfo={criminalInformation}
+              loading={loadingSkeleton}
+              loadingButtonDetails={loadingButtonDetails}
+              loadingButtonPicture={loadingButtonPicture}
+              handleSubmit={handleSubmit}
+            />
+          </AccordionSection>
+          {wantedInformation && wantedInformation.isWantedCriminal && (
+            <AccordionSection summary="Thông tin truy nã">
+              <CriminalWanted wantedCriminals={wantedInformation} loading={loadingSkeleton} />
             </AccordionSection>
-            <AccordionSection
-              summary="Thông tin phạm tội"
-            >
-              <CriminalInfo
-                state={state}
-                loading={loadingSkeleton}
-                loadingButtonDetails={loadingButtonDetails}
-                loadingButtonPicture={loadingButtonPicture}
-                handleChange={handleChange}
-                handleDateChange={handleDateChange}
-                handleSubmit={handleSubmit}
-                handleEdit={handleEdit}
-                handleCancel={handleCancel}
-                success={success}
-              />
-            </AccordionSection>
-            {state.criminal.isWantedCriminal &&
-              <AccordionSection
-                summary="Thông tin truy nã"
-              >
-                <CriminalWanted
-                  state={state}
-                  loading={loadingSkeleton}
-                  handleChange={handleChange}
-                  handleDateChange={handleDateChange}
-                />
-              </AccordionSection>
-            }
-          </>
-        )}
-      </Box>
-    </form>
+          )}
+        </>
+      )}
+    </Box>
   );
 };
