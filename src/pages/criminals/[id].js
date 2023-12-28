@@ -1,14 +1,27 @@
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { useState, useEffect, useCallback } from 'react';
-import { Alert, Box, Breadcrumbs, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid, Link } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CriminalPicture } from 'src/sections/criminals/criminal/criminal-picture';
-import { CriminalDetails } from 'src/sections/criminals/criminal/criminal-details/criminal-details';
-import * as criminalsApi from '../../api/criminals';
-import * as imagesApi from '../../api/images';
-import { useRouter } from 'next/router'
+import Head from "next/head";
+import NextLink from "next/link";
+import { useState, useEffect, useCallback } from "react";
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Collapse,
+  Container,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  Unstable_Grid2 as Grid,
+  Link,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { CriminalPicture } from "src/sections/criminals/criminal/criminal-picture";
+import { CriminalDetails } from "src/sections/criminals/criminal/criminal-details/criminal-details";
+import * as criminalsApi from "../../api/criminals";
+import * as imagesApi from "../../api/images";
+import { useRouter } from "next/router";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [criminal, setCriminal] = useState({});
@@ -17,16 +30,18 @@ const Page = () => {
   const [loadingButtonDetails, setLoadingButtonDetails] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const [open, setOpen] = useState(true);
 
   const router = useRouter();
   const criminalId = router.query.id; // dung params de truyen id
+  const [open, setOpen] = useState(true);
+
+  const auth = useAuth();
 
   const getCriminal = useCallback(async () => {
     setLoadingSkeleton(true);
     setError(null);
     try {
-      const criminal = await criminalsApi.getCriminalById(criminalId);
+      const criminal = await criminalsApi.getCriminalById(criminalId, auth);
       setCriminal(criminal);
       console.log(criminal);
     } catch (error) {
@@ -40,33 +55,30 @@ const Page = () => {
     getCriminal();
   }, []);
 
-  const updateDetails = useCallback(async (updatedDetails) => {
-    try {
-      const updatedCriminal = {
-        id: criminalId, // dung params de truyen id
-        ...criminal,
-        ...updatedDetails,
-      };
+  const updateDetails = useCallback(
+    async (updatedDetails) => {
+      try {
+        const updatedCriminal = {
+          id: criminalId, // dung params de truyen id
+          ...criminal,
+          ...updatedDetails,
+        };
 
-      const {
-        relatedCases,
-        charge,
-        isWantedCriminal,
-        wantedCriminals,
-        avatarLink,
-        ...updated
-      } = updatedCriminal;
-      // console.log(updated);
-      await criminalsApi.editCriminal(updated);
-      // getCriminal();
-      setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-      setSuccess(null);
-      console.log(error);
-    }
-  }, [criminal]);
+        const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } =
+          updatedCriminal;
+        // console.log(updated);
+        await criminalsApi.EditCriminal(updated, auth);
+        // getCriminal();
+        setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setSuccess(null);
+        console.log(error);
+      }
+    },
+    [criminal]
+  );
 
   const updateCriminalDetails = useCallback(
     async (updatedDetails) => {
@@ -75,43 +87,40 @@ const Page = () => {
         setCriminal((prevCriminal) => ({ ...prevCriminal, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-      }
-      finally {
+      } finally {
         setLoadingButtonDetails(false);
       }
-    }, [setCriminal, updateDetails]);
+    },
+    [setCriminal, updateDetails]
+  );
 
-  const uploadImage = useCallback(async (newImage) => {
-    try {
-      const response = await imagesApi.uploadImage(newImage);
-      const updatedCriminal = {
-        id: criminalId,
-        ...criminal,
-        avatar: response[0].filePath,
-      };
+  const uploadImage = useCallback(
+    async (newImage) => {
+      try {
+        const response = await imagesApi.uploadImage(newImage, auth);
+        const updatedCriminal = {
+          id: criminalId,
+          ...criminal,
+          avatar: response[0].filePath,
+        };
 
-      const {
-        relatedCases,
-        charge,
-        isWantedCriminal,
-        wantedCriminals,
-        avatarLink,
-        ...updated
-      } = updatedCriminal;
-      // console.log(updated);
-      await criminalsApi.editCriminal(updated);
-      // getCriminal();
-      setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
-      setError(null);
-    } catch (error) {
-      setError(error.message);
-      setSuccess(null);
-      console.log(error);
-    }
-  }, [criminal]);
+        const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } =
+          updatedCriminal;
+        // console.log(updated);
+        await criminalsApi.EditCriminal(updated, auth);
+        // getCriminal();
+        setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setSuccess(null);
+        console.log(error);
+      }
+    },
+    [criminal]
+  );
 
   const updateCriminalPicture = useCallback(
     async (newImage) => {
@@ -120,11 +129,9 @@ const Page = () => {
         setCriminal((prevCriminal) => ({ ...prevCriminal, avatar: newImage }));
         setOpen(true);
         await uploadImage(newImage);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-      }
-      finally {
+      } finally {
         setLoadingButtonPicture(false);
       }
     },
@@ -139,7 +146,7 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,
-          mb: 2
+          mb: 2,
         }}
       >
         <Container maxWidth="lg">
@@ -147,9 +154,10 @@ const Page = () => {
             <div>
               {loadingSkeleton ? (
                 <Skeleton variant="rounded">
-                  <Typography variant='h4'
+                  <Typography
+                    variant="h4"
                     sx={{
-                      mb: 2.5
+                      mb: 2.5,
                     }}
                   >
                     Tội phạm
@@ -158,28 +166,27 @@ const Page = () => {
               ) : (
                 <Breadcrumbs
                   sx={{
-                    mb: 2.5
+                    mb: 2.5,
                   }}
                   separator="›"
-                  aria-label="breadcrumb">
+                  aria-label="breadcrumb"
+                >
                   <Link
                     component={NextLink}
                     underline="hover"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                     }}
                     href="/criminals"
                     color="text.primary"
                   >
-                    <Typography variant='h4'>
-                      Tội phạm
-                    </Typography>
+                    <Typography variant="h4">Tội phạm</Typography>
                   </Link>
                   <Typography
-                    variant='h4'
+                    variant="h4"
                     sx={{
-                      color: 'primary.main',
+                      color: "primary.main",
                     }}
                   >
                     {criminal.name}
@@ -211,10 +218,10 @@ const Page = () => {
               </Grid>
             </div>
             <div>
-              {success &&
+              {success && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="success"
                     action={
@@ -232,22 +239,19 @@ const Page = () => {
                     sx={{
                       mt: 2,
                       mb: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="success"
-                      variant="subtitle2"
-                    >
+                    <Typography color="success" variant="subtitle2">
                       {success}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
-              {error &&
+              )}
+              {error && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="error"
                     action={
@@ -265,18 +269,15 @@ const Page = () => {
                     sx={{
                       mb: 2,
                       mt: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="error"
-                      variant="subtitle2"
-                    >
+                    <Typography color="error" variant="subtitle2">
                       {error}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
+              )}
             </div>
           </Stack>
         </Container>

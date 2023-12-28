@@ -1,12 +1,21 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
-import Head from 'next/head';
-import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
-import { useSelection } from 'src/hooks/use-selection';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { ReportsTable } from 'src/sections/reports/reports-table';
-import { ReportsSearch } from 'src/sections/reports/reports-search';
-import { applyPagination } from 'src/utils/apply-pagination';
-import * as reportsApi from '../../api/reports'
+import { useCallback, useMemo, useState, useEffect } from "react";
+import Head from "next/head";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useSelection } from "src/hooks/use-selection";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { ReportsTable } from "src/sections/reports/reports-table";
+import { ReportsSearch } from "src/sections/reports/reports-search";
+import { applyPagination } from "src/utils/apply-pagination";
+import * as reportsApi from "../../api/reports";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -14,8 +23,9 @@ const Page = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
+  const auth = useAuth();
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -38,68 +48,68 @@ const Page = () => {
     setLoading(true);
     try {
       console.log(id);
-      await reportsApi.deleteReport(id);
+      await reportsApi.deleteReport(id, auth);
       getReport();
-    }
-    catch (err) {
+    } catch (err) {
       setError(err.message);
     }
     setLoading(false);
-  }
+  };
 
   const getReport = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const reports = await reportsApi.getAllReports(searchValue);
+      const reports = await reportsApi.getAllReports(searchValue, auth);
       setReportData(reports);
-    }
-    catch (error) {
+    } catch (error) {
       setError(error.message);
     }
 
     setLoading(false);
-  }
-  
+  };
+
   useEffect(() => {
     if (searchButtonClicked) {
       getReport();
       setSearchButtonClicked(false); // Reset the search button state after fetching data
     }
   }, [searchButtonClicked]);
-  {if (loading) 
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {<CircularProgress />}
-    </div>
+  {
+    if (loading)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          {<CircularProgress />}
+        </div>
+      );
   }
 
   return (
     <>
       <Head>
-        <title>
-          Danh sách báo cáo
-        </title>
+        <title>Danh sách báo cáo</title>
       </Head>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          py: 3
+          py: 3,
         }}
       >
         <Container maxWidth="xl">
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
-              <Typography variant="h4">
-                  Danh sách báo cáo
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" spacing={4}>
+              <Typography variant="h4">Danh sách báo cáo</Typography>
             </Stack>
-            <ReportsSearch 
+            <ReportsSearch
               onSearchChange={handleSearchChange}
               onSearchButtonClick={handleSearchButtonClick}
             />
@@ -119,10 +129,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;
