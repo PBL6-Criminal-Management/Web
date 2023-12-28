@@ -15,10 +15,13 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button
+  Button,
+  SvgIcon,
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
+import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import React from 'react';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
@@ -86,7 +89,11 @@ export const AccountsTable = (props) => {
                 <TableCell>
                   Ngày tạo
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -127,10 +134,12 @@ export const AccountsTable = (props) => {
                     </TableCell>
                     <TableCell
                       sx={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <Stack
+                        justifyContent="center"
                         alignItems="center"
                         direction="row"
                         spacing={-1}
@@ -140,16 +149,25 @@ export const AccountsTable = (props) => {
                             LinkComponent={Link}
                             href={{
                               pathname: '/accounts/[id]',
-                              query: { id: account.id },
+                              query: { id: encodeURIComponent(account.id), name: encodeURIComponent(account.name) },
                             }}
                           >
-                            <BorderColorIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <PencilSquareIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
 
                         <Tooltip title="Xóa tài khoản">
                           <IconButton onClick={() => handleDeleteClick(account.id)}>
-                            <DeleteIcon />
+                            <SvgIcon
+                              fontSize="small"
+                            >
+                              <TrashIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
                       </Stack>

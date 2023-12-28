@@ -16,8 +16,8 @@ import AccordionSection from 'src/layouts/dashboard/accordion-section';
 import { format, parse } from 'date-fns';
 import CriminalGeneral from './criminal-general';
 import CriminalInfo from './criminal-info';
-import CriminalWanted from './criminal-wanted';
-
+import CriminalWanted from './criminal-wanted/criminal-wanted';
+import _ from 'lodash';
 
 const initialState = {
   criminal: {
@@ -92,7 +92,7 @@ const reducer = (state, action) => {
 
     case 'UPDATE_CRIMINAL_WANTED':
       const currentWantedCriminals = state.criminal.wantedCriminals || [];
-      const wantedCriminals = [...currentWantedCriminals];
+      const wantedCriminals = _.cloneDeep(currentWantedCriminals);
       const indexToUpdate = action.payload.index;
 
       if (indexToUpdate !== undefined && indexToUpdate !== null) {
@@ -120,7 +120,7 @@ const reducer = (state, action) => {
     case 'UPDATE_DATE_WANTED':
       const { fieldNameWanted, dateWanted, indexToUpdateDate } = action.payload
       const currentWantedCriminalsDate = state.criminal.wantedCriminals || [];
-      const wantedCriminalsDate = [...currentWantedCriminalsDate];
+      const wantedCriminalsDate = _.cloneDeep(currentWantedCriminalsDate);
 
       if (indexToUpdateDate !== undefined && indexToUpdateDate !== null) {
         wantedCriminalsDate[indexToUpdateDate] = {
@@ -138,7 +138,7 @@ const reducer = (state, action) => {
       return newObj2;
 
     case 'SUBMIT_FORM':
-      return { ...state, isFieldDisabled: true, changesMade: false };
+      return { ...state, changesMade: false };
 
     default:
       return state;
@@ -146,7 +146,7 @@ const reducer = (state, action) => {
 };
 
 export const CriminalDetails = (props) => {
-  const { criminal: initialCriminal, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+  const { criminal: initialCriminal, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -190,7 +190,7 @@ export const CriminalDetails = (props) => {
     // Additional logic for form submission if needed.
     // For now, we're just updating the criminal.
     dispatch({ type: 'SUBMIT_FORM' });
-    if (state.changesMade) {
+    if (state.changesMade && _.isEqual(state.criminal, state.originalCriminal) === false) {
       onUpdate(state.criminal);
     }
   };
@@ -259,6 +259,7 @@ export const CriminalDetails = (props) => {
                 handleSubmit={handleSubmit}
                 handleEdit={handleEdit}
                 handleCancel={handleCancel}
+                success={success}
               />
             </AccordionSection>
             <AccordionSection
@@ -274,6 +275,7 @@ export const CriminalDetails = (props) => {
                 handleSubmit={handleSubmit}
                 handleEdit={handleEdit}
                 handleCancel={handleCancel}
+                success={success}
               />
             </AccordionSection>
             {state.criminal.isWantedCriminal &&

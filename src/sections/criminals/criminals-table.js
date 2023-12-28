@@ -17,11 +17,12 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button
+  Button,
+  SvgIcon,
 } from '@mui/material';
 import React from 'react';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
+import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -97,7 +98,11 @@ export const CriminalsTable = (props) => {
                 <TableCell sx={{ width: 150 }}>
                   Thời gian phạm tội gần nhất
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Hành động
                 </TableCell>
               </TableRow>
@@ -111,7 +116,7 @@ export const CriminalsTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {criminal.id}
+                        {criminal.code}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -144,10 +149,12 @@ export const CriminalsTable = (props) => {
                     </TableCell>
                     <TableCell
                       sx={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        justifyContent: 'center'
                       }}
                     >
                       <Stack
+                        justifyContent="center"
                         alignItems="center"
                         direction="row"
                         spacing={-1}
@@ -157,16 +164,26 @@ export const CriminalsTable = (props) => {
                             LinkComponent={Link}
                             href={{
                               pathname: '/criminals/[id]',
-                              query: { id: criminal.id },
+                              query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },
                             }}
                           >
-                            <BorderColorIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <PencilSquareIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
 
                         <Tooltip title="Xóa tội phạm">
                           <IconButton onClick={() => handleDeleteClick(criminal.id)}>
-                            <DeleteIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <TrashIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
                       </Stack>

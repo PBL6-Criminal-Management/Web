@@ -1,15 +1,20 @@
 import axios from './axios';
-import Cookies from 'js-cookie';
 
-export const uploadImage = async (formData) => {
-    const token = Cookies.get('token');
+export const uploadImage = async (formData, config) => {
     try {
-        const response = await axios.post('/api/v1/upload', formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
+        const response = await axios.post('/api/v1/upload', formData, config);
         return response.data.data;
+    } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    }
+}
+
+export const deleteImage = async (filePath) => {
+    try {
+        const response = await axios.delete(`/api/v1/upload?filePath=${filePath}`);
+        return response.data.messages;
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data.messages);

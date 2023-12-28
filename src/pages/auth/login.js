@@ -44,9 +44,9 @@ const Page = () => {
         setOpen(true);
         await auth.signIn(values.username, values.password);
         router.push('/');
-      } catch (err) {
+      } catch (error) {
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        helpers.setErrors({ submit: error.message });
         helpers.setSubmitting(false);
       }
     }

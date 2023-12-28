@@ -57,6 +57,7 @@ export const getAllAccounts = async (searchValue, filter) => {
             params.YearOfBirth = filter.yearOfBirth;
         }
 
+        params.OrderBy = 'id DESC';
         const response = await axios.get(`/api/v1/account`, {
             params,
             headers: {
@@ -79,7 +80,7 @@ export const deleteAccount = async (accountId) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return response.data.data;
+        return response.data.messages;
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data.messages);

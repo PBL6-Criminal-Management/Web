@@ -8,7 +8,7 @@ import { AccountPicture } from 'src/sections/accounts/account/account-picture';
 import { AccountDetails } from 'src/sections/accounts/account/account-details';
 import * as accountsApi from '../../api/accounts';
 import * as imagesApi from '../../api/images';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 const Page = () => {
     const [account, setAccount] = useState({});
@@ -20,13 +20,33 @@ const Page = () => {
     const [open, setOpen] = useState(true);
 
     const router = useRouter();
-    const accountId = router.query.id;
+    const accountId = decodeURIComponent(router.query.id);
+    const accountName = decodeURIComponent(router.query.name);
 
     const getAccount = useCallback(async () => {
         setLoadingSkeleton(true);
         try {
-            const account = await accountsApi.getAccountById(accountId);
-            setAccount(account);
+            if (accountId !== undefined && accountId !== 0) {
+                const account = await accountsApi.getAccountById(accountId);
+                setAccount(account);
+            }
+
+            // const account = await accountsApi.getAccountById(accountId);
+            // setAccount(account);
+
+            else if (accountId === 0) {
+                setAccount({
+                    name: 'string',
+                    birthday: '12/12/2002',
+                    gender: false,
+                    citizenId: '1234567890',
+                    phoneNumber: '1234567890',
+                    email: 'abc@gmail.com',
+                    username: 'aaaaaaaaaaaa',
+                    address: 'aaaaaaaaaaaaaaaaa',
+                    role: 0
+                });
+            }
         } catch (error) {
             setError(error.message);
         } finally {
@@ -52,9 +72,9 @@ const Page = () => {
             // getAccount();
             setSuccess("Cập nhật thông tin tài khoản thành công.");
             setError(null);
-        } catch (error) {
-            setError(error.message);
+        } catch (error) {            
             setSuccess(null);
+            setError(error.message);
             console.log(error);
         }
     }, [account]);
@@ -89,9 +109,9 @@ const Page = () => {
             // getAccount();
             setSuccess("Cập nhật ảnh đại diện thành công.");
             setError(null);
-        } catch (error) {
-            setError(error.message);
+        } catch (error) {            
             setSuccess(null);
+            setError(error.message);
             console.log(error);
         }
     }, [account]);
@@ -116,7 +136,7 @@ const Page = () => {
     return (
         <>
             <Head>
-                <title>Tài khoản | {account.name}</title>
+                <title>Tài khoản | {accountName}</title>
             </Head>
             <Box
                 sx={{
@@ -124,50 +144,56 @@ const Page = () => {
                     mb: 2
                 }}
             >
-                <Container maxWidth="lg">
-                    <Stack spacing={0}>
+                <Container
+                    maxWidth="lg"
+                >
+                    <Stack
+                        spacing={0}
+                        pb={1}
+                    >
                         <div>
-                            {loadingSkeleton ? (
-                                <Skeleton variant="rounded">
-                                    <Typography variant='h4'
+                            <Breadcrumbs
+                                sx={{
+                                    mb: 1.3
+                                }}
+                                separator="›"
+                                aria-label="breadcrumb">
+                                <Link
+                                    component={NextLink}
+                                    underline="none"
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                    href="/accounts"
+                                    color="text.primary"
+                                >
+                                    <Typography
+                                        variant='h4'
                                         sx={{
-                                            mb: 2.5
+                                            marginLeft: '-8px',
+                                            marginRight: '-8px',
+                                            padding: '6px 8px',
+                                            '&:hover': {
+                                                transition: '0.2s all ease-in-out',
+                                                backgroundColor: 'divider',
+                                                padding: '6px 8px',
+                                                borderRadius: '8px'
+                                            }
                                         }}
                                     >
                                         Tài khoản
                                     </Typography>
-                                </Skeleton>
-                            ) : (
-                                <Breadcrumbs
+                                </Link>
+                                <Typography
+                                    variant='h4'
                                     sx={{
-                                        mb: 2.5
+                                        color: 'primary.main',
                                     }}
-                                    separator="›"
-                                    aria-label="breadcrumb">
-                                    <Link
-                                        component={NextLink}
-                                        underline="hover"
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                        }}
-                                        href="/accounts"
-                                        color="text.primary"
-                                    >
-                                        <Typography variant='h4'>
-                                            Tài khoản
-                                        </Typography>
-                                    </Link>
-                                    <Typography
-                                        variant='h4'
-                                        sx={{
-                                            color: 'primary.main',
-                                        }}
-                                    >
-                                        {account.name}
-                                    </Typography>
-                                </Breadcrumbs>
-                            )}
+                                >
+                                    {accountName}
+                                </Typography>
+                            </Breadcrumbs>
                         </div>
                         <div>
                             <Grid container spacing={3}>
@@ -178,6 +204,7 @@ const Page = () => {
                                         loadingButtonDetails={loadingButtonDetails}
                                         loadingButtonPicture={loadingButtonPicture}
                                         onUpdate={updateAccountPicture}
+                                        success={success}
                                     />
                                 </Grid>
                                 <Grid xs={12} md={6} lg={8}>
@@ -187,6 +214,7 @@ const Page = () => {
                                         loadingButtonDetails={loadingButtonDetails}
                                         loadingButtonPicture={loadingButtonPicture}
                                         onUpdate={updateAccountDetails}
+                                        success={success}
                                     />
                                 </Grid>
                             </Grid>
@@ -212,7 +240,6 @@ const Page = () => {
                                         }
                                         sx={{
                                             mt: 2,
-                                            mb: 2,
                                             borderRadius: '12px',
                                         }}
                                     >
@@ -245,7 +272,6 @@ const Page = () => {
                                         }
                                         sx={{
                                             mt: 2,
-                                            mb: 2,
                                             borderRadius: '12px',
                                         }}
                                     >

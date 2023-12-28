@@ -8,7 +8,7 @@ import { CriminalPicture } from 'src/sections/criminals/criminal/criminal-pictur
 import { CriminalDetails } from 'src/sections/criminals/criminal/criminal-details/criminal-details';
 import * as criminalsApi from '../../api/criminals';
 import * as imagesApi from '../../api/images';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 const Page = () => {
   const [criminal, setCriminal] = useState({});
@@ -20,7 +20,8 @@ const Page = () => {
   const [open, setOpen] = useState(true);
 
   const router = useRouter();
-  const criminalId = router.query.id; // dung params de truyen id
+  const criminalId = decodeURIComponent(router.query.id);
+  const criminalName = decodeURIComponent(router.query.name); // dung params de truyen id
 
   const getCriminal = useCallback(async () => {
     setLoadingSkeleton(true);
@@ -62,8 +63,8 @@ const Page = () => {
       setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
       setError(null);
     } catch (error) {
-      setError(error.message);
       setSuccess(null);
+      setError(error.message);
       console.log(error);
     }
   }, [criminal]);
@@ -107,8 +108,8 @@ const Page = () => {
       setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
       setError(null);
     } catch (error) {
-      setError(error.message);
       setSuccess(null);
+      setError(error.message);
       console.log(error);
     }
   }, [criminal]);
@@ -134,7 +135,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Tội phạm | {criminal.name}</title>
+        <title>Tội phạm | {criminalName}</title>
       </Head>
       <Box
         sx={{
@@ -143,28 +144,20 @@ const Page = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Stack spacing={0}>
+          <Stack
+            spacing={0}
+            pb={1}
+          >
             <div>
-              {loadingSkeleton ? (
-                <Skeleton variant="rounded">
-                  <Typography variant='h4'
-                    sx={{
-                      mb: 2.5
-                    }}
-                  >
-                    Tội phạm
-                  </Typography>
-                </Skeleton>
-              ) : (
                 <Breadcrumbs
                   sx={{
-                    mb: 2.5
+                    mb: 1.3
                   }}
                   separator="›"
                   aria-label="breadcrumb">
                   <Link
                     component={NextLink}
-                    underline="hover"
+                    underline="none"
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
@@ -172,7 +165,20 @@ const Page = () => {
                     href="/criminals"
                     color="text.primary"
                   >
-                    <Typography variant='h4'>
+                    <Typography
+                      variant='h4'
+                      sx={{
+                        marginLeft: '-8px',
+                        marginRight: '-8px',
+                        padding: '6px 8px',
+                        '&:hover': {
+                          transition: '0.2s all ease-in-out',
+                          backgroundColor: 'divider',
+                          padding: '6px 8px',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
                       Tội phạm
                     </Typography>
                   </Link>
@@ -182,10 +188,9 @@ const Page = () => {
                       color: 'primary.main',
                     }}
                   >
-                    {criminal.name}
+                    {criminalName}
                   </Typography>
                 </Breadcrumbs>
-              )}
             </div>
             <div>
               <Grid container spacing={3}>
@@ -196,6 +201,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateCriminalPicture}
+                    success={success}
                   />
                 </Grid>
 
@@ -206,6 +212,7 @@ const Page = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateCriminalDetails}
+                    success={success}
                   />
                 </Grid>
               </Grid>
@@ -231,7 +238,6 @@ const Page = () => {
                     }
                     sx={{
                       mt: 2,
-                      mb: 2,
                       borderRadius: '12px',
                     }}
                   >
@@ -263,7 +269,6 @@ const Page = () => {
                       </IconButton>
                     }
                     sx={{
-                      mb: 2,
                       mt: 2,
                       borderRadius: '12px',
                     }}

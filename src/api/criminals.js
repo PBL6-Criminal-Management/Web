@@ -40,6 +40,8 @@ export const getAllCriminals = async (searchValue, filter) => {
         if (filter.typeOfViolation !== '') {
             params.TypeOfViolation = filter.typeOfViolation;
         }
+
+        params.OrderBy = 'id DESC';
         const response = await axios.get(`/api/v1/criminal`, {
             params,
             headers: {
@@ -105,7 +107,7 @@ export const deleteCriminal = async (criminalId) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return response.data.data;
+        return response.data.messages;
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data.messages);

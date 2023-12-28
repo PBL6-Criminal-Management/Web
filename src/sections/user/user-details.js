@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format, parse } from 'date-fns';
 import * as constants from '../../constants/constants';
 import { LoadingButton } from '@mui/lab';
+import _ from 'lodash';
 
 const initialState = {
   user: {
@@ -62,8 +63,12 @@ const reducer = (state, action) => {
         user: { ...state.user, birthday: format(action.payload, 'dd/MM/yyyy') },
         changesMade: true
       };
-    case 'SUBMIT_FORM':
+
+    case 'ON_SUBMIT':
       return { ...state, isFieldDisabled: true, changesMade: false };
+
+    case 'SUBMIT_FORM':
+      return { ...state, isFieldDisabled: action.payload, changesMade: false };
 
     default:
       return state;
@@ -71,7 +76,7 @@ const reducer = (state, action) => {
 };
 
 export const UserDetails = (props) => {
-  const { user: initialUser, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+  const { user: initialUser, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -99,10 +104,11 @@ export const UserDetails = (props) => {
   const handleSubmit = () => {
     // Additional logic for form submission if needed.
     // For now, we're just updating the user.
-    dispatch({ type: 'SUBMIT_FORM' });
-    if (state.changesMade) {
+    dispatch({ type: 'ON_SUBMIT' });
+    if (state.changesMade && _.isEqual(state.user, state.originalUser) === false) {
       onUpdate(state.user);
     }
+    dispatch({ type: 'SUBMIT_FORM', payload: !!success });
   };
 
   const handleClick = () => {
@@ -199,15 +205,30 @@ export const UserDetails = (props) => {
             </Skeleton>
           ) : (
             loadingButtonDetails ? (
-              <LoadingButton
-                disabled
-                loading={loadingButtonDetails}
-                size="medium"
-                variant="contained">
-                Chỉnh sửa thông tin
-              </LoadingButton>
+              <>
+                <Button
+                  variant="outlined"
+                  disabled={loadingButtonDetails}
+                >
+                  Đổi mật khẩu
+                </Button>
+                <LoadingButton
+                  disabled
+                  loading={loadingButtonDetails}
+                  size="medium"
+                  variant="contained">
+                  Chỉnh sửa thông tin
+                </LoadingButton>
+              </>
+
             ) : (
               <>
+                <Button
+                  variant="outlined"
+                  disabled={loadingButtonPicture}
+                >
+                  Đổi mật khẩu
+                </Button>
                 <Button
                   variant="contained"
                   onClick={state.isFieldDisabled ? handleClick : handleSubmit}

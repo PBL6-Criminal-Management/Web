@@ -27,6 +27,8 @@ export const getAllCases = async (searchValue, filter) => {
         if (filter.typeOfViolation !== '') {
             params.TypeOfViolation = filter.typeOfViolation;
         }
+
+        params.OrderBy = 'id DESC';
         const response = await axios.get(`/api/v1/case`, {
             params,
             headers: {
@@ -66,7 +68,7 @@ export const deleteCase = async (caseId) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return response.data.data;
+        return response.data.messages;
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data.messages);
@@ -74,3 +76,19 @@ export const deleteCase = async (caseId) => {
     } 
 }
 
+export const editCase = async (casee) => {
+    const token = Cookies.get('token');
+    try {
+        const response = await axios.put('/api/v1/case', casee, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    } 
+
+}

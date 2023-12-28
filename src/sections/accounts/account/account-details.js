@@ -14,6 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format, parse } from 'date-fns';
 import * as constants from '../../../constants/constants';
 import { LoadingButton } from '@mui/lab';
+import _ from 'lodash';
 
 const initialState = {
   account: {
@@ -62,8 +63,12 @@ const reducer = (state, action) => {
         account: { ...state.account, birthday: format(action.payload, 'dd/MM/yyyy') },
         changesMade: true
       };
-    case 'SUBMIT_FORM':
+
+    case 'ON_SUBMIT':
       return { ...state, isFieldDisabled: true, changesMade: false };
+      
+    case 'SUBMIT_FORM':
+      return { ...state, isFieldDisabled: action.payload, changesMade: false };
 
     default:
       return state;
@@ -71,7 +76,7 @@ const reducer = (state, action) => {
 };
 
 export const AccountDetails = (props) => {
-  const { account: initialAccount, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
+  const { account: initialAccount, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, success } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -99,10 +104,11 @@ export const AccountDetails = (props) => {
   const handleSubmit = () => {
     // Additional logic for form submission if needed.
     // For now, we're just updating the user.
-    dispatch({ type: 'SUBMIT_FORM' });
-    if (state.changesMade) {
+    dispatch({ type: 'ON_SUBMIT' });
+    if (state.changesMade && _.isEqual(state.account, state.originalAccount) === false) {
       onUpdate(state.account);
     }
+    dispatch({ type: 'SUBMIT_FORM', payload: !!success });
   };
 
   const handleClick = () => {

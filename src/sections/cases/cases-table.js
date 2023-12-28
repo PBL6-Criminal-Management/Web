@@ -17,10 +17,11 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button
+  Button,
+  SvgIcon,
 } from '@mui/material';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
+import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
 import * as constants from '../../constants/constants';
@@ -73,17 +74,14 @@ export const CasesTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                  ID
+                <TableCell sx={{ width: 100 }}>
+                  Mã vụ án
                 </TableCell>
                 <TableCell>
                   Tội danh
                 </TableCell>
                 <TableCell>
                   Thời gian diễn ra
-                </TableCell>
-                <TableCell>
-                  Lý do
                 </TableCell>
                 <TableCell
                   sx={{
@@ -105,6 +103,7 @@ export const CasesTable = (props) => {
                 <TableCell
                   sx={{
                     textAlign: 'center',
+                    width: 120,
                   }}
                 >
                   Hành động
@@ -120,7 +119,7 @@ export const CasesTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {casee.id}
+                        {casee.code}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -132,10 +131,7 @@ export const CasesTable = (props) => {
                       {casee.timeTakesPlace}
                     </TableCell>
                     <TableCell>
-                      {casee.reason}
-                    </TableCell>
-                    <TableCell>
-                    <Chip
+                      <Chip
                         label={constants.typeOfViolation[casee.typeOfViolation]}
                         color={colorsViolation[casee.typeOfViolation]}
                         variant='outlined'
@@ -159,10 +155,12 @@ export const CasesTable = (props) => {
                     </TableCell>
                     <TableCell
                       sx={{
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        justifyContent: 'center',
                       }}
                     >
                       <Stack
+                        justifyContent="center"
                         alignItems="center"
                         direction="row"
                         spacing={-1}
@@ -170,32 +168,30 @@ export const CasesTable = (props) => {
                         <Tooltip title="Chỉnh sửa vụ án">
                           <IconButton
                             LinkComponent={Link}
-                          // href={{
-                          //   pathname: '/criminals/[id]',
-                          //   query: { id: criminal.id },
-                          // }}
+                            href={{
+                              pathname: '/cases/[id]',
+                              query: { id: encodeURIComponent(casee.id), code: encodeURIComponent(casee.code) },
+                            }}
                           >
-                            <BorderColorIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <PencilSquareIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
 
                         <Tooltip title="Xóa vụ án">
                           <IconButton onClick={() => handleDeleteClick(casee.id)}>
-                            <DeleteIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <TrashIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
-                        {/* <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <PencilSquareIcon />
-                        </SvgIcon>
-                        <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <TrashIcon />
-                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>
