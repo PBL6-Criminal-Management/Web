@@ -1,12 +1,21 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
-import Head from 'next/head';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CasesTable } from 'src/sections/cases/cases-table';
-import { CasesSearch } from 'src/sections/cases/cases-search';
-import axios from 'axios';
-import * as casesApi from '../../api/cases';
+import { useCallback, useMemo, useState, useEffect } from "react";
+import Head from "next/head";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { CasesTable } from "src/sections/cases/cases-table";
+import { CasesSearch } from "src/sections/cases/cases-search";
+import axios from "axios";
+import * as casesApi from "../../api/cases";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -16,20 +25,21 @@ const Page = () => {
   const [error, setError] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
+  const auth = useAuth();
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
@@ -43,71 +53,74 @@ const Page = () => {
     setLoading(true);
     try {
       console.log(id);
-      await casesApi.deleteCase(id);
+      await casesApi.deleteCase(id, auth);
       getCases();
-    }
-    catch (err) {
+    } catch (err) {
       setError(err.message);
     }
     setLoading(false);
-  }
+  };
 
   const getCases = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const cases = await casesApi.getAllCases(searchValue, filter);
+      const cases = await casesApi.getAllCases(searchValue, filter, auth);
       setCases(cases);
       setIsLoading(false);
-    }
-    catch (error) {
+    } catch (error) {
       setError(error.message);
     }
 
     setLoading(false);
-  }
-  
+  };
+
   useEffect(() => {
-    getCases();
-  }, [searchValue, filter]);
-  {if (loading) 
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {<CircularProgress />}
-    </div>
+    if (searchButtonClicked) {
+      getCases();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
+  {
+    if (loading)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          {<CircularProgress />}
+        </div>
+      );
   }
 
   return (
     <>
       <Head>
-        <title>
-          Danh sách vụ án
-        </title>
+        <title>Danh sách vụ án</title>
       </Head>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          py: 3
+          py: 3,
         }}
       >
         <Container maxWidth="xl">
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
-              <Typography variant="h4">
-                  Danh sách vụ án
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" spacing={4}>
+              <Typography variant="h4">Danh sách vụ án</Typography>
               <div>
                 <Button
-                  startIcon={(
+                  startIcon={
                     <SvgIcon fontSize="small">
                       <PlusIcon />
                     </SvgIcon>
-                  )}
+                  }
                   variant="contained"
                 >
                   Thêm vụ án
@@ -116,11 +129,12 @@ const Page = () => {
             </Stack>
             <CasesSearch
               onSearchChange={handleSearchChange}
-              onFilterChange={handleFilterChange} 
+              onFilterChange={handleFilterChange}
+              onSearchButtonClick={handleSearchButtonClick}
             />
             <CasesTable
               count={cases.length}
-              items={cases}
+              items={cases.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
@@ -134,10 +148,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

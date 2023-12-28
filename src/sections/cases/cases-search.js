@@ -7,14 +7,20 @@ import {
   OutlinedInput,
   SvgIcon,
   Box,
+  Button
 } from '@mui/material';
 import { CasesFilter } from './cases-filtler'; 
 import debounce from 'lodash/debounce';
 
-export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
+export const CasesSearch = ({ onSearchChange, onFilterChange, onSearchButtonClick }) => {
   const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
   const [selectedFilter, setSelectedFilter] = React.useState({});
+
+  const handleSearchButtonClick = () => {
+    onSearchChange(inputValue);
+    onSearchButtonClick(); 
+  };
 
   const handleOpenFilterPopup = () => {
     setOpenFilterPopup(true);
@@ -46,7 +52,7 @@ export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <OutlinedInput
           value={inputValue}
-          onChange={handleInputChange}
+          onChange={(e) => setInputValue(e.target.value)}
           fullWidth
           placeholder="Tìm kiếm vụ án"
           startAdornment={
@@ -59,12 +65,16 @@ export const CasesSearch = ({ onSearchChange, onFilterChange }) => {
           sx={{ maxWidth: 800 }}
         />
           <SvgIcon 
-            color="action" 
-            fontSize="small" 
+            color="action" fontSize="small" 
             sx={{ marginLeft: 2, cursor: 'pointer' }} 
             onClick={handleOpenFilterPopup}>
             <AdjustmentVerticalIcon />
           </SvgIcon>
+          <Button 
+            variant="outlined" 
+            sx={{marginLeft: 2}} onClick={handleSearchButtonClick}>
+            Tìm kiếm
+          </Button>
         </Box>
       </Card>
 

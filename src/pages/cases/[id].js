@@ -132,7 +132,7 @@ const Page = () => {
                       color: 'primary.main',
                     }}
                   >
-                    {casee.code}
+                    {casee?.code}
                   </Typography>
                 </Breadcrumbs>
               )}

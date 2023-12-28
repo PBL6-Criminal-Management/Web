@@ -1,8 +1,8 @@
-import { useCallback, useState, useEffect } from 'react';
-import Head from 'next/head';
-import { useRouter } from 'next/navigation';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { useCallback, useState, useEffect } from "react";
+import Head from "next/head";
+import { useRouter } from "next/navigation";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Alert,
   Box,
@@ -11,12 +11,12 @@ import {
   IconButton,
   Stack,
   TextField,
-  Typography
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useAuth } from 'src/hooks/use-auth';
-import { Layout as AuthLayout } from 'src/layouts/auth/layout';
-import { LoadingButton } from '@mui/lab';
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { useAuth } from "src/hooks/use-auth";
+import { Layout as AuthLayout } from "src/layouts/auth/layout";
+import { LoadingButton } from "@mui/lab";
 
 const Page = () => {
   const router = useRouter();
@@ -25,70 +25,54 @@ const Page = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      password: '',
-      submit: null
+      username: "",
+      password: "",
+      submit: null,
     },
     validationSchema: Yup.object({
-      username: Yup
-        .string()
-        .max(255)
-        .required('Trường này là bắt buộc.'),
-      password: Yup
-        .string()
-        .max(255)
-        .required('Trường này là bắt buộc.')
+      username: Yup.string().max(255).required("Trường này là bắt buộc."),
+      password: Yup.string().max(255).required("Trường này là bắt buộc."),
     }),
     onSubmit: async (values, helpers) => {
       try {
         setOpen(true);
         await auth.signIn(values.username, values.password);
-        router.push('/');
-      } catch (error) {
+        router.push("/");
+      } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: error.message });
         helpers.setSubmitting(false);
       }
-    }
+    },
   });
 
   return (
     <>
       <Head>
-        <title>
-          Đăng nhập
-        </title>
+        <title>Đăng nhập</title>
       </Head>
       <Box
         sx={{
-          backgroundColor: 'background.paper',
-          flex: '1 1 auto',
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'center'
+          backgroundColor: "background.paper",
+          flex: "1 1 auto",
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Box
           sx={{
             maxWidth: 550,
             px: 3,
-            py: '100px',
-            width: '100%'
+            py: "100px",
+            width: "100%",
           }}
         >
           <div>
-            <Stack
-              spacing={1}
-              sx={{ mb: 3 }}
-            >
-              <Typography variant="h4">
-                Đăng nhập
-              </Typography>
+            <Stack spacing={1} sx={{ mb: 3 }}>
+              <Typography variant="h4">Đăng nhập</Typography>
             </Stack>
-            <form
-              noValidate
-              onSubmit={formik.handleSubmit}
-            >
+            <form noValidate onSubmit={formik.handleSubmit}>
               <Stack spacing={3}>
                 <TextField
                   error={!!(formik.touched.username && formik.errors.username)}
@@ -122,33 +106,32 @@ const Page = () => {
                   {formik.errors.submit}
                 </Typography>
               )} */}
-              {auth.loading ?
+              {auth.loading ? (
                 <LoadingButton
                   disabled
                   loading={auth.loading}
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
-                  variant="contained">
-                  Đăng nhập
-                </LoadingButton>
-                : <Button
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                  type="submit"
                   variant="contained"
                 >
                   Đăng nhập
-                </Button>}
+                </LoadingButton>
+              ) : (
+                <Button fullWidth size="large" sx={{ mt: 3 }} type="submit" variant="contained">
+                  Đăng nhập
+                </Button>
+              )}
               {formik.errors.submit && (
-                <Box sx={{ 
-                  width: '100%',
-                  mt: 3
-                  }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    mt: 3,
+                  }}
+                >
                   <Collapse in={open}>
                     <Alert
-                      variant='outlined'
+                      variant="outlined"
                       open={open}
                       severity="error"
                       action={
@@ -163,15 +146,12 @@ const Page = () => {
                           <CloseIcon fontSize="inherit" />
                         </IconButton>
                       }
-                      sx={{ 
+                      sx={{
                         mb: 2,
-                        borderRadius: '12px', 
+                        borderRadius: "12px",
                       }}
                     >
-                      <Typography
-                        color="error"
-                        variant="subtitle2"
-                      >
+                      <Typography color="error" variant="subtitle2">
                         {formik.errors.submit}
                       </Typography>
                     </Alert>
@@ -186,10 +166,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <AuthLayout>
-    {page}
-  </AuthLayout>
-);
+Page.getLayout = (page) => <AuthLayout>{page}</AuthLayout>;
 
 export default Page;

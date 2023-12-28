@@ -7,14 +7,19 @@ import {
   OutlinedInput,
   SvgIcon,
   Box,
+  Button
 } from '@mui/material';
 import { AccountsFilter } from './accounts-filter'; 
-import debounce from 'lodash/debounce';
 
-export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
+export const AccountsSearch = ({ onSearchChange, onFilterChange, onSearchButtonClick }) => {
   const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
   const [selectedFilter, setSelectedFilter] = React.useState({});
+
+  const handleSearchButtonClick = () => {
+    onSearchChange(inputValue);
+    onSearchButtonClick(); 
+  };
 
   const handleOpenFilterPopup = () => {
     setOpenFilterPopup(true);
@@ -30,23 +35,13 @@ export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
     handleCloseFilterPopup();
   };
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    setInputValue(value);
-    debouncedSearch(value); 
-  };
-
-  const debouncedSearch = debounce((value) => {
-    onSearchChange(value);
-  }, 1000);
-
   return (
     <div>
       <Card sx={{ p: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <OutlinedInput
           value={inputValue}
-          onChange={handleInputChange}
+          onChange={(e) => setInputValue(e.target.value)}
           fullWidth
           placeholder="Tìm kiếm tài khoản"
           startAdornment={
@@ -64,6 +59,11 @@ export const AccountsSearch = ({ onSearchChange, onFilterChange }) => {
             onClick={handleOpenFilterPopup}>
             <AdjustmentVerticalIcon />
           </SvgIcon>
+          <Button 
+            variant="outlined" 
+            sx={{marginLeft: 2}} onClick={handleSearchButtonClick}>
+            Tìm kiếm
+          </Button>
         </Box>
       </Card>
 

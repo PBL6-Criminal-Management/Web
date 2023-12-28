@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogActions,
   Button,
+  TablePagination,
   SvgIcon,
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -36,7 +37,8 @@ export const AccountsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    onDeleteAccount
+    onDeleteAccount,
+    isFetching
   } = props;
 
   const colorsAccount = {
@@ -179,6 +181,15 @@ export const AccountsTable = (props) => {
           </Table>
         </Box>
       </Scrollbar>
+      <TablePagination
+        component="div"
+        count={count}
+        page={page}
+        onPageChange={onPageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={onRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 20]}
+      />
       <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
         <DialogTitle>Xác nhận xóa tài khoản</DialogTitle>
         <DialogContent>
@@ -205,4 +216,5 @@ AccountsTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   onDeleteAccount: PropTypes.func,
+  isFetching: PropTypes.bool
 };

@@ -1,30 +1,21 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
-import Head from 'next/head';
-import { Box, Button, Container, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
-import { useSelection } from 'src/hooks/use-selection';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { ReportsTable } from 'src/sections/reports/reports-table';
-import { ReportsSearch } from 'src/sections/reports/reports-search';
-import { applyPagination } from 'src/utils/apply-pagination';
-import * as reportsApi from '../../api/reports'
-
-const useReports = (data, page, rowsPerPage) => {
-  return useMemo(
-    () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
-};
-
-const useReportIds = (reports) => {
-  return useMemo(
-    () => {
-      return reports.map((report) => report.id);
-    },
-    [reports]
-  );
-};
+import { useCallback, useMemo, useState, useEffect } from "react";
+import Head from "next/head";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useSelection } from "src/hooks/use-selection";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { ReportsTable } from "src/sections/reports/reports-table";
+import { ReportsSearch } from "src/sections/reports/reports-search";
+import { applyPagination } from "src/utils/apply-pagination";
+import * as reportsApi from "../../api/reports";
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -32,94 +23,99 @@ const Page = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
+  const [searchButtonClicked, setSearchButtonClicked] = useState(true);
+  const auth = useAuth();
 
-  const handlePageChange = useCallback(
-    (event, value) => {
-      setPage(value);
-    },
-    []
-  );
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
-  const handleRowsPerPageChange = useCallback(
-    (event) => {
-      setRowsPerPage(event.target.value);
-    },
-    []
-  );
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when the number of rows per page changes
+  };
 
   const handleSearchChange = (searchValue) => {
     setSearchValue(searchValue);
+  };
+
+  const handleSearchButtonClick = () => {
+    setSearchButtonClicked(true);
   };
 
   const handleDelete = async (id) => {
     setLoading(true);
     try {
       console.log(id);
-      await reportsApi.deleteReport(id);
+      await reportsApi.deleteReport(id, auth);
       getReport();
-    }
-    catch (err) {
+    } catch (err) {
       setError(err.message);
     }
     setLoading(false);
-  }
+  };
 
   const getReport = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const reports = await reportsApi.getAllReports(searchValue);
+      const reports = await reportsApi.getAllReports(searchValue, auth);
       setReportData(reports);
-    }
-    catch (error) {
+    } catch (error) {
       setError(error.message);
     }
 
     setLoading(false);
-  }
-  
+  };
+
   useEffect(() => {
-    getReport();
-  }, [searchValue]);
-  {if (loading) 
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {<CircularProgress />}
-    </div>
+    if (searchButtonClicked) {
+      getReport();
+      setSearchButtonClicked(false); // Reset the search button state after fetching data
+    }
+  }, [searchButtonClicked]);
+  {
+    if (loading)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          {<CircularProgress />}
+        </div>
+      );
   }
 
   return (
     <>
       <Head>
-        <title>
-          Danh sách báo cáo
-        </title>
+        <title>Danh sách báo cáo</title>
       </Head>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          py: 3
+          py: 3,
         }}
       >
         <Container maxWidth="xl">
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-            >
-              <Typography variant="h4">
-                  Danh sách báo cáo
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" spacing={4}>
+              <Typography variant="h4">Danh sách báo cáo</Typography>
             </Stack>
-            <ReportsSearch 
+            <ReportsSearch
               onSearchChange={handleSearchChange}
+              onSearchButtonClick={handleSearchButtonClick}
             />
             <ReportsTable
               count={reportData.length}
-              items={reportData}
+              items={reportData.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
@@ -133,10 +129,6 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;
