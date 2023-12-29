@@ -35,7 +35,8 @@ export const CasesTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    onDeleteCase
+    onDeleteCase,
+    role
   } = props;
 
   const colorsViolation = {
@@ -48,6 +49,9 @@ export const CasesTable = (props) => {
     1: 'warning',
     2: 'success'
   }
+
+  const canEdit = role !== 2;
+  const canDelete = role === 0; 
 
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState('');
@@ -165,33 +169,35 @@ export const CasesTable = (props) => {
                         direction="row"
                         spacing={-1}
                       >
-                        <Tooltip title="Chỉnh sửa vụ án">
-                          <IconButton
-                            LinkComponent={Link}
-                            href={{
-                              pathname: '/cases/[id]',
-                              query: { id: encodeURIComponent(casee.id), code: encodeURIComponent(casee.code) },
-                            }}
-                          >
-                            <SvgIcon
-                              color="action"
-                              fontSize="small"
+                        <Tooltip title="Xem chi tiết">
+                            <IconButton
+                              LinkComponent={Link}
+                              href={{
+                                pathname: '/cases/[id]',
+                                query: { id: encodeURIComponent(casee.id), code: encodeURIComponent(casee.code) },
+                              }}
                             >
-                              <PencilSquareIcon />
-                            </SvgIcon>
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Xóa vụ án">
-                          <IconButton onClick={() => handleDeleteClick(casee.id)}>
-                            <SvgIcon
-                              color="action"
-                              fontSize="small"
-                            >
-                              <TrashIcon />
-                            </SvgIcon>
-                          </IconButton>
-                        </Tooltip>
+                              <SvgIcon
+                                color="action"
+                                fontSize="small"
+                              >
+                                <PencilSquareIcon />
+                              </SvgIcon>
+                            </IconButton>
+                          </Tooltip>
+                        
+                        {canDelete && (
+                          <Tooltip title="Xóa vụ án">
+                            <IconButton onClick={() => handleDeleteClick(casee.id)}>
+                              <SvgIcon
+                                color="action"
+                                fontSize="small"
+                              >
+                                <TrashIcon />
+                              </SvgIcon>
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -236,4 +242,5 @@ CasesTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   onDeleteCase: PropTypes.func,
+  role: PropTypes.number,
 };

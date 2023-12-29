@@ -15,11 +15,18 @@ import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { items } from './config';
 import { SideNavItem } from './side-nav-item';
+import { useAuth } from "src/hooks/use-auth";
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const auth = useAuth();
+  let isAdmin = false;
+  if (auth.isAuthenticated) {
+    isAdmin = auth.user.role === 0;
+  }
+  let visibleItems = isAdmin ? items : items.filter((item) => item.path !== '/accounts');
 
   const content = (
     <Scrollbar
@@ -77,7 +84,7 @@ export const SideNav = (props) => {
               m: 0
             }}
           >
-            {items.map((item) => {
+            {visibleItems.map((item) => {
               const itemPath = item.path || '/';
               const active = pathname === itemPath || (itemPath !== '/' && pathname.startsWith(`${itemPath}/`));
 

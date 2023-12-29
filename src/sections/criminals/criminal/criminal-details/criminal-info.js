@@ -18,7 +18,7 @@ import { format, parse } from "date-fns";
 import { useState, useEffect } from "react";
 
 const CriminalInfo = (props) => {
-  const { criminalInfo, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit } = props;
+  const { criminalInfo, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit, canEdit } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -231,35 +231,38 @@ const CriminalInfo = (props) => {
           </Grid>
         </CardContent>
         <Divider />
-        <CardActions sx={{ justifyContent: "flex-end" }}>
-          {isClicked ? (
-            loadingButtonDetails && (
-              <LoadingButton
-                disabled
-                loading={loadingButtonDetails}
-                size="medium"
-                variant="contained"
-              >
-                Chỉnh sửa thông tin
-              </LoadingButton>
-            )
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                onClick={isFieldDisabled ? handleEditInfo : formik.handleSubmit}
-                disabled={loadingButtonPicture}
-              >
-                {isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
-              </Button>
-              {!isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancelInfo}>
-                  Hủy
+        {canEdit && (
+          <CardActions sx={{ justifyContent: "flex-end" }}>
+            {isClicked ? (
+              loadingButtonDetails && (
+                <LoadingButton
+                  disabled
+                  loading={loadingButtonDetails}
+                  size="medium"
+                  variant="contained"
+                >
+                  Chỉnh sửa thông tin
+                </LoadingButton>
+              )
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={isFieldDisabled ? handleEditInfo : formik.handleSubmit}
+                  disabled={loadingButtonPicture}
+                >
+                  {isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
                 </Button>
-              )}
-            </>
-          )}
-        </CardActions>
+                {!isFieldDisabled && (
+                  <Button variant="outlined" onClick={handleCancelInfo}>
+                    Hủy
+                  </Button>
+                )}
+              </>
+            )}
+          </CardActions>
+        )}
+        
       </Card>
     </form>
   );

@@ -27,6 +27,8 @@ const Page = () => {
   const [filter, setFilter] = useState({});
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
   const auth = useAuth();
+  const role = auth.isAuthenticated ? auth.user.role : null;
+  const canAdd = role === 0;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -115,16 +117,19 @@ const Page = () => {
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Typography variant="h4">Danh sách vụ án</Typography>
               <div>
-                <Button
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                  variant="contained"
-                >
-                  Thêm vụ án
-                </Button>
+                {canAdd && (
+                  <Button
+                    startIcon={
+                      <SvgIcon fontSize="small">
+                        <PlusIcon />
+                      </SvgIcon>
+                    }
+                    variant="contained"
+                  >
+                    Thêm vụ án
+                  </Button>
+                )}
+                
               </div>
             </Stack>
             <CasesSearch
@@ -140,6 +145,7 @@ const Page = () => {
               page={page}
               rowsPerPage={rowsPerPage}
               onDeleteCase={handleDelete}
+              role={role}
             />
           </Stack>
         </Container>

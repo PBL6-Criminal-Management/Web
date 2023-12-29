@@ -23,6 +23,7 @@ import CaseImages from './case-images';
 import CaseWanted from './case-wanted/case-wanted';
 import CaseInvestigators from './case-investigators';
 import _ from 'lodash';
+import { useAuth } from "src/hooks/use-auth";
 
 const initialState = {
   casee: {
@@ -609,6 +610,8 @@ const reducer = (state, action) => {
 export const CaseDetails = (props) => {
   const { casee: initialCase, criminals, investigators, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
+  const auth = useAuth();
+  const canEdit = auth.isAuthenticated ? auth.user.role !== 2 : false;
 
   useEffect(() => {
     if (initialCase) {
@@ -938,6 +941,7 @@ export const CaseDetails = (props) => {
                 handleSubmit={handleSubmit}
                 handleEdit={handleEdit}
                 handleCancel={handleCancel}
+                canEdit={canEdit}
               />
             </AccordionSection>
 

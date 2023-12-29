@@ -36,7 +36,8 @@ export const CriminalsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    onDeleteCriminal
+    onDeleteCriminal,
+    role
   } = props;
 
   const colorsCriminal = {
@@ -47,6 +48,9 @@ export const CriminalsTable = (props) => {
     4: 'secondary',
     5: 'primary'
   };
+
+  const canEdit = role !== 2;
+  const canDelete = role === 0; 
 
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState('');
@@ -159,24 +163,25 @@ export const CriminalsTable = (props) => {
                         direction="row"
                         spacing={-1}
                       >
-                        <Tooltip title="Chỉnh sửa tội phạm">
-                          <IconButton
-                            LinkComponent={Link}
-                            href={{
-                              pathname: '/criminals/[id]',
-                              query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },
-                            }}
-                          >
-                            <SvgIcon
-                              color="action"
-                              fontSize="small"
+                        <Tooltip title="Xem chi tiết">
+                            <IconButton
+                              LinkComponent={Link}
+                              href={{
+                                pathname: '/criminals/[id]',
+                                query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },
+                              }}
                             >
-                              <PencilSquareIcon />
-                            </SvgIcon>
-                          </IconButton>
-                        </Tooltip>
-
-                        <Tooltip title="Xóa tội phạm">
+                              <SvgIcon
+                                color="action"
+                                fontSize="small"
+                              >
+                                <PencilSquareIcon />
+                              </SvgIcon>
+                            </IconButton>
+                          </Tooltip>
+              
+                        {canDelete && (
+                          <Tooltip title="Xóa tội phạm">
                           <IconButton onClick={() => handleDeleteClick(criminal.id)}>
                             <SvgIcon
                               color="action"
@@ -186,6 +191,8 @@ export const CriminalsTable = (props) => {
                             </SvgIcon>
                           </IconButton>
                         </Tooltip>
+                        )}
+                        
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -239,5 +246,6 @@ CriminalsTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   onDeleteCriminal: PropTypes.func,
+  role: PropTypes.number,
 };
 

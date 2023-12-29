@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 
 
 const CaseGeneral = (props) => {
-    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChangeGeneral, handleDateTimeChange, handleSubmit, handleEdit, handleCancel } = props;
+    const { state, loading, loadingButtonDetails, loadingButtonPicture, handleChangeGeneral, handleDateTimeChange, handleSubmit, handleEdit, handleCancel, canEdit } = props;
     const [isFieldDisabled, setIsFieldDisabled] = useState(true);
     const [isClicked, setIsClicked] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -116,36 +116,39 @@ const CaseGeneral = (props) => {
                 </Grid>
             </CardContent>
             <Divider />
-            <CardActions
-                sx={{ justifyContent: 'flex-end' }}
-            >
-                {isClicked ? (
-                    loadingButtonDetails && (
-                        <LoadingButton
-                            disabled
-                            loading={loadingButtonDetails}
-                            size="medium"
-                            variant="contained">
-                            Chỉnh sửa thông tin
-                        </LoadingButton>
-                    )
-                ) : (
-                    <>
-                        <Button
-                            variant="contained"
-                            onClick={isFieldDisabled ? handleEditGeneral : handleSubmitGeneral}
-                            disabled={loadingButtonPicture}
-                        >
-                            {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
-                        </Button>
-                        {!isFieldDisabled && (
-                            <Button variant="outlined" onClick={handleCancelGeneral}>
-                                Hủy
+            {canEdit && (
+                <CardActions
+                    sx={{ justifyContent: 'flex-end' }}
+                >
+                    {isClicked ? (
+                        loadingButtonDetails && (
+                            <LoadingButton
+                                disabled
+                                loading={loadingButtonDetails}
+                                size="medium"
+                                variant="contained">
+                                Chỉnh sửa thông tin
+                            </LoadingButton>
+                        )
+                    ) : (
+                        <>
+                            <Button
+                                variant="contained"
+                                onClick={isFieldDisabled ? handleEditGeneral : handleSubmitGeneral}
+                                disabled={loadingButtonPicture}
+                            >
+                                {isFieldDisabled ? 'Chỉnh sửa thông tin' : 'Cập nhật thông tin'}
                             </Button>
-                        )}
-                    </>
-                )}
-            </CardActions>
+                            {!isFieldDisabled && (
+                                <Button variant="outlined" onClick={handleCancelGeneral}>
+                                    Hủy
+                                </Button>
+                            )}
+                        </>
+                    )}
+                </CardActions>
+            )}
+            
         </Card>
     )
 };

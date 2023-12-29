@@ -4,11 +4,14 @@ import AccordionSection from "src/layouts/dashboard/accordion-section";
 import CriminalGeneral from "./criminal-general";
 import CriminalInfo from "./criminal-info";
 import CriminalWanted from "./criminal-wanted/criminal-wanted";
+import { useAuth } from "src/hooks/use-auth";
 
 export const CriminalDetails = (props) => {
   const [generalInformation, setGeneralInformation] = useState(null);
   const [criminalInformation, setCriminalInformation] = useState(null);
   const [wantedInformation, setWantedInformation] = useState(null);
+  const auth = useAuth();
+  const canEdit = auth.isAuthenticated ? auth.user.role !== 2 : false;
 
   const {
     criminal: initialCriminal,
@@ -121,6 +124,7 @@ export const CriminalDetails = (props) => {
               loadingButtonDetails={loadingButtonDetails}
               loadingButtonPicture={loadingButtonPicture}
               handleSubmit={handleSubmit}
+              canEdit={canEdit}
             />
           </AccordionSection>
           <AccordionSection summary="Thông tin phạm tội">
@@ -130,6 +134,7 @@ export const CriminalDetails = (props) => {
               loadingButtonDetails={loadingButtonDetails}
               loadingButtonPicture={loadingButtonPicture}
               handleSubmit={handleSubmit}
+              canEdit={canEdit}
             />
           </AccordionSection>
           {wantedInformation && wantedInformation.isWantedCriminal && (
