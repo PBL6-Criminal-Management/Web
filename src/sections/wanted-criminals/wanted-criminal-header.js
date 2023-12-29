@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
 import { Logo } from 'src/components/logo';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
 const Header = () => {
   const router = useRouter();
@@ -13,7 +14,8 @@ const Header = () => {
     <AppBar position="static" sx={{ backgroundColor: '#1C2536' }}>
       <Toolbar>
         <Box
-          href="/"
+          component={NextLink}
+          href="/wanted-criminals"
           sx={{
             display: 'inline-flex',
             height: 32,
@@ -23,12 +25,21 @@ const Header = () => {
         >
           <Logo />
         </Box>
-        <Typography variant="h6" component="div">
+        <Typography
+          component={NextLink}
+          href="/wanted-criminals"
+          variant="h6"
+          sx={{
+            marginLeft: 1,
+            textDecoration: 'none',
+            color: 'common.white'
+          }}
+        >
           TRANG THÔNG TIN TRUY NÃ
         </Typography>
         <Box sx={{ marginLeft: 'auto' }}>
           <Button color="inherit" onClick={handleLoginClick}>
-            Login
+            Đăng nhập
           </Button>
         </Box>
       </Toolbar>

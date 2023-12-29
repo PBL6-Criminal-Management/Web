@@ -132,7 +132,7 @@ const CriminalInfo = (props) => {
                 select: true,
                 selectProps: constants.criminalStatus,
               },
-              { label: "Mức độ nguy hiểm", name: "dangerousLevel", md: 3, required: true },
+              { label: "Mức độ nguy hiểm", name: "dangerousLevel", md: 3 },
               {
                 label: "Ngày phạm tội gần nhất",
                 name: "dateOfMostRecentCrime",
@@ -156,7 +156,7 @@ const CriminalInfo = (props) => {
               { label: "Facebook", name: "facebook", md: 6 },
               { label: "Zalo", name: "zalo", md: 6 },
               { label: "Mạng xã hội khác", name: "otherSocialNetworks", md: 6 },
-              { label: "Model điện thoại", name: "phoneModel", md: 6 },
+              { label: "Model điện thoại", name: "phoneModel", md: 6, required: true },
               { label: "Nghiên cứu", name: "research", md: 6 },
               { label: "Bố trí tiếp cận", name: "approachArrange", md: 6 },
               { label: "Thông tin khác", name: "otherInformation", md: 12 },
