@@ -23,7 +23,7 @@ import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import CheckCircleIcon from '@heroicons/react/24/outline/CheckCircleIcon';
 import XCircleIcon from '@heroicons/react/24/outline/XCircleIcon';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { parse } from 'date-fns';
 
 const CaseWantedItem = (props) => {
@@ -200,7 +200,7 @@ const CaseWantedItem = (props) => {
                                             <Tooltip title="Xem chi tiết tội phạm này">
                                                 <Typography
                                                     color='primary'
-                                                    component={Link}
+                                                    component={NextLink}
                                                     href={{
                                                         pathname: '/criminals/[id]',
                                                         query: { id: encodeURIComponent(value.id), name: encodeURIComponent(value.name) },

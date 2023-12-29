@@ -45,3 +45,14 @@ export const getAllWantedCriminals = async (filter) => {
     }
   }
 };
+
+export const getWantedCriminalById = async (criminalId) => {
+  try {
+    const response = await axios.get(`/api/v1/criminal/${criminalId}`);
+    return response.data.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.messages);
+    }
+  }
+};

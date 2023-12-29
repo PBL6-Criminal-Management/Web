@@ -3,7 +3,7 @@ import { useLoading } from "./loading-context";
 import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import * as sessionsApi from "../api/sessions";
-import * as accountsApi from "../api/accounts";
+import * as profileApi from "../api/profile";
 import { addMinutes, isAfter, parse } from "date-fns";
 
 const HANDLERS = {
@@ -27,13 +27,13 @@ const handlers = {
       ...// if payload (user) is provided, then is authenticated
       (user
         ? {
-            isAuthenticated: true,
-            isFinished: false,
-            user,
-          }
+          isAuthenticated: true,
+          isFinished: false,
+          user,
+        }
         : {
-            isFinished: false,
-          }),
+          isFinished: false,
+        }),
     };
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
@@ -187,7 +187,6 @@ export const AuthProvider = (props) => {
     try {
       startLoading();
       const response = await sessionsApi.login(username, password);
-      console.log(response);
       const token = response.token;
       const refreshToken = response.refreshToken;
       const tokenExpiryTime = parse(response.tokenExpiryTime, "HH:mm dd/MM/yyyy", new Date());
@@ -196,6 +195,9 @@ export const AuthProvider = (props) => {
         "HH:mm dd/MM/yyyy",
         new Date()
       );
+
+      const user = await profileApi.getProfile(token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       Cookies.set("token", token, { secure: true, expires: tokenExpiryTime });
       Cookies.set("tokenExpiryTime", response.tokenExpiryTime, {
@@ -210,17 +212,14 @@ export const AuthProvider = (props) => {
         secure: true,
         expires: refreshTokenExpiryTime,
       });
+
       window.sessionStorage.setItem("authenticated", true);
-      window.sessionStorage.setItem("userId", response.userId);
-
-      const user = await accountsApi.getAccountById(response.userId, null, token);
-      localStorage.setItem("user", JSON.stringify(user));
-
       dispatch({
         type: HANDLERS.SIGN_IN,
         payload: user,
       });
-    } finally {
+    }
+    finally {
       stopLoading();
     }
   };
@@ -228,7 +227,7 @@ export const AuthProvider = (props) => {
   const removeItems = () => {
     window.sessionStorage.removeItem("authenticated");
     window.localStorage.removeItem("user");
-    window.sessionStorage.removeItem("userId");
+    // window.sessionStorage.removeItem("userId");
     Cookies.remove("token");
     Cookies.remove("tokenExpiryTime");
     Cookies.remove("refreshToken");

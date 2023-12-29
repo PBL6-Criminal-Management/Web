@@ -97,7 +97,7 @@ const Page = () => {
   const uploadImage = useCallback(
     async (newImage) => {
       try {
-        const response = await imagesApi.uploadImage(newImage, auth);
+        const response = await imagesApi.uploadImage(newImage);
         const { imageLink, ...accountWithoutImageLink } = account;
         const updatedAccount = {
           id: accountId,

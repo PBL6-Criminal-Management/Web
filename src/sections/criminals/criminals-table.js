@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import {
   Box,
   Card,

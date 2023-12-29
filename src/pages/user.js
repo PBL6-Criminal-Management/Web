@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { UserPicture } from "src/sections/user/user-picture";
 import { UserDetails } from "src/sections/user/user-details";
-import * as accountsApi from "../api/accounts";
+import * as profileApi from "../api/profile";
 import * as imagesApi from "../api/images";
 import { useAuth } from "src/hooks/use-auth";
 
@@ -64,14 +64,16 @@ const Page = () => {
   const updateDetails = useCallback(
     async (updatedDetails) => {
       try {
+        setSuccess(null);
+        setError(null);
         const { imageLink, ...userWithoutImageLink } = user;
         const updatedUser = {
-          id: window.sessionStorage.getItem("userId"),
+          // id: window.sessionStorage.getItem("userId"),
           ...userWithoutImageLink,
           ...updatedDetails,
         };
 
-        await accountsApi.editAccount(updatedUser, auth);
+        await profileApi.editProfile(updatedUser, auth);
         updateLocalStorage(updatedDetails);
         getUser();
         setSuccess("Cập nhật thông tin cá nhân thành công.");
@@ -104,15 +106,16 @@ const Page = () => {
   const uploadImage = useCallback(
     async (newImage) => {
       try {
-        const response = await imagesApi.uploadImage(newImage, auth);
+        setSuccess(null);
+        setError(null);
+        const response = await imagesApi.uploadImage(newImage);
         const { imageLink, ...userWithoutImageLink } = user;
         const updatedUser = {
-          id: window.sessionStorage.getItem("userId"),
           ...userWithoutImageLink,
           image: response[0].filePath,
         };
 
-        await accountsApi.editAccount(updatedUser, auth);
+        await profileApi.editProfile(updatedUser, auth);
         updateLocalStorage({ image: response[0].filePath, imageLink: response[0].fileUrl });
         getUser();
         setSuccess("Cập nhật ảnh đại diện thành công.");

@@ -9,6 +9,7 @@ import * as criminalsApi from '../../api/criminals';
 import * as casesApi from '../../api/cases';
 import * as accountsApi from '../../api/accounts';
 import { useRouter } from 'next/router';
+import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
   const [casee, setCasee] = useState({});
@@ -25,13 +26,15 @@ const Page = () => {
   const caseId = decodeURIComponent(router.query.id);
   const caseCode = decodeURIComponent(router.query.code);
 
+  const auth = useAuth();
+
   const getCase = useCallback(async () => {
     setLoadingSkeleton(true);
     setError(null);
     try {
-      const casee = await casesApi.getCaseById(caseId);
-      const criminals = await criminalsApi.getAllCriminals("", "");
-      const investigators = await accountsApi.getAllAccounts("", { role: 2 });
+      const casee = await casesApi.getCaseById(caseId, auth);
+      const criminals = await criminalsApi.getAllCriminals("", "", auth);
+      const investigators = await accountsApi.getAllAccounts("", { role: 2 }, auth);
       setCasee(casee);
       setCriminals(criminals);
       setInvestigators(investigators);
@@ -54,7 +57,7 @@ const Page = () => {
         ...updatedDetails,
       };
       console.log(updatedCase);
-      await casesApi.editCase(updatedCase);
+      await casesApi.editCase(updatedCase, auth);
       // getCase();
       setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
       setError(null);
