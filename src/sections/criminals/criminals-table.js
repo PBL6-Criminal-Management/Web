@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import {
   Box,
   Card,
@@ -161,7 +161,7 @@ export const CriminalsTable = (props) => {
                       >
                         <Tooltip title="Chỉnh sửa tội phạm">
                           <IconButton
-                            LinkComponent={Link}
+                            LinkComponent={NextLink}
                             href={{
                               pathname: '/criminals/[id]',
                               query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },

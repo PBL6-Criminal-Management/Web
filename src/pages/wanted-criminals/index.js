@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import WantedCriminalCard from "../../sections/wanted-criminals/wanted-criminal-card";
 import * as wantedCriminalsApi from "../../api/wanted-criminals";
 import Header from "src/sections/wanted-criminals/wanted-criminal-header";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import AdvancedSearchBox from "src/sections/wanted-criminals/wanted-criminal-search";
-import { useAuth } from "src/hooks/use-auth";
+import NextLink from 'next/link';
 
 const WantedCriminalsPage = () => {
   const [wantedCriminals, setWantedCriminals] = useState([]);
   const [filter, setFilter] = useState({});
-  const auth = useAuth();
   useEffect(() => {
     const fetchData = async () => {
-      const data = await wantedCriminalsApi.getAllWantedCriminals(filter, auth);
+      const data = await wantedCriminalsApi.getAllWantedCriminals(filter);
       setWantedCriminals(data);
     };
 
@@ -48,7 +47,18 @@ const WantedCriminalsPage = () => {
       >
         {wantedCriminals.map((criminal) => (
           <Grid item key={criminal.id} xs={12} md={6}>
-            <WantedCriminalCard criminal={criminal} />
+            <Box
+              component={NextLink}
+              href={{
+                pathname: '/wanted-criminals/[id]',
+                query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },
+              }}
+              sx={{
+                textDecoration: "none",
+              }}
+            >
+              <WantedCriminalCard criminal={criminal} />
+            </Box>
           </Grid>
         ))}
       </Grid>

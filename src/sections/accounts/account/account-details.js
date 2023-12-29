@@ -140,7 +140,7 @@ export const AccountDetails = (props) => {
         <CardContent>
           <Grid container spacing={3}>
             {[
-              { label: "Họ và tên", name: "name" },
+              { label: "Họ và tên", name: "name", required: true },
               { label: "Ngày sinh", name: "birthday", md: 4, datePicker: true },
               {
                 label: "Giới tính",
@@ -149,11 +149,11 @@ export const AccountDetails = (props) => {
                 select: true,
                 selectProps: constants.gender,
               },
-              { label: "CMND/CCCD", name: "citizenId", md: 4 },
-              { label: "Số điện thoại", name: "phoneNumber", md: 4 },
-              { label: "Email", name: "email", md: 4 },
+              { label: "CMND/CCCD", name: "citizenId", md: 4, required: true },
+              { label: "Số điện thoại", name: "phoneNumber", md: 4, required: true },
+              { label: "Email", name: "email", md: 4, required: true },
               { label: "Tên tài khoản", name: "username", md: 4, disabled: true },
-              { label: "Địa chỉ", name: "address", md: 8 },
+              { label: "Địa chỉ", name: "address", md: 8, required: true },
               { label: "Vai trò", name: "role", md: 4, select: true, selectProps: constants.role },
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
@@ -182,7 +182,7 @@ export const AccountDetails = (props) => {
                         {...params}
                         fullWidth
                         InputLabelProps={{ shrink: true }}
-                        required={!field.disabled}
+                        required={field.required || false}
                         onKeyDown={(e) => e.preventDefault()}
                       />
                     )}
@@ -201,7 +201,7 @@ export const AccountDetails = (props) => {
                     onChange={handleChange}
                     type={field.name}
                     value={formik.values[field.name]}
-                    required={!field.disabled}
+                    required={field.required || false}
                     select={field.select}
                     SelectProps={field.select ? { native: true } : undefined}
                     sx={{

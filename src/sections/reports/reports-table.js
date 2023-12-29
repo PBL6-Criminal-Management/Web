@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import {
   Box,
   Card,
@@ -147,7 +147,7 @@ export const ReportsTable = (props) => {
                       >
                         <Tooltip title="Chỉnh sửa báo cáo">
                           <IconButton
-                            LinkComponent={Link}
+                            LinkComponent={NextLink}
                           // href={{
                           //   pathname: '/criminals/[id]',
                           //   query: { id: criminal.id },

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import {
   Box,
   Card,
@@ -148,7 +148,7 @@ export const AccountsTable = (props) => {
                       >
                         <Tooltip title="Chỉnh sửa tài khoản">
                           <IconButton
-                            LinkComponent={Link}
+                            LinkComponent={NextLink}
                             href={{
                               pathname: '/accounts/[id]',
                               query: { id: encodeURIComponent(account.id), name: encodeURIComponent(account.name) },
