@@ -41,3 +41,8 @@ export const criminalStatus = Object.freeze({
   4: 'Án treo',
   5: 'Đã bị bắt'
 });
+
+export const isActive = Object.freeze({
+  false: 'Đang bị khoá',
+  true: 'Đã kích hoạt'
+});
