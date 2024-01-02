@@ -19,7 +19,7 @@ import * as constants from "../../../../constants/constants";
 import * as messages from "../../../../constants/messages";
 import { Collapse, Button } from "antd";
 import { useState, useEffect } from "react";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
@@ -29,15 +29,15 @@ import { format, parse } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CaseCriminalItem = (props) => {
+const CaseWantedItem = (props) => {
   const {
-    criminal,
-    criminals,
+    wanted,
+    wantedsOfCase,
     criminalsOfCase,
     index,
     loading,
     handleSubmit,
-    handleDeleteCriminal,
+    handleDeleteWanted,
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -47,16 +47,16 @@ const CaseCriminalItem = (props) => {
   const [changesMade, setChangesMade] = useState(false);
 
   const getAllowedItems = (originalList, valuesList, idToExclude) => {
-    const idsToRemove = valuesList.map((item) => item.id);
+    const idsToRemove = valuesList.map((item) => item.criminalId);
     return originalList.filter((item) => {
       const isIdToExclude = item.id === idToExclude;
       const isIdInValuesList = idsToRemove.includes(item.id);
-      return isIdToExclude || !isIdInValuesList;
+      return item.id && (isIdToExclude || !isIdInValuesList);
     });
   };
 
   const handleDeleteConfirm = () => {
-    handleDeleteCriminal(index);
+    handleDeleteWanted(index);
     setOpenDeletePopup(false);
   };
 
@@ -70,125 +70,99 @@ const CaseCriminalItem = (props) => {
   };
 
   const fillEmpty = () => {
-    if (!criminal.id) setChangesMade(false);
+    if (!wanted.criminalId) setChangesMade(false);
     setValue(null);
     formik.setValues({
-      key: criminal.key,
-      id: null,
-      name: "",
-      anotherName: "",
-      birthday: "",
-      gender: "",
-      citizenId: "",
-      homeTown: "",
-      permanentResidence: "",
-      currentAccommodation: "",
-      nationality: "",
-      ethnicity: "",
-      charge: "",
-      reason: "",
-      testimony: "",
-      date: new Date(),
-      typeOfViolation: 0,
+      key: wanted.key,
+      criminalId: null,
+      wantedType: 0,
+      currentActivity: "",
+      wantedDecisionNo: "",
+      wantedDecisionDay: new Date(),
+      decisionMakingUnit: "",
       weapon: "",
     });
   };
 
-  const handleSubmitCriminal = () => {
-    if (value === null) return;
+  const handleSubmitWanted = (e) => {
+    // e.stopPropagation();
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
     });
-    // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
       });
     }
   };
 
-  const handleCancelCriminal = (e) => {
+  const handleCancelWanted = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
-    if (criminal.id) {
-      setValue(options.find((option) => option.id === criminal.id));
+    if (wanted.criminalId) {
+      setValue(options.find((option) => option.id === wanted.criminalId));
       formik.setValues({
-        ...criminal,
-        date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-        typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+        ...wanted,
+        wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
       });
       setChangesMade(false);
     } else fillEmpty();
     formik.setTouched({}, false);
   };
 
-  const handleEditCriminal = (e) => {
+  const handleEditWanted = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     setChangesMade(false);
   };
 
   useEffect(() => {
-    if (criminals && criminal) {
-      const options = getAllowedItems(criminals, criminalsOfCase, criminal.id);
+    if (criminalsOfCase && wanted && wantedsOfCase) {
+      const options = getAllowedItems(criminalsOfCase, wantedsOfCase, wanted.criminalId);
       setOptions(options);
     }
-  }, [criminal, criminalsOfCase, criminals]);
+  }, [wanted, wantedsOfCase, criminalsOfCase]);
 
   useEffect(() => {
     if (options) {
-      if (
-        changesMade &&
-        value &&
-        !options.find((option) => option.id === value.id)
-        // criminalsOfCase.find((c) => c.id === value.id) &&
-        // formik.values.key &&
-        // criminalsOfCase.find((c) => c.id === value.id).key !== formik.values.key
-      ) {
+      if (changesMade && value && !options.find((option) => option.id === value.id)) {
         fillEmpty();
       } else if (!changesMade) {
-        setValue(options.find((option) => option.id === criminal.id));
+        setValue(options.find((option) => option.id === wanted.criminalId));
         formik.setValues({
-          ...criminal,
-          date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-          typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+          ...wanted,
+          wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         });
       }
     }
-  }, [criminal, options]);
+  }, [wanted, options]);
 
   const formik = useFormik({
     // enableReinitialize: true,
-    initialValues: criminal
+    initialValues: wanted
       ? {
-          ...criminal,
-          date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-          typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+          ...wanted,
+          wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({
-      id: Yup.string().required(messages.REQUIRED_CRIMINAL),
-      testimony: Yup.string()
-        .max(65535, messages.LIMIT_TESTIMONY)
-        .required(messages.REQUIRED_TESTIMONY),
-      charge: Yup.string()
-        .max(100, messages.LIMIT_CHARGE)
-        .required(messages.REQUIRED_CHARGE)
-        .matches(/^[\p{L} ,]+$/u, messages.CHARGE_VALID_CHARACTER),
-      reason: Yup.string().nullable().max(500, messages.LIMIT_REASON),
-      // .matches(/^[\p{L} ,]+$/u, messages.CHARGE_VALID_CHARACTER),
-      weapon: Yup.string()
-        .nullable()
-        .max(100, messages.LIMIT_WEAPON)
-        .matches(/^[\p{L}0-9, ]+$/u, messages.WEAPON_NAME_VALID_CHARACTER),
+      currentActivity: Yup.string().nullable().max(200, messages.LIMIT_CURRENT_ACTIVITY),
+      wantedDecisionNo: Yup.string()
+        .max(50, messages.LIMIT_WANTED_DECISION_NO)
+        .required(messages.REQUIRED_WANTED_DECISION_NO)
+        .matches(/^[\p{L}0-9. -]+$/u, messages.WANTED_DECISION_NO_VALID_CHARACTER),
+      decisionMakingUnit: Yup.string()
+        .max(100, messages.LIMIT_DECISION_MAKING_UNIT)
+        .required(messages.REQUIRED_DECISION_MAKING_UNIT)
+        .matches(/^[\p{L}0-9,. -]+$/u, messages.DECISION_MAKING_UNIT_VALID_CHARACTER),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitCriminal();
+        handleSubmitWanted();
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -209,7 +183,7 @@ const CaseCriminalItem = (props) => {
               </SvgIcon>
             }
             shape="circle"
-            onClick={handleEditCriminal}
+            onClick={handleEditWanted}
           />
         </Tooltip>
       )}
@@ -237,7 +211,7 @@ const CaseCriminalItem = (props) => {
                 </SvgIcon>
               }
               shape="circle"
-              onClick={handleCancelCriminal}
+              onClick={handleCancelWanted}
             />
           </Tooltip>
         </>
@@ -272,7 +246,7 @@ const CaseCriminalItem = (props) => {
               extra: isExpanded ? extraBtns() : null,
               label: (
                 <Stack direction="row" spacing={0.5}>
-                  <Typography>Tội phạm {index + 1}</Typography>
+                  <Typography>Tội phạm truy nã {index + 1}</Typography>
                   {value && (
                     <>
                       <Typography>: </Typography>
@@ -300,48 +274,27 @@ const CaseCriminalItem = (props) => {
                   {[
                     {
                       label: "Liên kết tội phạm",
-                      name: "id",
+                      name: "criminalId",
                       md: 3,
                       required: true,
                       autoComplete: true,
                     },
-                    { label: "Tên khác", name: "anotherName", md: 3, disabled: true, info: true },
-                    { label: "Ngày sinh", name: "birthday", md: 2, disabled: true, info: true },
-                    { label: "Giới tính", name: "gender", md: 1.5, disabled: true, info: true },
-                    { label: "CMND/CCCD", name: "citizenId", md: 2.5, disabled: true, info: true },
-                    { label: "Quê quán", name: "homeTown", md: 4, disabled: true, info: true },
                     {
-                      label: "Nơi ĐKTT",
-                      name: "permanentResidence",
-                      md: 4,
-                      disabled: true,
-                      info: true,
-                    },
-                    {
-                      label: "Nơi ở hiện tại",
-                      name: "currentAccommodation",
-                      md: 4,
-                      disabled: true,
-                      info: true,
-                    },
-                    { label: "Quốc tịch", name: "nationality", md: 6, disabled: true, info: true },
-                    { label: "Dân tộc", name: "ethnicity", md: 6, disabled: true, info: true },
-                    { label: "Tội danh", name: "charge", md: 3 },
-                    { label: "Nguyên nhân", name: "reason", md: 3 },
-                    { label: "Vũ khí", name: "weapon", md: 3 },
-                    {
-                      label: "Loại vi phạm",
-                      name: "typeOfViolation",
-                      md: 3,
+                      label: "Loại truy nã",
+                      name: "wantedType",
+                      md: 2,
                       select: true,
-                      selectProps: constants.typeOfViolation,
+                      selectProps: constants.wantedType,
                     },
+                    { label: "Hoạt động hiện hành", name: "currentActivity", md: 7 },
+                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3 },
                     {
-                      label: "Thời gian lấy lời khai gần nhất",
-                      name: "date",
-                      dateTimePicker: true,
+                      label: "Ngày ra quyết định",
+                      name: "wantedDecisionDay",
+                      md: 2,
+                      datePicker: true,
                     },
-                    { label: "Lời khai", name: "testimony", textArea: true },
+                    { label: "Đơn vị ra quyết định", name: "decisionMakingUnit", md: 7 },
                   ].map((field) => (
                     <Grid key={field.name} xs={12} md={field.md || 12}>
                       {loading ? (
@@ -358,13 +311,14 @@ const CaseCriminalItem = (props) => {
                           disablePortal
                           fullWidth
                           options={options}
-                          getOptionLabel={(option) => {
-                            return value ? option.code + "-" + option.name : "";
-                          }}
+                          getOptionLabel={(option) =>
+                            value ? option.code + "-" + option.name : ""
+                          }
                           isOptionEqualToValue={(option, value) => {
                             if (value === null || value === undefined) {
                               return option === value;
                             }
+
                             return option.id === value.id;
                           }}
                           onChange={async (event, value) => {
@@ -372,22 +326,25 @@ const CaseCriminalItem = (props) => {
                               fillEmpty();
                             } else {
                               setValue(value);
-                              if (value.id === criminal.id) {
+                              if (value.id === wanted.criminalId) {
                                 formik.setValues({
-                                  ...criminal,
-                                  date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-                                  typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+                                  ...wanted,
+                                  wantedDecisionDay: parse(
+                                    wanted.wantedDecisionDay,
+                                    "dd/MM/yyyy",
+                                    new Date()
+                                  ),
                                 });
                                 setChangesMade(false);
                               } else {
                                 formik.setValues({
-                                  ...value,
-                                  key: criminal.key,
-                                  charge: "",
-                                  reason: "",
-                                  testimony: "",
-                                  date: new Date(),
-                                  typeOfViolation: 0,
+                                  key: wanted.key,
+                                  criminalId: value.id,
+                                  wantedType: 0,
+                                  currentActivity: "",
+                                  wantedDecisionNo: "",
+                                  wantedDecisionDay: new Date(),
+                                  decisionMakingUnit: "",
                                   weapon: "",
                                 });
                                 setChangesMade(true);
@@ -411,8 +368,6 @@ const CaseCriminalItem = (props) => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              error={!!(formik.touched[field.name] && formik.errors[field.name])}
-                              helperText={formik.touched[field.name] && formik.errors[field.name]}
                               disabled={isFieldDisabled || field.disabled}
                               label={field.label}
                               required={field.required || false}
@@ -425,9 +380,8 @@ const CaseCriminalItem = (props) => {
                             />
                           )}
                         />
-                      ) : field.dateTimePicker ? (
-                        <DateTimePicker
-                          error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                      ) : field.datePicker ? (
+                        <DatePicker
                           fullWidth
                           helperText={formik.touched[field.name] && formik.errors[field.name]}
                           label={field.label}
@@ -443,14 +397,14 @@ const CaseCriminalItem = (props) => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              disabled={isFieldDisabled || field.disabled}
                               fullWidth
+                              disabled={isFieldDisabled || field.disabled}
                               InputLabelProps={{ shrink: true }}
                               required={field.required || false}
                               onKeyDown={(e) => e.preventDefault()}
                             />
                           )}
-                          maxDate={new Date()}
+                          maxDate={new Date()} // Assuming current date is the maximum allowed
                         />
                       ) : (
                         <TextField
@@ -464,6 +418,7 @@ const CaseCriminalItem = (props) => {
                             setChangesMade(true);
                             formik.handleChange(e);
                           }}
+                          type={field.name}
                           value={formik.values[field.name] ?? ""}
                           multiline={field.textArea || false}
                           disabled={isFieldDisabled || field.disabled}
@@ -478,8 +433,8 @@ const CaseCriminalItem = (props) => {
                           }}
                         >
                           {field.select &&
-                            Object.entries(field.selectProps).map(([value, label], index) => (
-                              <option key={index} value={value}>
+                            Object.entries(field.selectProps).map(([value, label]) => (
+                              <option key={value} value={value}>
                                 {label}
                               </option>
                             ))}
@@ -493,8 +448,8 @@ const CaseCriminalItem = (props) => {
           ]}
         />
         <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
-          <DialogTitle>Xác nhận xóa tội phạm {value?.name}</DialogTitle>
-          <DialogContent>Bạn có chắc chắn muốn xóa tội phạm này?</DialogContent>
+          <DialogTitle>Xác nhận xóa tội phạm truy nã {value?.name}</DialogTitle>
+          <DialogContent>Bạn có chắc chắn muốn xóa tội phạm truy nã này?</DialogContent>
           <DialogActions>
             <ButtonMUI onClick={handleDeleteCancel} color="primary">
               Hủy
@@ -509,4 +464,4 @@ const CaseCriminalItem = (props) => {
   );
 };
 
-export default CaseCriminalItem;
+export default CaseWantedItem;

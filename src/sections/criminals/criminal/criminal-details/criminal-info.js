@@ -162,7 +162,7 @@ const CriminalInfo = (props) => {
               { label: "Thông tin khác", name: "otherInformation", md: 12 },
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
-                {loading || formik.values === null || formik.values.dangerousLevel === undefined ? (
+                {loading || formik.values === null || formik.values.status === undefined ? (
                   <Skeleton variant="rounded">
                     <TextField fullWidth />
                   </Skeleton>
