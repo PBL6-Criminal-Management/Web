@@ -5,4 +5,8 @@
     font-weight: 400;
 }
 
+.globalStyle :global .ant-descriptions-header {
+    margin-bottom: 8px;
+}
+
 

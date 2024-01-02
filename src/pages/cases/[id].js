@@ -57,7 +57,7 @@ const Page = () => {
         ...updatedDetails,
       };
       console.log(updatedCase);
-      await casesApi.editCase(updatedCase, auth);
+      // await casesApi.editCase(updatedCase, auth);
       // getCase();
       setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
       setError(null);
@@ -117,7 +117,7 @@ const Page = () => {
                   aria-label="breadcrumb">
                   <Link
                     component={NextLink}
-                    underline="hover"
+                    underline="none"
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
@@ -125,7 +125,20 @@ const Page = () => {
                     href="/cases"
                     color="text.primary"
                   >
-                    <Typography variant='h4'>
+                    <Typography
+                      variant='h4'
+                      sx={{
+                        marginLeft: '-8px',
+                        marginRight: '-8px',
+                        padding: '6px 8px',
+                        '&:hover': {
+                          transition: '0.2s all ease-in-out',
+                          backgroundColor: 'divider',
+                          padding: '6px 8px',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
                       Vụ án
                     </Typography>
                   </Link>

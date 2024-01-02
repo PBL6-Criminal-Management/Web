@@ -116,6 +116,8 @@ const reducer = (state, action) => {
         };
       }
 
+      console.log("criminals update", criminals);
+
       const newObjC = {
         ...state,
         casee: { ...state.casee, criminals: criminals },
@@ -172,6 +174,7 @@ const reducer = (state, action) => {
         casee: { ...state.casee, criminals: criminalsDelete },
         changesMade: true
       }
+      console.log("newObjCDelete,", newObjCDelete);
       return newObjCDelete;
 
     // VICTIMS
@@ -597,7 +600,7 @@ const reducer = (state, action) => {
         changesMade: true
       }
       return newObjI;
-    
+
     case 'SUBMIT_FORM':
       return { ...state, changesMade: false };
 

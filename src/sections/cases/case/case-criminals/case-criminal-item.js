@@ -38,6 +38,7 @@ const CaseCriminalItem = (props) => {
     useEffect(() => {
         if (criminal) {
             setOriginalCriminal(criminal);
+            console.log(criminal);
         }
     }, [criminal]);    
 
@@ -76,7 +77,6 @@ const CaseCriminalItem = (props) => {
         setIsFieldDisabled(prev => !prev);
         handleSubmit();
         setOriginalCriminal(value);
-
     }
 
     const handleCancelCriminal = (e) => {
@@ -168,6 +168,7 @@ const CaseCriminalItem = (props) => {
     const handleCollapseChange = () => {
         setIsExpanded((prevExpanded) => !prevExpanded);
     };
+    console.log("value autocomplete: ", value)
 
     return options && (
         <>

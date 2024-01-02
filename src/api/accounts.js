@@ -37,6 +37,26 @@ export const getAccountById = async (accountId, auth, token = null) => {
   }
 };
 
+export const addAccount = async (account, auth) => {
+  let result = await auth.refreshToken();
+  if (!result.isSuccessfully) {
+    throw new Error(result.data);
+  }
+
+  try {
+    const response = await axios.post("/api/v1/account", account, {
+      headers: {
+        Authorization: `Bearer ${result.data}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.messages);
+    }
+  }
+};
+
 export const editAccount = async (account, auth) => {
   let result = await auth.refreshToken();
   if (!result.isSuccessfully) {
