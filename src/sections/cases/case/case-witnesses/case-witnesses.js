@@ -1,47 +1,54 @@
-import { Button, Unstable_Grid2 as Grid, Divider, Typography, Card, CardContent } from '@mui/material';
+import { Card, CardContent } from "@mui/material";
 import CaseWitnessItem from "./case-witness-item";
-import { Space } from 'antd';
+import { Space } from "antd";
 const CaseWitnesses = (props) => {
-    const { state, loading, handleChangeWitnesses, handleDateChangeWitnesses, handleDateTimeChangeWitnesses, handleSubmit, handleEdit, handleCancel, handleDeleteWitness } = props;
+  const { witnessInfo, loading, handleSubmit, handleDeleteWitness } = props;
 
-    return (
-        <Card
-            sx={{
-                p: 0,
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-            }}
+  const handleSubmitWitnessInfo = (index, values) => {
+    console.log("submit witness info");
+    console.log([
+      ...witnessInfo.slice(0, index),
+      { ...values, id: values.id ? values.id : -1 },
+      ...witnessInfo.slice(index + 1),
+    ]);
+    handleSubmit([
+      ...witnessInfo.slice(0, index),
+      { ...values, id: values.id ? values.id : -1 },
+      ...witnessInfo.slice(index + 1),
+    ]);
+  };
+
+  return (
+    <Card
+      sx={{
+        p: 0,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+      }}
+    >
+      <CardContent>
+        <Space
+          direction="vertical"
+          size="middle"
+          style={{
+            display: "flex",
+          }}
         >
-            <CardContent>
-                <Space
-                    direction="vertical"
-                    size="middle"
-                    style={{
-                        display: 'flex',
-                    }}
-                >
-                    {state.casee.witnesses && state.casee.witnesses.map(
-                        (witness, index) => (
-                            <CaseWitnessItem
-                                key={index}
-                                state={state}
-                                witness={witness}
-                                index={index}
-                                loading={loading}
-                                handleChangeWitnesses={handleChangeWitnesses}
-                                handleDateChangeWitnesses={handleDateChangeWitnesses}
-                                handleDateTimeChangeWitnesses={handleDateTimeChangeWitnesses}
-                                handleSubmit={handleSubmit}
-                                handleEdit={handleEdit}
-                                handleCancel={handleCancel}
-                                handleDeleteWitness={handleDeleteWitness}
-                            />
-                        )
-                    )}
-                </Space>
-            </CardContent>
-        </Card>
-    )
+          {witnessInfo &&
+            witnessInfo.map((witness, index) => (
+              <CaseWitnessItem
+                key={witness.key}
+                witness={witness}
+                index={index}
+                loading={loading}
+                handleSubmit={(values) => handleSubmitWitnessInfo(index, values)}
+                handleDeleteWitness={handleDeleteWitness}
+              />
+            ))}
+        </Space>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default CaseWitnesses;

@@ -95,6 +95,7 @@ export const DEFAULT_FRAMES_NUMBER_EACH_SECOND = 3;
 
 //Required
 export const REQUIRED_NAME = "Họ và tên không được để trống";
+export const REQUIRED_EVIDENCE_NAME = "Tên vật chứng không được để trống";
 export const REQUIRED_CITIZEN_ID = "CMND/CCCD không được để trống";
 export const REQUIRED_ADDRESS = "Địa chỉ không được để trống";
 export const REQUIRED_PHONENUMBER = "Số điện thoại không được để trống";
@@ -135,6 +136,8 @@ export const REQUIRED_MURDER_WEAPON = "Hung khí không được để trống";
 export const REQUIRED_WEAPON = "Vũ khí không được để trống";
 export const REQUIRED_CHARGE = "Tội danh không được để trống";
 export const REQUIRED_CRIME_SCENE = "Địa điểm xảy ra vụ án không được để trống";
+export const REQUIRED_TESTIMONY = "Lời khai không được để trống";
+export const REQUIRED_CRIMINAL = "Phải chọn tội phạm trước khi lưu";
 export const REQUIRED_REPORTER_NAME = "Họ và tên của người tố giác tội phạm không được để trống";
 export const REQUIRED_REPORTER_EMAIL = "Email của người tố giác tội phạm không được để trống";
 export const REQUIRED_REPORTER_PHONE =
@@ -185,6 +188,7 @@ export const LIMIT_MURDER_WEAPON = "Hung khí không được vượt quá 100 k
 export const LIMIT_WEAPON = "Vũ khí không được vượt quá 100 ký tự";
 export const LIMIT_CHARGE = "Tội danh không được vượt quá 100 ký tự";
 export const LIMIT_CRIME_SCENE = "Địa điểm xảy ra vụ án không được vượt quá 200 ký tự";
+export const LIMIT_TESTIMONY = "Lời khai không được vượt quá 65535 ký tự";
 export const LIMIT_REPORTER_NAME =
   "Họ và tên của người tố giác tội phạm không được vượt quá 100 ký tự";
 export const LIMIT_REPORTER_EMAIL =
@@ -208,6 +212,7 @@ export const ANOTHER_NAME_CONTAINS_VALID_CHARACTER =
 export const CITIZEN_ID_VALID_CHARACTER = "CMMD hoặc CCCD chỉ chứa ký tự số";
 export const USERNAME_VALID_CHARACTER = "Username chỉ chứa ký tự số, ký tự chữ và khoảng trắng";
 export const ADDRESS_VALID_CHARACTER = "Địa chỉ không được chứa ký tự đặc biệt";
+export const CRIME_SCENE_VALID_CHARACTER = "Địa điểm xảy ra vụ án không được chứa ký tự đặc biệt";
 export const CHARGE_VALID_CHARACTER = "Tội danh chỉ chứa ký tự chữ, khoảng trắng và dấu phẩy";
 export const EVIDENCE_NAME_VALID_CHARACTER =
   "Tên vật chứng chỉ chứa ký tự chữ, ký tự số và khoảng trắng";

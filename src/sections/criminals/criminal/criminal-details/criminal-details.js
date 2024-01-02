@@ -19,7 +19,6 @@ export const CriminalDetails = (props) => {
   } = props;
 
   useEffect(() => {
-    console.log("inint", initialCriminal);
     if (initialCriminal) {
       setGeneralInformation({
         name: initialCriminal.name,
