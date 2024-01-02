@@ -1,14 +1,26 @@
-import Head from 'next/head';
-import NextLink from 'next/link';
-import { useState, useEffect, useCallback } from 'react';
-import { Alert, Box, Breadcrumbs, Collapse, Container, IconButton, Skeleton, Stack, Typography, Unstable_Grid2 as Grid, Link } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CaseDetails } from 'src/sections/cases/case/case-details';
-import * as criminalsApi from '../../api/criminals';
-import * as casesApi from '../../api/cases';
-import * as accountsApi from '../../api/accounts';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import NextLink from "next/link";
+import { useState, useEffect, useCallback } from "react";
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Collapse,
+  Container,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+  Unstable_Grid2 as Grid,
+  Link,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { CaseDetails } from "src/sections/cases/case/case-details";
+import * as criminalsApi from "../../api/criminals";
+import * as casesApi from "../../api/cases";
+import * as accountsApi from "../../api/accounts";
+import { useRouter } from "next/router";
 import { useAuth } from "src/hooks/use-auth";
 
 const Page = () => {
@@ -49,40 +61,44 @@ const Page = () => {
     getCase();
   }, []);
 
-  const updateDetails = useCallback(async (updatedDetails) => {
-    try {
-      const updatedCase = {
-        id: caseId, // dung params de truyen id
-        ...casee,
-        ...updatedDetails,
-      };
-      console.log(updatedCase);
-      await casesApi.editCase(updatedCase, auth);
-      // getCase();
-      setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
-      setError(null);
-    } catch (error) {
-      setSuccess(null);
-      setError(error.message);
-      console.log(error);
-    }
-  }, [casee]);
+  const updateDetails = useCallback(
+    async (updatedDetails) => {
+      try {
+        const updatedCase = {
+          id: caseId, // dung params de truyen id
+          ...casee,
+          ...updatedDetails,
+        };
+        console.log(updatedCase);
+        await casesApi.editCase(updatedCase, auth);
+        // getCase();
+        setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
+        setError(null);
+      } catch (error) {
+        setSuccess(null);
+        setError(error.message);
+        console.log(error);
+      }
+    },
+    [casee]
+  );
 
   const updateCaseDetails = useCallback(
     async (updatedDetails) => {
       try {
+        console.log("submitdata", updatedDetails);
         setLoadingButtonDetails(true);
         setCasee((prevCasee) => ({ ...prevCasee, ...updatedDetails }));
         setOpen(true);
         await updateDetails(updatedDetails);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-      }
-      finally {
+      } finally {
         setLoadingButtonDetails(false);
       }
-    }, [setCasee, updateDetails]);
+    },
+    [setCasee, updateDetails]
+  );
 
   return (
     <>
@@ -92,7 +108,7 @@ const Page = () => {
       <Box
         sx={{
           flexGrow: 1,
-          mb: 3
+          mb: 3,
         }}
       >
         <Container maxWidth="lg">
@@ -100,9 +116,10 @@ const Page = () => {
             <div>
               {loadingSkeleton ? (
                 <Skeleton variant="rounded">
-                  <Typography variant='h4'
+                  <Typography
+                    variant="h4"
                     sx={{
-                      mb: 2.5
+                      mb: 2.5,
                     }}
                   >
                     Vụ án
@@ -111,28 +128,27 @@ const Page = () => {
               ) : (
                 <Breadcrumbs
                   sx={{
-                    mb: 2.5
+                    mb: 2.5,
                   }}
                   separator="›"
-                  aria-label="breadcrumb">
+                  aria-label="breadcrumb"
+                >
                   <Link
                     component={NextLink}
                     underline="hover"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
+                      display: "flex",
+                      alignItems: "center",
                     }}
                     href="/cases"
                     color="text.primary"
                   >
-                    <Typography variant='h4'>
-                      Vụ án
-                    </Typography>
+                    <Typography variant="h4">Vụ án</Typography>
                   </Link>
                   <Typography
-                    variant='h4'
+                    variant="h4"
                     sx={{
-                      color: 'primary.main',
+                      color: "primary.main",
                     }}
                   >
                     {casee?.code}
@@ -156,10 +172,10 @@ const Page = () => {
               </Grid>
             </div>
             <div>
-              {success &&
+              {success && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="success"
                     action={
@@ -177,22 +193,19 @@ const Page = () => {
                     sx={{
                       mt: 2,
                       mb: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="success"
-                      variant="subtitle2"
-                    >
+                    <Typography color="success" variant="subtitle2">
                       {success}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
-              {error &&
+              )}
+              {error && (
                 <Collapse in={open}>
                   <Alert
-                    variant='outlined'
+                    variant="outlined"
                     open={open}
                     severity="error"
                     action={
@@ -210,18 +223,15 @@ const Page = () => {
                     sx={{
                       mb: 2,
                       mt: 2,
-                      borderRadius: '12px',
+                      borderRadius: "12px",
                     }}
                   >
-                    <Typography
-                      color="error"
-                      variant="subtitle2"
-                    >
+                    <Typography color="error" variant="subtitle2">
                       {error}
                     </Typography>
                   </Alert>
                 </Collapse>
-              }
+              )}
             </div>
           </Stack>
         </Container>
