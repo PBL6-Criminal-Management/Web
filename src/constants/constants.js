@@ -33,10 +33,15 @@ export const reportStatus = Object.freeze({
 });
 
 export const criminalStatus = Object.freeze({
-  0: "Đang ngồi tù",
-  1: "Đã được thả",
-  2: "Bị truy nã",
-  3: "Chưa kết án",
-  4: "Án treo",
-  5: "Đã bị bắt",
+  0: 'Đang ngồi tù',
+  1: 'Đã được thả',
+  2: 'Bị truy nã',
+  3: 'Chưa kết án',
+  4: 'Án treo',
+  5: 'Đã bị bắt'
+});
+
+export const isActive = Object.freeze({
+  false: 'Đang bị khoá',
+  true: 'Đã kích hoạt'
 });

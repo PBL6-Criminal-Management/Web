@@ -67,9 +67,9 @@ export const AccountDetails = (props) => {
     enableReinitialize: true,
     initialValues: initialAccount
       ? {
-          ...initialAccount,
-          birthday: parse(initialAccount.birthday, "dd/MM/yyyy", new Date()),
-        }
+        ...initialAccount,
+        birthday: parse(initialAccount.birthday, "dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -104,14 +104,22 @@ export const AccountDetails = (props) => {
     },
   });
 
+  const handleToggleActivation = () => {
+    dispatch({ type: "UPDATE_ACCOUNT" });
+    formik.setValues({
+      ...formik.values,
+      isActive: !formik.values.isActive,
+      changesMade: true,
+    });
+    formik.handleSubmit();
+  };
+
   const handleChange = (e) => {
     dispatch({ type: "UPDATE_ACCOUNT" });
     formik.handleChange(e);
   };
 
   const handleSubmit = () => {
-    // Additional logic for form submission if needed.
-    // For now, we're just updating the user.
     dispatch({ type: "SUBMIT_FORM" });
     if (state.changesMade) {
       onUpdate({
@@ -119,9 +127,10 @@ export const AccountDetails = (props) => {
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
         gender: formik.values.gender === "true",
         role: parseInt(formik.values.role, 10),
+        isActive: formik.values.isActive,
       });
     }
-    dispatch({ type: 'SUBMIT_FORM', payload: !!success });
+    dispatch({ type: 'SUBMIT_FORM' });
   };
 
   const handleClick = () => {
@@ -153,8 +162,9 @@ export const AccountDetails = (props) => {
               { label: "Số điện thoại", name: "phoneNumber", md: 4, required: true },
               { label: "Email", name: "email", md: 4, required: true },
               { label: "Tên tài khoản", name: "username", md: 4, disabled: true },
-              { label: "Địa chỉ", name: "address", md: 8, required: true },
+              { label: "Địa chỉ", name: "address", md: 4, required: true },
               { label: "Vai trò", name: "role", md: 4, select: true, selectProps: constants.role },
+              { label: "Trạng thái kích hoạt tài khoản", name: "isActive", md: 4, selectProps: constants.isActive, disabled: true }
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
                 {loadingSkeleton || formik.values === null || formik.values.name === undefined ? (
@@ -162,7 +172,6 @@ export const AccountDetails = (props) => {
                     <TextField fullWidth />
                   </Skeleton>
                 ) : field.datePicker ? (
-                  // <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={vi}>
                   <DatePicker
                     error={!!(formik.touched[field.name] && formik.errors[field.name])}
                     fullWidth
@@ -189,7 +198,6 @@ export const AccountDetails = (props) => {
                     maxDate={new Date()} // Assuming current date is the maximum allowed
                   />
                 ) : (
-                  // </LocalizationProvider>
                   <TextField
                     error={!!(formik.touched[field.name] && formik.errors[field.name])}
                     fullWidth
@@ -200,7 +208,7 @@ export const AccountDetails = (props) => {
                     onBlur={formik.handleBlur}
                     onChange={handleChange}
                     type={field.name}
-                    value={formik.values[field.name]}
+                    value={!field.select && field.selectProps ? field.selectProps[formik.values[field.name]] : formik.values[field.name]}
                     required={field.required || false}
                     select={field.select}
                     SelectProps={field.select ? { native: true } : undefined}
@@ -226,18 +234,57 @@ export const AccountDetails = (props) => {
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           {loadingSkeleton ? (
-            <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+            <>
+              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+            </>
           ) : loadingButtonDetails ? (
-            <LoadingButton
-              disabled
-              loading={loadingButtonDetails}
-              size="medium"
-              variant="contained"
-            >
-              Chỉnh sửa thông tin
-            </LoadingButton>
+            <>
+              <Button
+                variant="outlined"
+                color={formik.values.isActive ? 'error' : 'success'}
+                onClick={handleToggleActivation}
+                disabled={loadingButtonPicture}
+              >
+                {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
+              </Button>
+              <Button
+                variant="contained"
+                color='error'
+                onClick={() => { }}
+                disabled={loadingButtonPicture}
+              >
+                Đặt lại mật khẩu
+              </Button>
+              <LoadingButton
+                disabled
+                loading={loadingButtonDetails}
+                size="medium"
+                variant="contained"
+              >
+                Chỉnh sửa thông tin
+              </LoadingButton>
+            </>
+
           ) : (
             <>
+              <Button
+                variant="outlined"
+                color={formik.values.isActive ? 'error' : 'success'}
+                onClick={handleToggleActivation}
+                disabled={loadingButtonPicture}
+              >
+                {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
+              </Button>
+              <Button
+                variant="contained"
+                color='error'
+                onClick={() => { }}
+                disabled={loadingButtonPicture}
+              >
+                Đặt lại mật khẩu
+              </Button>
               <Button
                 variant="contained"
                 onClick={state.isFieldDisabled ? handleClick : formik.handleSubmit}

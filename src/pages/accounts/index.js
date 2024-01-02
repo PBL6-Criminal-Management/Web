@@ -17,6 +17,7 @@ import { AccountsSearch } from "src/sections/accounts/accounts-search";
 import { applyPagination } from "src/utils/apply-pagination";
 import * as accountsApi from "../../api/accounts";
 import { useAuth } from "src/hooks/use-auth";
+import NextLink from 'next/link';
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -107,6 +108,8 @@ const Page = () => {
                       <PlusIcon />
                     </SvgIcon>
                   }
+                  component={NextLink}
+                  href="/accounts/new-account"
                   variant="contained"
                 >
                   Thêm tài khoản

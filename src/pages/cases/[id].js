@@ -135,7 +135,7 @@ const Page = () => {
                 >
                   <Link
                     component={NextLink}
-                    underline="hover"
+                    underline="none"
                     sx={{
                       display: "flex",
                       alignItems: "center",
@@ -143,7 +143,22 @@ const Page = () => {
                     href="/cases"
                     color="text.primary"
                   >
-                    <Typography variant="h4">Vụ án</Typography>
+                    <Typography
+                      variant='h4'
+                      sx={{
+                        marginLeft: '-8px',
+                        marginRight: '-8px',
+                        padding: '6px 8px',
+                        '&:hover': {
+                          transition: '0.2s all ease-in-out',
+                          backgroundColor: 'divider',
+                          padding: '6px 8px',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
+                      Vụ án
+                    </Typography>
                   </Link>
                   <Typography
                     variant="h4"
