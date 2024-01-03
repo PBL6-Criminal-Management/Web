@@ -26,7 +26,7 @@ export const CriminalsFilter = ({ open, onClose, onSelectFilter }) => {
       let updatedValue;
 
       if (name === 'gender') {
-        updatedValue = value === 'true'; // Convert string to boolean
+        updatedValue = value === true || 'true'; // Convert string to boolean
         setGender(updatedValue);
       } else if (name === 'status' || name === 'typeOfViolation') {
         // Handle status and typeOfViolation

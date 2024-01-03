@@ -41,7 +41,7 @@ const Header = () => {
           <Button variant='contained' color="error" onClick={handleLoginClick}>
             Báo cáo
           </Button>
-          <Button variant='outlined' color="inherit" onClick={handleLoginClick}>
+          <Button color="inherit" onClick={handleLoginClick}>
             Đăng nhập
           </Button>
         </Box>

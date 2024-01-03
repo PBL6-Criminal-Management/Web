@@ -40,6 +40,12 @@ export const ReportsTable = (props) => {
     onDeleteReport
   } = props;
 
+  const colorsReport = {
+    0: 'warning',
+    1: 'primary',
+    2: 'success',
+  };
+
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState('');
 
@@ -86,7 +92,11 @@ export const ReportsTable = (props) => {
                 <TableCell>
                   Ngày gửi
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
                   Trạng thái
                 </TableCell>
                 <TableCell
@@ -130,8 +140,16 @@ export const ReportsTable = (props) => {
                     <TableCell>
                       {report.sendingTime}
                     </TableCell>
-                    <TableCell>
-                      {constants.reportStatus[report.status]}
+                    <TableCell
+                      sx={{
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Chip
+                        label={constants.reportStatus[report.status]}
+                        color={colorsReport[report.status]}
+                        variant='outlined'
+                      />
                     </TableCell>
                     <TableCell
                       sx={{

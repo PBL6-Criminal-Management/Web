@@ -15,42 +15,11 @@ import * as constants from "../../../constants/constants";
 import * as messages from "../../../constants/messages";
 import { LoadingButton } from "@mui/lab";
 export const NewAccountDetails = (props) => {
-  const [originalAccount, setOriginalAccount] = useState({});
-
   const {
     formik,
     loadingSkeleton,
     isFieldDisabled,
   } = props;
-
-  const handleChange = (e) => {
-    dispatch({ type: "UPDATE_ACCOUNT" });
-    formik.handleChange(e);
-  };
-
-  const handleSubmit = () => {
-    dispatch({ type: "SUBMIT_FORM" });
-    if (state.changesMade) {
-      onUpdate({
-        ...formik.values,
-        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
-        role: parseInt(formik.values.role, 10),
-        isActive: formik.values.isActive,
-      });
-    }
-    dispatch({ type: 'SUBMIT_FORM' });
-  };
-
-  const handleClick = () => {
-    dispatch({ type: "ENABLE_EDIT" });
-    setOriginalAccount(formik.values);
-  };
-
-  const handleCancel = () => {
-    dispatch({ type: "CANCEL_EDIT" });
-    formik.setValues(originalAccount);
-  };
 
   return (
       <Card>
