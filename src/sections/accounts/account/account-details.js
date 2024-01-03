@@ -125,7 +125,7 @@ export const AccountDetails = (props) => {
       onUpdate({
         ...formik.values,
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
         role: parseInt(formik.values.role, 10),
         isActive: formik.values.isActive,
       });

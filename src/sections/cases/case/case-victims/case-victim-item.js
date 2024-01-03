@@ -53,7 +53,7 @@ const CaseVictimItem = (props) => {
       ...formik.values,
       birthday: format(formik.values.birthday, "dd/MM/yyyy"),
       date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
-      gender: formik.values.gender === "true",
+      gender: formik.values.gender === true || formik.values.gender === "true",
     });
     // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
@@ -62,7 +62,7 @@ const CaseVictimItem = (props) => {
         ...formik.values,
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
         date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
       });
     }
   };

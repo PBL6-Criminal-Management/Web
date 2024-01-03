@@ -121,7 +121,7 @@ export const UserDetails = (props) => {
         name: formik.values.name,
         citizenId: formik.values.citizenId,
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
         address: formik.values.address,
         email: formik.values.email,
         phoneNumber: formik.values.phoneNumber,

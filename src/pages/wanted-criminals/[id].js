@@ -57,8 +57,8 @@ const WantedCriminalDetailsPage = () => {
             xs={12}
             md={12}
             lg={12}
-            mt={2}
-            mb={2}
+            mt={3}
+            mb={3}
           >
             <Typography
               sx={{
@@ -78,7 +78,7 @@ const WantedCriminalDetailsPage = () => {
             lg={12}
             m={0}
             p={0}
-            mb={2}
+            mb={4}
             style={{
               display: "flex",
               flexDirection: "column",

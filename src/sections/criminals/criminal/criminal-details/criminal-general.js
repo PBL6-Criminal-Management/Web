@@ -47,7 +47,7 @@ const CriminalGeneral = (props) => {
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
         fatherBirthday: format(formik.values.fatherBirthday, "dd/MM/yyyy"),
         motherBirthday: format(formik.values.motherBirthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
       });
   };
 
