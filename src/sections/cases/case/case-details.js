@@ -204,32 +204,20 @@ export const CaseDetails = (props) => {
     const currentCaseImagesAdd = caseDetail.caseImages || [];
     const caseImagesAdd = _.cloneDeep(currentCaseImagesAdd);
 
-    const newImageCI = action.payload.newImageCase;
-    caseImagesAdd.push(newImageCI);
+    caseImagesAdd.push(newImage);
 
-    const newObjCIAdd = {
-      ...state,
-      casee: { ...caseDetail, caseImages: caseImagesAdd },
-      changesMade: true,
-    };
     console.log("caseImagesAdd", caseImagesAdd);
-    return newObjCIAdd;
+
+    setCaseDetail({ ...caseDetail, caseImages: caseImagesAdd });
   };
   const handleDeleteCaseImage = (imageIndex) => {
     const currentCaseImagesDelete = caseDetail.caseImages || [];
     const caseImagesDelete = _.cloneDeep(currentCaseImagesDelete);
 
-    const imageIndexCI = action.payload.imageIndex;
-    caseImagesDelete.splice(imageIndexCI, 1);
+    caseImagesDelete.splice(imageIndex, 1);
     console.log("caseImagesDelete", caseImagesDelete);
 
-    const newObjCIDelete = {
-      ...state,
-      casee: { ...caseDetail, caseImages: caseImagesDelete },
-      changesMade: true,
-    };
-    console.log("caseImagesDelete", caseImagesDelete);
-    return newObjCIDelete;
+    setCaseDetail({ ...caseDetail, caseImages: caseImagesDelete });
   };
 
   //Wanteds
@@ -281,6 +269,16 @@ export const CaseDetails = (props) => {
         ...caseDetail,
         investigatorIds: value.map((i) => parseInt(i.id, 10)),
         investigators: value,
+      });
+    } else if (key === "caseImages") {
+      console.log("submit values: ", {
+        ...caseDetail,
+        caseImages: value,
+      });
+      setCaseDetail({ ...caseDetail, caseImages: value });
+      submitData({
+        ...caseDetail,
+        caseImages: value,
       });
     } else {
       console.log("submit values: ", { ...caseDetail, [key]: value });
