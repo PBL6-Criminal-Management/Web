@@ -13,15 +13,24 @@ import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Upload, Image } from "antd";
 import * as imagesApi from "../../../api/images";
-import * as messages from "../../../constants/messages";
 import ReactPlayer from "react-player";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 
 const CaseImages = (props) => {
-  const { caseImages, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit } = props;
+  const {
+    caseImages,
+    loading,
+    loadingButtonDetails,
+    loadingButtonPicture,
+    handleSubmit,
+    // handleEdit,
+    // handleCancel,
+    handleAddCaseImage,
+    handleDeleteCaseImage,
+  } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -29,8 +38,8 @@ const CaseImages = (props) => {
 
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
-    const imageExtensions = ["jpg", "png", "gif", "jpeg"]; // Additional image extensions
-    const videoExtensions = ["mp3", "mp4", "mpeg"]; // Additional video extensions
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp", "svg"]; // Additional image extensions
+    const videoExtensions = ["mp4", "webm", "avi", "mkv", "mov", "flv", "wmv"]; // Additional video extensions
 
     if (imageExtensions.includes(extension.toLowerCase())) {
       return "image";
@@ -52,39 +61,49 @@ const CaseImages = (props) => {
       }))
   );
 
+  useEffect(() => console.log(fileList), [fileList]);
+
+  useEffect(() => {
+    if (!loadingButtonDetails && hasSubmitted) {
+      setIsClicked(false);
+      setHasSubmitted(false);
+    }
+  }, [loadingButtonDetails, hasSubmitted]);
+
   const handleSuccess = (response, filename) => {
     const newImage = {
       fileName: filename,
       filePath: response[0].filePath,
       fileUrl: response[0].fileUrl,
     };
+    // handleAddCaseImage(newImage);
+    setFileList((prevFileList) => [
+      ...prevFileList,
+      {
+        uid: prevFileList.length,
+        name: filename,
+        status: "done",
+        path: response[0].filePath,
+        url: response[0].fileUrl,
+      },
+    ]);
     formik.setValues([...formik.values, newImage]);
-    // setFileList((prevFileList) => [
-    //   ...prevFileList,
-    //   {
-    //     uid: prevFileList.length,
-    //     name: filename,
-    //     status: "done",
-    //     path: response[0].filePath,
-    //     url: response[0].fileUrl,
-    //   },
-    // ]);
-    // console.log("fileList success", fileList);
+    console.log("fileList success", fileList);
   };
 
   const handleError = (error) => {
     console.log("handleError", error);
+    setFileList(
+      caseImages &&
+        caseImages.map((image, index) => ({
+          uid: index,
+          name: image.fileName,
+          status: "done",
+          path: image.filePath,
+          url: image.fileUrl,
+        }))
+    );
     formik.setValues(caseImages);
-    // setFileList(
-    //   caseImages &&
-    //     caseImages.map((image, index) => ({
-    //       uid: index,
-    //       name: image.fileName,
-    //       status: "done",
-    //       path: image.filePath,
-    //       url: image.fileUrl,
-    //     }))
-    // );
   };
 
   const handleRemove = async (file) => {
@@ -93,6 +112,7 @@ const CaseImages = (props) => {
       const filePath = file.path;
       const messages = await imagesApi.deleteImage(filePath);
       console.log("messages", messages);
+      // handleDeleteCaseImage(imageIndex);
       formik.setValues([...formik.values].filter((_, id) => id !== imageIndex));
     } catch (err) {
       console.error(err);
@@ -123,39 +143,6 @@ const CaseImages = (props) => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: caseImages ? caseImages : null,
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .max(100, messages.LIMIT_NAME)
-        .required(messages.REQUIRED_EVIDENCE_NAME)
-        .matches(/^[\p{L}0-9 ]+$/u, messages.EVIDENCE_NAME_VALID_CHARACTER),
-      description: Yup.string().nullable().max(500, messages.LIMIT_DESCRIPTION),
-    }),
-    onSubmit: async (values, helpers) => {
-      try {
-        handleSubmitEvidence();
-      } catch (err) {
-        helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
-        helpers.setSubmitting(false);
-      }
-    },
-  });
-
-  useEffect(() => {
-    setFileList(
-      caseImages &&
-        caseImages.map((image, index) => ({
-          uid: index,
-          name: image.fileName,
-          status: "done",
-          path: image.filePath,
-          url: image.fileUrl,
-        }))
-    );
-  }, [caseImages]);
-
   const handlePreviewImages = async (file) => {
     const fileIndex = fileList.findIndex((image) => image.uid === file.uid);
     setCurrentPreviewIndex(fileIndex);
@@ -168,6 +155,7 @@ const CaseImages = (props) => {
 
   const handleChangeImages = async ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    setChangesMade(true);
   };
 
   const uploadButton = (
@@ -186,17 +174,53 @@ const CaseImages = (props) => {
   const handleEditImages = () => {
     setIsFieldDisabled(false);
     setIsClicked(false);
+    // handleEdit();
+    setChangesMade(false);
   };
 
   const handleSubmitImages = () => {
     setIsFieldDisabled(true);
     setIsClicked(true);
+    setHasSubmitted(true);
+    if (changesMade) {
+      handleSubmit(formik.values);
+    }
+    // handleSubmit();
   };
 
   const handleCancelImages = () => {
     setIsClicked(false);
     setIsFieldDisabled(true);
+    setChangesMade(false);
+    formik.setValues(caseImages);
+    formik.setTouched({}, false);
+    // handleCancel();
   };
+
+  const formik = useFormik({
+    initialValues: caseImages ? caseImages : null,
+    onSubmit: async (values, helpers) => {
+      try {
+        handleSubmitImages();
+      } catch (err) {
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: err.message });
+        helpers.setSubmitting(false);
+      }
+    },
+  });
+
+  useEffect(() => {
+    setFileList(
+      formik.values.map((image, index) => ({
+        uid: index,
+        name: image.fileName,
+        status: "done",
+        path: image.filePath,
+        url: image.fileUrl,
+      }))
+    );
+  }, [formik.values]);
 
   return (
     <Card

@@ -130,6 +130,7 @@ const CaseEvidenceItem = (props) => {
 
   const handleChangeImages = async ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    setChangesMade(true);
   };
 
   const uploadButton = (
