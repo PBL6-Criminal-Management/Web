@@ -175,7 +175,6 @@ const CaseImages = (props) => {
   const handleEditImages = () => {
     setIsFieldDisabled(false);
     setIsClicked(false);
-    // handleEdit();
     setChangesMade(false);
   };
 
@@ -183,10 +182,10 @@ const CaseImages = (props) => {
     setIsFieldDisabled(true);
     setIsClicked(true);
     setHasSubmitted(true);
+    console.log("formik.values", formik.values);
     if (changesMade) {
       handleSubmit(formik.values);
     }
-    // handleSubmit();
   };
 
   const handleCancelImages = () => {
@@ -316,7 +315,7 @@ const CaseImages = (props) => {
             <>
               <Button
                 variant="contained"
-                onClick={isFieldDisabled ? handleEditImages : handleSubmitImages}
+                onClick={isFieldDisabled ? handleEditImages : formik.handleSubmit}
                 disabled={loadingButtonPicture}
               >
                 {isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}

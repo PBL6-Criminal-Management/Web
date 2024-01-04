@@ -4,6 +4,7 @@ import AccordionSection from "src/layouts/dashboard/accordion-section";
 import CriminalGeneral from "./criminal-general";
 import CriminalInfo from "./criminal-info";
 import CriminalWanted from "./criminal-wanted/criminal-wanted";
+import CriminalImages from "./criminal-images";
 import { useAuth } from "src/hooks/use-auth";
 
 export const CriminalDetails = (props) => {
@@ -111,6 +112,16 @@ export const CriminalDetails = (props) => {
               },
             }}
           >
+            <AccordionSection summary="Hình ảnh/video tội phạm"></AccordionSection>
+          </Skeleton>
+          <Skeleton
+            variant="rounded"
+            sx={{
+              "&:not(:last-child)": {
+                marginBottom: "16px",
+              },
+            }}
+          >
             <AccordionSection summary="Thông tin truy nã"></AccordionSection>
           </Skeleton>
         </>
@@ -129,6 +140,16 @@ export const CriminalDetails = (props) => {
           <AccordionSection summary="Thông tin phạm tội">
             <CriminalInfo
               criminalInfo={criminalInformation}
+              loading={loadingSkeleton}
+              loadingButtonDetails={loadingButtonDetails}
+              loadingButtonPicture={loadingButtonPicture}
+              handleSubmit={handleSubmit}
+              canEdit={canEdit}
+            />
+          </AccordionSection>
+          <AccordionSection summary="Hình ảnh/video tội phạm">
+            <CriminalImages
+              criminalImages={initialCriminal.criminalImages} 
               loading={loadingSkeleton}
               loadingButtonDetails={loadingButtonDetails}
               loadingButtonPicture={loadingButtonPicture}
