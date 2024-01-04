@@ -50,6 +50,8 @@ const NewCasePage = () => {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFieldDisabled, setIsFieldDisabled] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const auth = useAuth();
 
@@ -75,6 +77,8 @@ const NewCasePage = () => {
   const updateDetails = useCallback(
     async (updatedDetails) => {
       try {
+        setIsFieldDisabled(true);
+        setButtonDisabled(true);
         const newCase = {
           // dung params de truyen id
           ...casee,
@@ -114,6 +118,10 @@ const NewCasePage = () => {
     },
     [casee]
   );
+
+  useEffect(() => {
+    console.log("isSubmitting", isSubmitting);
+  }, [isSubmitting])
 
   const handleSubmit = () => {
     setIsSubmitting(true);
@@ -217,57 +225,62 @@ const NewCasePage = () => {
                         <Skeleton height={40} width={120} variant="rounded"></Skeleton>
                         <Skeleton height={40} width={70} variant="rounded"></Skeleton>
                       </>
-                    ) : loadingButtonDetails ? (
-                      <>
-                        <LoadingButton
-                          disabled
-                          loading={loadingButtonDetails}
-                          size="medium"
-                          variant="contained"
-                        >
-                          Thêm vụ án
-                        </LoadingButton>
-                        <Button
-                          // disabled={loadingButtonDetails || buttonDisabled}
-                          variant="outlined"
-                          component={NextLink}
-                          href="/cases"
-                          sx={{
-                            color: "neutral.500",
-                            borderColor: "neutral.500",
-                          }}
-                        >
-                          Huỷ
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          onClick={handleSubmit}
-                          // disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
-                          type="submit"
-                          variant="contained"
-                        >
-                          Thêm vụ án
-                        </Button>
-                        <Button
-                          // disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
-                          variant="outlined"
-                          component={NextLink}
-                          href="/cases"
-                          sx={{
-                            color: "neutral.500",
-                            borderColor: "neutral.500",
-                            "&:hover": {
-                              borderColor: "neutral.600",
-                              backgroundColor: "neutral.100",
-                            },
-                          }}
-                        >
-                          Huỷ
-                        </Button>
-                      </>
-                    )}
+                    ) : (loadingButtonDetails ?
+                      (
+                        <>
+                          <LoadingButton
+                            disabled
+                            loading={loadingButtonDetails}
+                            size="medium"
+                            variant="contained"
+                          >
+                            Thêm vụ án
+                          </LoadingButton>
+                          <Button
+                            disabled={loadingButtonDetails || buttonDisabled}
+                            variant="outlined"
+                            component={NextLink}
+                            href="/cases"
+                            sx={{
+                              color: 'neutral.500',
+                              borderColor: 'neutral.500',
+                              '&:hover': {
+                                borderColor: 'neutral.600',
+                                backgroundColor: 'neutral.100',
+                              }
+                            }}
+                          >
+                            Huỷ
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={handleSubmit}
+                            disabled={buttonDisabled}
+                            type="submit"
+                            variant="contained"
+                          >
+                            Thêm vụ án
+                          </Button>
+                          <Button
+                            disabled={buttonDisabled}
+                            variant="outlined"
+                            component={NextLink}
+                            href="/cases"
+                            sx={{
+                              color: 'neutral.500',
+                              borderColor: 'neutral.500',
+                              '&:hover': {
+                                borderColor: 'neutral.600',
+                                backgroundColor: 'neutral.100',
+                              }
+                            }}
+                          >
+                            Huỷ
+                          </Button>
+                        </>
+                      ))}
                   </Stack>
                 </Grid>
               </Grid>

@@ -35,6 +35,8 @@ export const getAllWantedCriminals = async (filter) => {
     if (filter.wantedType !== "") {
       params.WantedType = filter.wantedType;
     }
+
+    params.OrderBy = 'id DESC';
     const response = await axios.get(`/api/v1/wanted-criminal`, {
       params,
     });

@@ -26,7 +26,7 @@ export const NOT_FOUND_MSG = "Không thể tìm thấy dữ liệu phù hợp!";
 export const DELETE_USER = "Xóa người dùng thành công!";
 export const DELETE_SUCCESS = "Xóa thành công!";
 export const DELETE_CASE = "Xóa vụ án thành công";
-export const DELETE_REPORT = "Xóa bản tố giác tội phạm thành công";
+export const DELETE_REPORT = "Xóa bản báo cáo tội phạm thành công";
 export const SYS_ERROR = "Lỗi hệ thống!";
 export const NOT_FOUND_EMAIL = "Không tìm thấy email!";
 export const NOT_FOUND_ROLE = "Không tìm thấy vai trò phù hợp!";
@@ -138,11 +138,12 @@ export const REQUIRED_CHARGE = "Tội danh không được để trống";
 export const REQUIRED_CRIME_SCENE = "Địa điểm xảy ra vụ án không được để trống";
 export const REQUIRED_TESTIMONY = "Lời khai không được để trống";
 export const REQUIRED_CRIMINAL = "Phải chọn tội phạm trước khi lưu";
-export const REQUIRED_REPORTER_NAME = "Họ và tên của người tố giác tội phạm không được để trống";
-export const REQUIRED_REPORTER_EMAIL = "Email của người tố giác tội phạm không được để trống";
+export const REQUIRED_REPORTER_NAME = "Họ và tên của người báo cáo tội phạm không được để trống";
+export const REQUIRED_REPORTER_EMAIL = "Email của người báo cáo tội phạm không được để trống";
 export const REQUIRED_REPORTER_PHONE =
-  "Số điện thoại của người tố giác tội phạm không được để trống";
-export const REQUIRED_REPORTER_ADDRESS = "Địa chỉ của người tố giác tội phạm không được để trống";
+  "Số điện thoại của người báo cáo tội phạm không được để trống";
+export const REQUIRED_REPORTER_ADDRESS = "Địa chỉ của người báo cáo tội phạm không được để trống";
+export const REQUIRED_CONTENT = "Nội dung báo cáo không được để trống";
 
 //Limit length
 export const LIMIT_NAME = "Tên không được vượt quá 100 ký tự!";
@@ -190,13 +191,15 @@ export const LIMIT_CHARGE = "Tội danh không được vượt quá 100 ký t�
 export const LIMIT_CRIME_SCENE = "Địa điểm xảy ra vụ án không được vượt quá 200 ký tự";
 export const LIMIT_TESTIMONY = "Lời khai không được vượt quá 65535 ký tự";
 export const LIMIT_REPORTER_NAME =
-  "Họ và tên của người tố giác tội phạm không được vượt quá 100 ký tự";
+  "Họ và tên của người báo cáo tội phạm không được vượt quá 100 ký tự";
 export const LIMIT_REPORTER_EMAIL =
-  "Email của người tố giác tội phạm không được vượt quá 100 ký tự";
+  "Email của người báo cáo tội phạm không được vượt quá 100 ký tự";
 export const LIMIT_REPORTER_PHONE =
-  "Số điện thoại của người tố giác tội phạm không được vượt quá 15 ký tự";
+  "Số điện thoại của người báo cáo tội phạm không được vượt quá 15 ký tự";
 export const LIMIT_REPORTER_ADDRESS =
-  "Địa chỉ của người tố giác tội phạm không được vượt quá 200 ký tự";
+  "Địa chỉ của người báo cáo tội phạm không được vượt quá 200 ký tự";
+export const LIMIT_CONTENT = 
+  "Nội dung báo cáo không được vượt quá 65535 ký tự";
 //Error message
 export const ERROR_DELETE_IMAGE = "Xóa ảnh không thành công!!!";
 export const ERNAL_SERVER_ERROR = "Lỗi server";

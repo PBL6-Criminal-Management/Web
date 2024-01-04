@@ -68,7 +68,7 @@ const Page = () => {
         const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } =
           updatedCriminal;
         // console.log(updated);
-        await criminalsApi.EditCriminal(updated, auth);
+        await criminalsApi.editCriminal(updated, auth);
         // getCriminal();
         setSuccess("Cập nhật thông tin chi tiết tội phạm thành công.");
         setError(null);
@@ -109,7 +109,7 @@ const Page = () => {
 
         const { relatedCases, charge, isWantedCriminal, wantedCriminals, avatarLink, ...updated } = updatedCriminal;
         // console.log(updated);
-        await criminalsApi.EditCriminal(updated, auth);
+        await criminalsApi.editCriminal(updated, auth);
         // getCriminal();
         setSuccess("Cập nhật ảnh đại diện tội phạm thành công.");
         setError(null);

@@ -29,6 +29,8 @@ export const getAllCases = async (searchValue, filter, auth) => {
     if (filter.typeOfViolation !== "") {
       params.TypeOfViolation = filter.typeOfViolation;
     }
+
+    params.OrderBy = 'id DESC';
     const response = await axios.get(`/api/v1/case`, {
       params,
       headers: {

@@ -393,13 +393,13 @@ const NewCriminalPage = () => {
                               component={NextLink}
                               href="/criminals"
                               sx={{
-                                color: 'neutral.500',
-                                borderColor: 'neutral.500',
-                                '&:hover': {
-                                  borderColor: 'neutral.600',
-                                  backgroundColor: 'neutral.100',
-                                }
-                              }}
+                              color: 'neutral.500',
+                              borderColor: 'neutral.500',
+                              '&:hover': {
+                                borderColor: 'neutral.600',
+                                backgroundColor: 'neutral.100',
+                              }
+                            }}
                             >
                               Huỷ
                             </Button>

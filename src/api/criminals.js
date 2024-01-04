@@ -41,6 +41,8 @@ export const getAllCriminals = async (searchValue, filter, auth) => {
     if (filter.typeOfViolation !== "") {
       params.TypeOfViolation = filter.typeOfViolation;
     }
+
+    params.OrderBy = 'id DESC';
     const response = await axios.get(`/api/v1/criminal`, {
       params,
       headers: {
@@ -93,7 +95,7 @@ export const addCriminal = async (criminal, auth) => {
   }
 };
 
-export const EditCriminal = async (criminal, auth) => {
+export const editCriminal = async (criminal, auth) => {
   let result = await auth.refreshToken();
   if (!result.isSuccessfully) {
     throw new Error(result.data);
