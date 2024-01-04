@@ -22,10 +22,7 @@ export const SideNav = (props) => {
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const auth = useAuth();
-  let isAdmin = false;
-  if (auth.isAuthenticated) {
-    isAdmin = auth.user.role === 0;
-  }
+  const isAdmin = auth.isAuthenticated ? auth.user.role === 0 : false;
   let visibleItems = isAdmin ? items : items.filter((item) => item.path !== '/accounts');
 
   const content = (
