@@ -102,9 +102,10 @@ const NewAccountPage = () => {
             setSuccess("Thêm tài khoản thành công.");
             setError(null);
             setIsFieldDisabled(true);
-            
+            setButtonDisabled(true);
         } catch (error) {
             setIsFieldDisabled(false);
+            setButtonDisabled(false);
             setSuccess(null);
             setError(error.message);
             console.log(error);
@@ -231,67 +232,96 @@ const NewAccountPage = () => {
                                             loadingButtonPicture={loadingButtonPicture}
                                             onUpdate={updateAccountPicture}
                                             isFieldDisabled={isFieldDisabled}
+                                            buttonDisabled={buttonDisabled}
                                         />
                                     </Grid>
                                     <Grid xs={12} md={6} lg={8}>
-                                        <NewAccountDetails
-                                            formik={formik}
-                                            loadingSkeleton={loadingSkeleton}
-                                            isFieldDisabled={isFieldDisabled}
-                                        />
+                                        <>
+                                            <NewAccountDetails
+                                                formik={formik}
+                                                loadingSkeleton={loadingSkeleton}
+                                                isFieldDisabled={isFieldDisabled}
+                                            />
+                                            <Stack
+                                                direction="row"
+                                                justifyContent="flex-end"
+                                                alignItems="center"
+                                                spacing={1}
+                                                sx={{
+                                                    mt: 2,
+                                                }}
+                                            >
+                                                {formik.isSubmitting || loadingButtonDetails ?
+                                                    (
+                                                        <>
+                                                            <LoadingButton
+                                                                disabled
+                                                                loading={formik.isSubmitting || loadingButtonDetails}
+                                                                size="medium"
+                                                                variant="contained"
+                                                            >
+                                                                Thêm tài khoản
+                                                            </LoadingButton>
+                                                            <Button
+                                                                disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                                                                variant="outlined"
+                                                                onClick={formik.handleReset}
+                                                                color="error"
+                                                            >
+                                                                Reset
+                                                            </Button>
+                                                            <Button
+                                                                disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                                                                variant="outlined"
+                                                                component={NextLink}
+                                                                href="/accounts"
+                                                                sx={{
+                                                                    color: 'neutral.500',
+                                                                    borderColor: 'neutral.500',
+                                                                }}
+                                                            >
+                                                                Huỷ
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Button
+                                                                disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
+                                                                type="submit"
+                                                                variant="contained"
+                                                            >
+                                                                Thêm tài khoản
+                                                            </Button>
+                                                            <Button
+                                                                disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                                                                variant="outlined"
+                                                                onClick={formik.handleReset}
+                                                                color="error"
+                                                            >
+                                                                Reset
+                                                            </Button>
+                                                            <Button
+                                                                disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                                                                variant="outlined"
+                                                                component={NextLink}
+                                                                href="/accounts"
+                                                                sx={{
+                                                                    color: 'neutral.500',
+                                                                    borderColor: 'neutral.500',
+                                                                    '&:hover': {
+                                                                        borderColor: 'neutral.600',
+                                                                        backgroundColor: 'neutral.100',
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Huỷ
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                            </Stack>
+                                        </>
                                     </Grid>
                                 </Grid>
-                            </div>
-                            <div>
-                                <Stack
-                                    direction="row"
-                                    justifyContent="flex-end"
-                                    alignItems="center"
-                                    spacing={1}
-                                    sx={{
-                                        mt: 2,
-                                    }}
-                                >
-                                    {formik.isSubmitting || loadingButtonDetails ?
-                                        (
-                                            <>
-                                                <LoadingButton
-                                                    disabled
-                                                    loading={formik.isSubmitting || loadingButtonDetails}
-                                                    size="medium"
-                                                    variant="contained"
-                                                >
-                                                    Thêm tài khoản
-                                                </LoadingButton>
-                                                <Button
-                                                    disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
-                                                    variant="outlined"
-                                                    component={NextLink}
-                                                    href="/accounts"
-                                                >
-                                                    Huỷ
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Button
-                                                    disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
-                                                    type="submit"
-                                                    variant="contained"
-                                                >
-                                                    Thêm tài khoản
-                                                </Button>
-                                                <Button
-                                                    disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
-                                                    variant="outlined"
-                                                    component={NextLink}
-                                                    href="/accounts"
-                                                >
-                                                    Huỷ
-                                                </Button>
-                                            </>
-                                        )}
-                                </Stack>
                             </div>
                             <div>
                                 {success && (
@@ -307,9 +337,7 @@ const NewAccountPage = () => {
                                                     size="small"
                                                     onClick={() => {
                                                         setOpen(false);
-                                                        router
-                                                            .push("/accounts")
-                                                            .then(() => router.reload());
+                                                        router.push("/accounts");
                                                     }}
                                                 >
                                                     <CloseIcon fontSize="inherit" />

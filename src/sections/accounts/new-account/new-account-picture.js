@@ -20,7 +20,7 @@ import { LoadingButton } from '@mui/lab';
 import * as Yup from "yup";
 
 export const NewAccountPicture = (props) => {
-  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, isFieldDisabled } = props;
+  const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, isFieldDisabled, buttonDisabled } = props;
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [file, setFile] = useState(null);
   const [image, setImage] = useState(null);
@@ -110,7 +110,7 @@ export const NewAccountPicture = (props) => {
                       onChange={handleFileChange}
                     />
                     <IconButton
-                      disabled={loadingButtonDetails}
+                      disabled={loadingButtonDetails || isFieldDisabled || buttonDisabled}
                       onClick={handleClick}
                       aria-label="edit"
                       sx={{

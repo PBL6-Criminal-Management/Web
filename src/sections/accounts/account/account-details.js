@@ -120,7 +120,6 @@ export const AccountDetails = (props) => {
   };
 
   const handleSubmit = () => {
-    dispatch({ type: "SUBMIT_FORM" });
     if (state.changesMade) {
       onUpdate({
         ...formik.values,

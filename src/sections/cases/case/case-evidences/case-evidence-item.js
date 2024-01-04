@@ -25,6 +25,7 @@ import * as imagesApi from "../../../../api/images";
 import ReactPlayer from "react-player";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
 const CaseEvidenceItem = (props) => {
   const { evidence, index, loading, handleSubmit, handleDeleteEvidence } = props;
@@ -35,6 +36,12 @@ const CaseEvidenceItem = (props) => {
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
   const [changesMade, setChangesMade] = useState(false);
+
+  useEffect(() => {
+    if (evidence.name === "") {
+      setIsFieldDisabled(false);
+    }
+  }, [evidence])
 
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
@@ -305,7 +312,7 @@ const CaseEvidenceItem = (props) => {
                 {[
                   { label: "Tên", name: "name", required: true },
                   { label: "Mô tả", name: "description", textArea: true },
-                  { label: "Hình ảnh", name: "evidenceImages", required: true, upload: true },
+                  { label: "Hình ảnh", name: "evidenceImages", upload: true },
                 ].map((field) => (
                   <Grid key={field.name} xs={12} md={field.md || 12}>
                     {loading ? (

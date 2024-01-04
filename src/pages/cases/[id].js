@@ -69,6 +69,7 @@ const Page = () => {
           ...casee,
           ...updatedDetails,
         };
+        console.log(updatedCase);
         await casesApi.editCase(updatedCase, auth);
         // getCase();
         setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");

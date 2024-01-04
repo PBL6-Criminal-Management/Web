@@ -115,7 +115,6 @@ export const UserDetails = (props) => {
   const handleSubmit = () => {
     // Additional logic for form submission if needed.
     // For now, we're just updating the user.
-    dispatch({ type: "SUBMIT_FORM" });
     if (state.changesMade) {
       onUpdate({
         name: formik.values.name,
@@ -128,7 +127,7 @@ export const UserDetails = (props) => {
         image: formik.values.image,
       });
     }
-    dispatch({ type: "SUBMIT_FORM", payload: !!success });
+    dispatch({ type: "SUBMIT_FORM"});
   };
 
   const handleClick = () => {

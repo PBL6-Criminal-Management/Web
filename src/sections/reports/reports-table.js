@@ -21,8 +21,6 @@ import {
 } from '@mui/material';
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
@@ -71,7 +69,7 @@ export const ReportsTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell sx={{ width: 120 }}>
                   Mã báo cáo
                 </TableCell>
                 <TableCell>
@@ -102,6 +100,7 @@ export const ReportsTable = (props) => {
                 <TableCell
                   sx={{
                     textAlign: 'center',
+                    width: 111,
                   }}
                 >
                   Hành động
@@ -117,7 +116,7 @@ export const ReportsTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {report.id}
+                        {report.code}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -166,32 +165,30 @@ export const ReportsTable = (props) => {
                         <Tooltip title="Chỉnh sửa báo cáo">
                           <IconButton
                             LinkComponent={NextLink}
-                          // href={{
-                          //   pathname: '/criminals/[id]',
-                          //   query: { id: criminal.id },
-                          // }}
+                            href={{
+                              pathname: '/reports/[id]',
+                              query: { id: encodeURIComponent(report.id), code: encodeURIComponent(report.code) },
+                            }}
                           >
-                            <BorderColorIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <PencilSquareIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
 
                         <Tooltip title="Xóa báo cáo">
                           <IconButton onClick={() => handleDeleteClick(report.id)}>
-                            <DeleteIcon />
+                            <SvgIcon
+                              color="action"
+                              fontSize="small"
+                            >
+                              <TrashIcon />
+                            </SvgIcon>
                           </IconButton>
                         </Tooltip>
-                        {/* <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <PencilSquareIcon />
-                        </SvgIcon>
-                        <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <TrashIcon />
-                        </SvgIcon> */}
                       </Stack>
                     </TableCell>
                   </TableRow>

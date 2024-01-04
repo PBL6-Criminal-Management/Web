@@ -41,6 +41,8 @@ export const getAllCriminals = async (searchValue, filter, auth) => {
     if (filter.typeOfViolation !== "") {
       params.TypeOfViolation = filter.typeOfViolation;
     }
+
+    params.OrderBy = 'id DESC';
     const response = await axios.get(`/api/v1/criminal`, {
       params,
       headers: {
@@ -74,9 +76,26 @@ export const getCriminalById = async (criminalId, auth) => {
   }
 };
 
+export const addCriminal = async (criminal, auth) => {
+  let result = await auth.refreshToken();
+  if (!result.isSuccessfully) {
+    throw new Error(result.data);
+  }
+  try {
+    const response = await axios.post("/api/v1/criminal", criminal, {
+      headers: {
+        Authorization: `Bearer ${result.data}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.messages);
+    }
+  }
+};
 
-
-export const EditCriminal = async (criminal, auth) => {
+export const editCriminal = async (criminal, auth) => {
   let result = await auth.refreshToken();
   if (!result.isSuccessfully) {
     throw new Error(result.data);

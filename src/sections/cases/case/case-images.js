@@ -23,10 +23,6 @@ const CaseImages = (props) => {
     loadingButtonDetails,
     loadingButtonPicture,
     handleSubmit,
-    // handleEdit,
-    // handleCancel,
-    handleAddCaseImage,
-    handleDeleteCaseImage,
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isClicked, setIsClicked] = useState(false);

@@ -15,7 +15,7 @@ import {
 import * as constants from "../../../../constants/constants";
 import * as messages from "../../../../constants/messages";
 import { Collapse, Button } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
@@ -32,6 +32,13 @@ const CaseVictimItem = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
+
+  useEffect(() => {
+    if (victim.name === "") {
+      setIsFieldDisabled(false);
+    }
+  }, [victim])
+
 
   const handleDeleteConfirm = () => {
     handleDeleteVictim(index);
@@ -51,17 +58,16 @@ const CaseVictimItem = (props) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-      date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+      date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
       gender: formik.values.gender === true || formik.values.gender === "true",
     });
-    // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
       });
     }
@@ -72,8 +78,8 @@ const CaseVictimItem = (props) => {
     setIsFieldDisabled((prev) => !prev);
     formik.setValues({
       ...victim,
-      birthday: parse(victim.birthday, "dd/MM/yyyy", new Date()),
-      date: parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
+      birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
+      date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
     });
     formik.setTouched({}, false);
     setChangesMade(false);
@@ -90,8 +96,8 @@ const CaseVictimItem = (props) => {
     initialValues: victim
       ? {
           ...victim,
-          birthday: parse(victim.birthday, "dd/MM/yyyy", new Date()),
-          date: parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
+          birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
+          date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({
@@ -215,20 +221,19 @@ const CaseVictimItem = (props) => {
                     label: "Giới tính",
                     name: "gender",
                     md: 1.5,
-                    required: true,
                     select: true,
                     selectProps: constants.gender,
                   },
                   { label: "CMND/CCCD", name: "citizenId", md: 2.5, required: true },
-                  { label: "Số điện thoại", name: "phoneNumber", md: 3 },
-                  { label: "Địa chỉ thường trú", name: "address", md: 6 },
+                  { label: "Số điện thoại", name: "phoneNumber", md: 3, required: true },
+                  { label: "Địa chỉ thường trú", name: "address", md: 6, required: true },
                   {
                     label: "Thời gian lấy lời khai gần nhất",
                     name: "date",
                     dateTimePicker: true,
                     md: 6,
                   },
-                  { label: "Lời khai", name: "testimony", textArea: true },
+                  { label: "Lời khai", name: "testimony", textArea: true, required: true },
                 ].map((field) => (
                   <Grid key={field.name} xs={12} md={field.md || 12}>
                     {loading ? (
