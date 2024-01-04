@@ -24,6 +24,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { NewCaseDetails } from "src/sections/cases/new-case/new-case-details";
 import { format } from "date-fns";
 import { LoadingButton } from "@mui/lab";
+import { useRouter } from "next/navigation";
 
 const NewCasePage = () => {
   const [casee, setCasee] = useState({
@@ -54,6 +55,11 @@ const NewCasePage = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const auth = useAuth();
+  const router = useRouter();
+  const canAdd = auth.isAuthenticated ? auth.user.role !== 2 : false;
+    if (!canAdd) {
+        router.push("/404");
+    }
 
   const getData = useCallback(async () => {
     setLoadingSkeleton(true);
@@ -127,7 +133,7 @@ const NewCasePage = () => {
     setIsSubmitting(true);
   };
 
-  return (
+  return (canAdd && (
     <>
       <Head>
         <title>Vụ án | Thêm vụ án</title>
@@ -351,7 +357,7 @@ const NewCasePage = () => {
         </Container>
       </Box>
     </>
-  );
+  ));
 };
 NewCasePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
