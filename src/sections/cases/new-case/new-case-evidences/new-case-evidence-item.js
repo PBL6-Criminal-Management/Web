@@ -28,7 +28,7 @@ import * as Yup from "yup";
 import _ from "lodash";
 
 const CaseEvidenceItem = (props) => {
-  const { evidence, index, loading, handleSubmit, handleDeleteEvidence } = props;
+  const { evidence, index, loading, handleSubmit, handleDeleteEvidence, isSubmitting } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -41,7 +41,9 @@ const CaseEvidenceItem = (props) => {
     if (evidence.name === "") {
       setIsFieldDisabled(false);
     }
-  }, [evidence])
+  }, [evidence]);
+
+
 
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
@@ -177,7 +179,7 @@ const CaseEvidenceItem = (props) => {
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-      });
+      }, _.isEmpty(formik.errors));
     }
   };
 
@@ -214,6 +216,12 @@ const CaseEvidenceItem = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      formik.handleSubmit();
+    }
+  }, [isSubmitting]);
 
   useEffect(() => {
     setFileList(

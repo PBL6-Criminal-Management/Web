@@ -19,7 +19,7 @@ import * as constants from "../../../../constants/constants";
 import * as messages from "../../../../constants/messages";
 import { Collapse, Button } from "antd";
 import { useState, useEffect } from "react";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
@@ -29,15 +29,16 @@ import { format, parse } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CaseWantedItem = (props) => {
+const CaseCriminalItem = (props) => {
   const {
-    wanted,
-    wantedsOfCase,
+    criminal,
+    criminals,
     criminalsOfCase,
     index,
     loading,
     handleSubmit,
-    handleDeleteWanted,
+    handleDeleteCriminal,
+    isSubmitting
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -47,22 +48,16 @@ const CaseWantedItem = (props) => {
   const [changesMade, setChangesMade] = useState(false);
 
   const getAllowedItems = (originalList, valuesList, idToExclude) => {
-    const idsToRemove = valuesList.map((item) => item.criminalId);
+    const idsToRemove = valuesList.map((item) => item.id);
     return originalList.filter((item) => {
       const isIdToExclude = item.id === idToExclude;
       const isIdInValuesList = idsToRemove.includes(item.id);
-      return item.id && (isIdToExclude || !isIdInValuesList);
+      return isIdToExclude || !isIdInValuesList;
     });
   };
 
-  useEffect(() => {
-    if (!wanted.criminalId) {
-      setIsFieldDisabled(false);
-    }
-  }, [wanted]);
-
   const handleDeleteConfirm = () => {
-    handleDeleteWanted(index);
+    handleDeleteCriminal(index);
     setOpenDeletePopup(false);
   };
 
@@ -75,101 +70,131 @@ const CaseWantedItem = (props) => {
     setOpenDeletePopup(true);
   };
 
+  useEffect(() => {
+    if (!criminal.id) {
+      setIsFieldDisabled(false);
+    }
+  }, [criminal]);
   const fillEmpty = () => {
-    if (!wanted.criminalId) setChangesMade(false);
+    if (!criminal.id) setChangesMade(false);
     setValue(null);
     formik.setValues({
-      key: wanted.key,
-      criminalId: null,
-      wantedType: 0,
-      currentActivity: "",
-      wantedDecisionNo: "",
-      wantedDecisionDay: new Date(),
-      decisionMakingUnit: "",
+      key: criminal.key,
+      id: null,
+      name: "",
+      anotherName: "",
+      birthday: "",
+      gender: "",
+      citizenId: "",
+      homeTown: "",
+      permanentResidence: "",
+      currentAccommodation: "",
+      nationality: "",
+      ethnicity: "",
+      charge: "",
+      reason: "",
+      testimony: "",
+      date: new Date(),
+      typeOfViolation: 0,
       weapon: "",
     });
   };
 
-  const handleSubmitWanted = (e) => {
-    // e.stopPropagation();
+  const handleSubmitCriminal = () => {
+    if (value === null) return;
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
+      date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
     });
+    // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
-      });
+        date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      }, _.isEmpty(formik.errors));
     }
   };
 
-  const handleCancelWanted = (e) => {
+  const handleCancelCriminal = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
-    if (wanted.criminalId) {
-      setValue(options.find((option) => option.id === wanted.criminalId));
+    if (criminal.id) {
+      setValue(options.find((option) => option.id === criminal.id));
       formik.setValues({
-        ...wanted,
-        wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+        ...criminal,
+        date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+        typeOfViolation: parseInt(criminal.typeOfViolation, 10),
       });
       setChangesMade(false);
     } else fillEmpty();
     formik.setTouched({}, false);
   };
 
-  const handleEditWanted = (e) => {
+  const handleEditCriminal = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     setChangesMade(false);
   };
 
   useEffect(() => {
-    if (criminalsOfCase && wanted && wantedsOfCase) {
-      const options = getAllowedItems(criminalsOfCase, wantedsOfCase, wanted.criminalId);
+    if (criminals && criminal) {
+      const options = getAllowedItems(criminals, criminalsOfCase, criminal.id);
       setOptions(options);
     }
-  }, [wanted, wantedsOfCase, criminalsOfCase]);
+  }, [criminal, criminalsOfCase, criminals]);
 
   useEffect(() => {
     if (options) {
-      if (changesMade && value && !options.find((option) => option.id === value.id)) {
+      if (
+        changesMade &&
+        value &&
+        !options.find((option) => option.id === value.id)
+        // criminalsOfCase.find((c) => c.id === value.id) &&
+        // formik.values.key &&
+        // criminalsOfCase.find((c) => c.id === value.id).key !== formik.values.key
+      ) {
         fillEmpty();
       } else if (!changesMade) {
-        setValue(options.find((option) => option.id === wanted.criminalId));
+        setValue(options.find((option) => option.id === criminal.id));
         formik.setValues({
-          ...wanted,
-          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+          ...criminal,
+          date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+          typeOfViolation: parseInt(criminal.typeOfViolation, 10),
         });
       }
     }
-  }, [wanted, options]);
+  }, [criminal, options]);
 
   const formik = useFormik({
     // enableReinitialize: true,
-    initialValues: wanted
+    initialValues: criminal
       ? {
-          ...wanted,
-          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
-        }
+        ...criminal,
+        date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+        typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+      }
       : null,
     validationSchema: Yup.object({
-      criminalId: Yup.string().required(messages.REQUIRED_CRIMINAL),
-      currentActivity: Yup.string().nullable().max(200, messages.LIMIT_CURRENT_ACTIVITY),
-      wantedDecisionNo: Yup.string()
-        .max(50, messages.LIMIT_WANTED_DECISION_NO)
-        .required(messages.REQUIRED_WANTED_DECISION_NO)
-        .matches(/^[\p{L}0-9. -]+$/u, messages.WANTED_DECISION_NO_VALID_CHARACTER),
-      decisionMakingUnit: Yup.string()
-        .max(100, messages.LIMIT_DECISION_MAKING_UNIT)
-        .required(messages.REQUIRED_DECISION_MAKING_UNIT)
-        .matches(/^[\p{L}0-9,. -]+$/u, messages.DECISION_MAKING_UNIT_VALID_CHARACTER),
+      id: Yup.string().required(messages.REQUIRED_CRIMINAL),
+      testimony: Yup.string()
+        .max(65535, messages.LIMIT_TESTIMONY)
+        .required(messages.REQUIRED_TESTIMONY),
+      charge: Yup.string()
+        .max(100, messages.LIMIT_CHARGE)
+        .required(messages.REQUIRED_CHARGE)
+        .matches(/^[\p{L} ,]+$/u, messages.CHARGE_VALID_CHARACTER),
+      reason: Yup.string().nullable().max(500, messages.LIMIT_REASON),
+      // .matches(/^[\p{L} ,]+$/u, messages.CHARGE_VALID_CHARACTER),
+      weapon: Yup.string()
+        .nullable()
+        .max(100, messages.LIMIT_WEAPON)
+        .matches(/^[\p{L}0-9, ]+$/u, messages.WEAPON_NAME_VALID_CHARACTER),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitWanted();
+        handleSubmitCriminal();
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -177,6 +202,12 @@ const CaseWantedItem = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      formik.handleSubmit();
+    }
+  }, [isSubmitting])
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -190,7 +221,7 @@ const CaseWantedItem = (props) => {
               </SvgIcon>
             }
             shape="circle"
-            onClick={handleEditWanted}
+            onClick={handleEditCriminal}
           />
         </Tooltip>
       )}
@@ -218,7 +249,7 @@ const CaseWantedItem = (props) => {
                 </SvgIcon>
               }
               shape="circle"
-              onClick={handleCancelWanted}
+              onClick={handleCancelCriminal}
             />
           </Tooltip>
         </>
@@ -253,7 +284,7 @@ const CaseWantedItem = (props) => {
               extra: isExpanded ? extraBtns() : null,
               label: (
                 <Stack direction="row" spacing={0.5}>
-                  <Typography>Tội phạm truy nã {index + 1}</Typography>
+                  <Typography>Tội phạm {index + 1}</Typography>
                   {value && (
                     <>
                       <Typography>: </Typography>
@@ -281,28 +312,49 @@ const CaseWantedItem = (props) => {
                   {[
                     {
                       label: "Liên kết tội phạm",
-                      name: "criminalId",
+                      name: "id",
                       md: 3,
                       required: true,
                       autoComplete: true,
                     },
+                    { label: "Tên khác", name: "anotherName", md: 3, disabled: true, info: true },
+                    { label: "Ngày sinh", name: "birthday", md: 2, disabled: true, info: true },
+                    { label: "Giới tính", name: "gender", md: 1.5, disabled: true, info: true },
+                    { label: "CMND/CCCD", name: "citizenId", md: 2.5, disabled: true, info: true },
+                    { label: "Quê quán", name: "homeTown", md: 4, disabled: true, info: true },
                     {
-                      label: "Loại truy nã",
-                      name: "wantedType",
-                      md: 2,
+                      label: "Nơi ĐKTT",
+                      name: "permanentResidence",
+                      md: 4,
+                      disabled: true,
+                      info: true,
+                    },
+                    {
+                      label: "Nơi ở hiện tại",
+                      name: "currentAccommodation",
+                      md: 4,
+                      disabled: true,
+                      info: true,
+                    },
+                    { label: "Quốc tịch", name: "nationality", md: 6, disabled: true, info: true },
+                    { label: "Dân tộc", name: "ethnicity", md: 6, disabled: true, info: true },
+                    { label: "Tội danh", name: "charge", md: 3, required: true },
+                    { label: "Nguyên nhân", name: "reason", md: 3 },
+                    { label: "Vũ khí", name: "weapon", md: 3 },
+                    {
+                      label: "Loại vi phạm",
+                      name: "typeOfViolation",
+                      md: 3,
                       select: true,
-                      selectProps: constants.wantedType,
-                      required: true,
+                      selectProps: constants.typeOfViolation,
+                      required: true
                     },
-                    { label: "Hoạt động hiện hành", name: "currentActivity", md: 7 },
-                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3, required: true, },
                     {
-                      label: "Ngày ra quyết định",
-                      name: "wantedDecisionDay",
-                      md: 2,
-                      datePicker: true,
+                      label: "Thời gian lấy lời khai gần nhất",
+                      name: "date",
+                      dateTimePicker: true,
                     },
-                    { label: "Đơn vị ra quyết định", name: "decisionMakingUnit", md: 7, required: true, },
+                    { label: "Lời khai", name: "testimony", textArea: true, required: true },
                   ].map((field) => (
                     <Grid key={field.name} xs={12} md={field.md || 12}>
                       {loading ? (
@@ -319,14 +371,13 @@ const CaseWantedItem = (props) => {
                           disablePortal
                           fullWidth
                           options={options}
-                          getOptionLabel={(option) =>
-                            value ? option.code + "-" + option.name : ""
-                          }
+                          getOptionLabel={(option) => {
+                            return value ? option.code + "-" + option.name : "";
+                          }}
                           isOptionEqualToValue={(option, value) => {
                             if (value === null || value === undefined) {
                               return option === value;
                             }
-
                             return option.id === value.id;
                           }}
                           onChange={async (event, value) => {
@@ -334,25 +385,22 @@ const CaseWantedItem = (props) => {
                               fillEmpty();
                             } else {
                               setValue(value);
-                              if (value.id === wanted.criminalId) {
+                              if (value.id === criminal.id) {
                                 formik.setValues({
-                                  ...wanted,
-                                  wantedDecisionDay: parse(
-                                    wanted.wantedDecisionDay,
-                                    "dd/MM/yyyy",
-                                    new Date()
-                                  ),
+                                  ...criminal,
+                                  date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+                                  typeOfViolation: parseInt(criminal.typeOfViolation, 10),
                                 });
                                 setChangesMade(false);
                               } else {
                                 formik.setValues({
-                                  key: wanted.key,
-                                  criminalId: value.id,
-                                  wantedType: 0,
-                                  currentActivity: "",
-                                  wantedDecisionNo: "",
-                                  wantedDecisionDay: new Date(),
-                                  decisionMakingUnit: "",
+                                  ...value,
+                                  key: criminal.key,
+                                  charge: "",
+                                  reason: "",
+                                  testimony: "",
+                                  date: new Date(),
+                                  typeOfViolation: 0,
                                   weapon: "",
                                 });
                                 setChangesMade(true);
@@ -375,10 +423,10 @@ const CaseWantedItem = (props) => {
                           )} // Set the default value based on the criminal prop
                           renderInput={(params) => (
                             <TextField
-                            {...params}
-                            error={!!(formik.touched[field.name] && formik.errors[field.name])}
-                            helperText={formik.touched[field.name] && formik.errors[field.name]}
-                            disabled={isFieldDisabled || field.disabled}
+                              {...params}
+                              error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                              helperText={formik.touched[field.name] && formik.errors[field.name]}
+                              disabled={isFieldDisabled || field.disabled}
                               label={field.label}
                               required={field.required || false}
                               sx={{
@@ -390,8 +438,9 @@ const CaseWantedItem = (props) => {
                             />
                           )}
                         />
-                      ) : field.datePicker ? (
-                        <DatePicker
+                      ) : field.dateTimePicker ? (
+                        <DateTimePicker
+                          error={!!(formik.touched[field.name] && formik.errors[field.name])}
                           fullWidth
                           helperText={formik.touched[field.name] && formik.errors[field.name]}
                           label={field.label}
@@ -407,14 +456,14 @@ const CaseWantedItem = (props) => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              fullWidth
                               disabled={isFieldDisabled || field.disabled}
+                              fullWidth
                               InputLabelProps={{ shrink: true }}
                               required={field.required || false}
                               onKeyDown={(e) => e.preventDefault()}
                             />
                           )}
-                          maxDate={new Date()} // Assuming current date is the maximum allowed
+                          maxDate={new Date()}
                         />
                       ) : (
                         <TextField
@@ -428,7 +477,6 @@ const CaseWantedItem = (props) => {
                             setChangesMade(true);
                             formik.handleChange(e);
                           }}
-                          type={field.name}
                           value={formik.values[field.name] ?? ""}
                           multiline={field.textArea || false}
                           disabled={isFieldDisabled || field.disabled}
@@ -443,8 +491,8 @@ const CaseWantedItem = (props) => {
                           }}
                         >
                           {field.select &&
-                            Object.entries(field.selectProps).map(([value, label]) => (
-                              <option key={value} value={value}>
+                            Object.entries(field.selectProps).map(([value, label], index) => (
+                              <option key={index} value={value}>
                                 {label}
                               </option>
                             ))}
@@ -458,8 +506,8 @@ const CaseWantedItem = (props) => {
           ]}
         />
         <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
-          <DialogTitle>Xác nhận xóa tội phạm truy nã {value?.name}</DialogTitle>
-          <DialogContent>Bạn có chắc chắn muốn xóa tội phạm truy nã này?</DialogContent>
+          <DialogTitle>Xác nhận xóa tội phạm {value?.name}</DialogTitle>
+          <DialogContent>Bạn có chắc chắn muốn xóa tội phạm này?</DialogContent>
           <DialogActions>
             <ButtonMUI onClick={handleDeleteCancel} color="primary">
               Hủy
@@ -474,4 +522,4 @@ const CaseWantedItem = (props) => {
   );
 };
 
-export default CaseWantedItem;
+export default CaseCriminalItem;

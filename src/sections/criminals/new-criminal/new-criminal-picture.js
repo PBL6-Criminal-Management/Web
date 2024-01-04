@@ -10,16 +10,15 @@ import {
   Grid,
   IconButton,
   Skeleton,
-  Typography
+  Typography,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
-import { useEffect, useState, useRef } from 'react';
 import { LoadingButton } from '@mui/lab';
-import * as Yup from "yup";
+import { useEffect, useState, useRef } from 'react';
 
-export const NewAccountPicture = (props) => {
+export const NewCriminalPicture = (props) => {
   const { imageLink, loadingSkeleton, loadingButtonDetails, loadingButtonPicture, onUpdate, isFieldDisabled, buttonDisabled } = props;
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [file, setFile] = useState(null);

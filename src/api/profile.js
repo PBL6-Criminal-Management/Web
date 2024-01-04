@@ -2,7 +2,6 @@ import axios from "./axios";
 
 export const getProfile = async (token) => {
     try {
-        console.log(token);
         const response = await axios.get("/api/v1/profile", {
             headers: {
                 Authorization: `Bearer ${token}`,

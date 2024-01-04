@@ -15,6 +15,7 @@ import { Upload, Image } from "antd";
 import * as imagesApi from "../../../api/images";
 import ReactPlayer from "react-player";
 import { useFormik } from "formik";
+import _ from "lodash";
 
 const CaseImages = (props) => {
   const {
@@ -23,10 +24,8 @@ const CaseImages = (props) => {
     loadingButtonDetails,
     loadingButtonPicture,
     handleSubmit,
+    isSubmitting
   } = props;
-  const [isFieldDisabled, setIsFieldDisabled] = useState(true);
-  const [isClicked, setIsClicked] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -58,13 +57,11 @@ const CaseImages = (props) => {
   );
 
   useEffect(() => console.log(fileList), [fileList]);
-
   useEffect(() => {
-    if (!loadingButtonDetails && hasSubmitted) {
-      setIsClicked(false);
-      setHasSubmitted(false);
+    if (isSubmitting) {
+      formik.handleSubmit();
     }
-  }, [loadingButtonDetails, hasSubmitted]);
+  }, [isSubmitting]);
 
   const handleSuccess = (response, filename) => {
     const newImage = {
@@ -167,30 +164,10 @@ const CaseImages = (props) => {
     </div>
   );
 
-  const handleEditImages = () => {
-    setIsFieldDisabled(false);
-    setIsClicked(false);
-    // handleEdit();
-    setChangesMade(false);
-  };
-
   const handleSubmitImages = () => {
-    setIsFieldDisabled(true);
-    setIsClicked(true);
-    setHasSubmitted(true);
     if (changesMade) {
-      handleSubmit(formik.values);
+      handleSubmit(formik.values, _isEmpty(formik.errors));
     }
-    // handleSubmit();
-  };
-
-  const handleCancelImages = () => {
-    setIsClicked(false);
-    setIsFieldDisabled(true);
-    setChangesMade(false);
-    formik.setValues(caseImages);
-    formik.setTouched({}, false);
-    // handleCancel();
   };
 
   const formik = useFormik({
@@ -239,7 +216,6 @@ const CaseImages = (props) => {
                   field.upload && (
                     <>
                       <Upload
-                        disabled={isFieldDisabled || field.disabled}
                         accept="image/*,video/*"
                         name={field.name}
                         customRequest={(options) =>
@@ -293,7 +269,7 @@ const CaseImages = (props) => {
           )}
         </Grid>
       </CardContent>
-      <Divider />
+      {/* <Divider />
       <CardActions sx={{ justifyContent: "flex-end" }}>
         {isClicked ? (
           loadingButtonDetails && (
@@ -322,7 +298,7 @@ const CaseImages = (props) => {
             )}
           </>
         )}
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

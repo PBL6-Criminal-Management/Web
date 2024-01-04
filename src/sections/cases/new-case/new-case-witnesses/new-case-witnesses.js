@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@mui/material";
-import CaseWitnessItem from "./case-witness-item";
+import CaseWitnessItem from "./new-case-witness-item";
 import { Space } from "antd";
 const CaseWitnesses = (props) => {
   const { witnessInfo, loading, handleSubmit, handleDeleteWitness, isSubmitting } = props;
 
-  const handleSubmitWitnessInfo = (index, values) => {
+  const handleSubmitWitnessInfo = (index, values, isReady) => {
     console.log("submit witness info");
     console.log([
       ...witnessInfo.slice(0, index),
@@ -15,7 +15,7 @@ const CaseWitnesses = (props) => {
       ...witnessInfo.slice(0, index),
       { ...values, id: values.id ? values.id : -1 },
       ...witnessInfo.slice(index + 1),
-    ]);
+    ], isReady);
   };
 
   return (
@@ -41,8 +41,9 @@ const CaseWitnesses = (props) => {
                 witness={witness}
                 index={index}
                 loading={loading}
-                handleSubmit={(values) => handleSubmitWitnessInfo(index, values)}
+                handleSubmit={(values, isReady) => handleSubmitWitnessInfo(index, values, isReady)}
                 handleDeleteWitness={handleDeleteWitness}
+                isSubmitting={isSubmitting}
               />
             ))}
         </Space>

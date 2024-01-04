@@ -25,22 +25,23 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { format, parse } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
-const CaseWitnessItem = (props) => {
-  const { witness, index, loading, handleSubmit, handleDeleteWitness } = props;
+const CaseVictimItem = (props) => {
+  const { victim, index, loading, handleSubmit, handleDeleteVictim, isSubmitting } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
 
   useEffect(() => {
-    if (witness.name === "") {
+    if (victim.name === "") {
       setIsFieldDisabled(false);
     }
-  }, [witness])
+  }, [victim])
 
   const handleDeleteConfirm = () => {
-    handleDeleteWitness(index);
+    handleDeleteVictim(index);
     setOpenDeletePopup(false);
   };
 
@@ -53,39 +54,38 @@ const CaseWitnessItem = (props) => {
     setOpenDeletePopup(true);
   };
 
-  const handleSubmitWitness = (e) => {
+  const handleSubmitVictim = () => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-      date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+      date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
       gender: formik.values.gender === true || formik.values.gender === "true",
     });
-    // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        birthday: witness.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
-        date: witness.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
-      });
+      }, _.isEmpty(formik.errors));
     }
   };
 
-  const handleCancelWitness = (e) => {
+  const handleCancelVictim = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     formik.setValues({
-      ...witness,
-      birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
-      date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+      ...victim,
+      birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
+      date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
     });
     formik.setTouched({}, false);
     setChangesMade(false);
   };
 
-  const handleEditWitness = (e) => {
+  const handleEditVictim = (e) => {
     e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     setChangesMade(false);
@@ -93,12 +93,12 @@ const CaseWitnessItem = (props) => {
 
   const formik = useFormik({
     // enableReinitialize: true,
-    initialValues: witness
+    initialValues: victim
       ? {
-          ...witness,
-          birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
-          date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
-        }
+        ...victim,
+        birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
+        date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -123,7 +123,7 @@ const CaseWitnessItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitWitness();
+        handleSubmitVictim();
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -131,6 +131,12 @@ const CaseWitnessItem = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      formik.handleSubmit();
+    }
+  }, [isSubmitting]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -144,7 +150,7 @@ const CaseWitnessItem = (props) => {
               </SvgIcon>
             }
             shape="circle"
-            onClick={handleEditWitness}
+            onClick={handleEditVictim}
           />
         </Tooltip>
       )}
@@ -172,7 +178,7 @@ const CaseWitnessItem = (props) => {
                 </SvgIcon>
               }
               shape="circle"
-              onClick={handleCancelWitness}
+              onClick={handleCancelVictim}
             />
           </Tooltip>
         </>
@@ -207,7 +213,7 @@ const CaseWitnessItem = (props) => {
             label: (
               <Stack direction="row" spacing={0.5}>
                 <Typography>
-                  Nhân chứng {index + 1}
+                  Nạn nhân {index + 1}
                   {formik.values.name && `: ${formik.values.name}`}
                 </Typography>
               </Stack>
@@ -221,20 +227,19 @@ const CaseWitnessItem = (props) => {
                     label: "Giới tính",
                     name: "gender",
                     md: 1.5,
-                    required: true,
                     select: true,
                     selectProps: constants.gender,
                   },
                   { label: "CMND/CCCD", name: "citizenId", md: 2.5, required: true },
-                  { label: "Số điện thoại", name: "phoneNumber", md: 3 },
-                  { label: "Địa chỉ thường trú", name: "address", md: 6 },
+                  { label: "Số điện thoại", name: "phoneNumber", md: 3, required: true },
+                  { label: "Địa chỉ thường trú", name: "address", md: 6, required: true },
                   {
                     label: "Thời gian lấy lời khai gần nhất",
                     name: "date",
                     dateTimePicker: true,
                     md: 6,
                   },
-                  { label: "Lời khai", name: "testimony", textArea: true },
+                  { label: "Lời khai", name: "testimony", textArea: true, required: true },
                 ].map((field) => (
                   <Grid key={field.name} xs={12} md={field.md || 12}>
                     {loading ? (
@@ -335,8 +340,8 @@ const CaseWitnessItem = (props) => {
         ]}
       />
       <Dialog open={openDeletePopup} onClose={handleDeleteCancel}>
-        <DialogTitle>Xác nhận xóa nhân chứng {witness?.name}</DialogTitle>
-        <DialogContent>Bạn có chắc chắn muốn xóa nhân chứng này?</DialogContent>
+        <DialogTitle>Xác nhận xóa nạn nhân {victim?.name}</DialogTitle>
+        <DialogContent>Bạn có chắc chắn muốn xóa nạn nhân này?</DialogContent>
         <DialogActions>
           <ButtonMUI onClick={handleDeleteCancel} color="primary">
             Hủy
@@ -350,4 +355,4 @@ const CaseWitnessItem = (props) => {
   );
 };
 
-export default CaseWitnessItem;
+export default CaseVictimItem;

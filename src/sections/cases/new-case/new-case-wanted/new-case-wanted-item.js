@@ -28,6 +28,7 @@ import NextLink from "next/link";
 import { format, parse } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
 const CaseWantedItem = (props) => {
   const {
@@ -38,6 +39,7 @@ const CaseWantedItem = (props) => {
     loading,
     handleSubmit,
     handleDeleteWanted,
+    isSubmitting
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -60,6 +62,8 @@ const CaseWantedItem = (props) => {
       setIsFieldDisabled(false);
     }
   }, [wanted]);
+
+
 
   const handleDeleteConfirm = () => {
     handleDeleteWanted(index);
@@ -102,7 +106,7 @@ const CaseWantedItem = (props) => {
       handleSubmit({
         ...formik.values,
         wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
-      });
+      }, _.isEmpty(formik.errors));
     }
   };
 
@@ -151,9 +155,9 @@ const CaseWantedItem = (props) => {
     // enableReinitialize: true,
     initialValues: wanted
       ? {
-          ...wanted,
-          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
-        }
+        ...wanted,
+        wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       criminalId: Yup.string().required(messages.REQUIRED_CRIMINAL),
@@ -177,6 +181,12 @@ const CaseWantedItem = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      formik.handleSubmit();
+    }
+  }, [isSubmitting]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -375,10 +385,10 @@ const CaseWantedItem = (props) => {
                           )} // Set the default value based on the criminal prop
                           renderInput={(params) => (
                             <TextField
-                            {...params}
-                            error={!!(formik.touched[field.name] && formik.errors[field.name])}
-                            helperText={formik.touched[field.name] && formik.errors[field.name]}
-                            disabled={isFieldDisabled || field.disabled}
+                              {...params}
+                              error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                              helperText={formik.touched[field.name] && formik.errors[field.name]}
+                              disabled={isFieldDisabled || field.disabled}
                               label={field.label}
                               required={field.required || false}
                               sx={{

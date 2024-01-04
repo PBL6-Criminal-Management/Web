@@ -1,17 +1,17 @@
 import { Card, CardContent } from "@mui/material";
-import CaseCriminalItem from "./case-criminal-item";
+import CaseCriminalItem from "./new-case-criminal-item";
 import { Space } from "antd";
 const CaseCriminals = (props) => {
   const { criminalInfo, criminals, loading, handleSubmit, handleDeleteCriminal, isSubmitting } = props;
 
-  const handleSubmitInfo = (index, values) => {
+  const handleSubmitInfo = (index, values, isReady) => {
     console.log("submit info");
     console.log([...criminalInfo.slice(0, index), { ...values }, ...criminalInfo.slice(index + 1)]);
     handleSubmit([
       ...criminalInfo.slice(0, index),
       { ...values },
       ...criminalInfo.slice(index + 1),
-    ]);
+    ], isReady);
   };
 
   return (
@@ -40,8 +40,9 @@ const CaseCriminals = (props) => {
                   criminalsOfCase={criminalInfo}
                   index={index}
                   loading={loading}
-                  handleSubmit={(values) => handleSubmitInfo(index, values)}
+                  handleSubmit={(values, isReady) => handleSubmitInfo(index, values, isReady)}
                   handleDeleteCriminal={handleDeleteCriminal}
+                  isSubmitting={isSubmitting}
                 />
               );
             })}

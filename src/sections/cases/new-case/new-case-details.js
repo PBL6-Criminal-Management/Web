@@ -1,29 +1,31 @@
 import { useEffect, useState } from "react";
 import { Box, Skeleton } from "@mui/material";
 import AccordionSection from "src/layouts/dashboard/accordion-section";
-import CaseGeneral from "./case-general";
-import CaseCriminals from "./case-criminals/case-criminals";
-import CaseVictims from "./case-victims/case-victims";
-import CaseWitnesses from "./case-witnesses/case-witnesses";
-import CaseEvidences from "./case-evidences/case-evidences";
-import CaseImages from "./case-images";
-import CaseWanted from "./case-wanted/case-wanted";
-import CaseInvestigators from "./case-investigators";
+import CaseGeneral from "./new-case-general";
+import CaseCriminals from "./new-case-criminals/new-case-criminals";
+import CaseVictims from "./new-case-victims/new-case-victims";
+import CaseWitnesses from "./new-case-witnesses/new-case-witnesses";
+import CaseEvidences from "./new-case-evidences/new-case-evidences";
+import CaseImages from "./new-case-images";
+import CaseWanted from "./new-case-wanted/new-case-wanted";
+import CaseInvestigators from "./new-case-investigators";
 import _ from "lodash";
 import { format } from "date-fns";
+import { listeners } from "process";
 
-export const CaseDetails = (props) => {
+export const NewCaseDetails = (props) => {
   const {
     casee: initialCase,
     criminals,
     investigators,
     loadingSkeleton,
     loadingButtonDetails,
-    loadingButtonPicture,
     onUpdate,
+    isSubmitting
   } = props;
   const [caseDetail, setCaseDetail] = useState(null);
   const [isFirst, setIsFirst] = useState(true);
+  const [listReady, setListReady] = useState([false, false, false, false, false, false, false, true]);
 
   useEffect(() => {
     if (!_.isEmpty(initialCase) && isFirst) {
@@ -183,25 +185,6 @@ export const CaseDetails = (props) => {
   };
 
   // Handle Case Images
-  const updateCaseImages = () => {
-    const currentCaseImages = caseDetail.caseImages || [];
-    const caseImages = _.cloneDeep(currentCaseImages);
-    const indexToUpdateCI = action.payload.index;
-
-    if (indexToUpdateCI !== undefined && indexToUpdateCI !== null) {
-      caseImages[indexToUpdateCI] = {
-        ...caseImages[indexToUpdateCI],
-        ...action.payload,
-      };
-    }
-
-    const newObjCI = {
-      ...state,
-      casee: { ...caseDetail, caseImages: caseImages },
-      changesMade: true,
-    };
-    return newObjCI;
-  };
   const handleAddCaseImage = (newImage) => {
     const currentCaseImagesAdd = caseDetail.caseImages || [];
     const caseImagesAdd = _.cloneDeep(currentCaseImagesAdd);
@@ -264,13 +247,11 @@ export const CaseDetails = (props) => {
       console.log("submit values: ", {
         ...caseDetail,
         investigatorIds: value?.map((i) => parseInt(i.id, 10)),
-        // investigators: value,
       });
       setCaseDetail({ ...caseDetail, investigators: value });
       submitData({
         ...caseDetail,
         investigatorIds: value?.map((i) => parseInt(i.id, 10)),
-        // investigators: value,
       });
     } else if (key === "caseImages") {
       console.log("submit values: ", {
@@ -298,8 +279,13 @@ export const CaseDetails = (props) => {
       witnesses: submitData.witnesses?.filter((w) => w.id !== null),
       victims: submitData.victims?.filter((v) => v.id !== null),
     };
+
+    // if (listReady.every(v => v === true)){
     onUpdate(submitData);
+    // }
   };
+
+  // useEffect(() => { if (listState) onUpdate(submitData); }, [listState]);
 
   return (
     <Box
@@ -309,16 +295,6 @@ export const CaseDetails = (props) => {
     >
       {loadingSkeleton || caseDetail === null || caseDetail.status === undefined ? (
         <>
-          <Skeleton
-            variant="rounded"
-            sx={{
-              "&:not(:last-child)": {
-                marginBottom: "16px",
-              },
-            }}
-          >
-            <AccordionSection summary=""></AccordionSection>
-          </Skeleton>
           <Skeleton
             variant="rounded"
             sx={{
@@ -415,8 +391,14 @@ export const CaseDetails = (props) => {
               }}
               loading={loadingSkeleton}
               loadingButtonDetails={loadingButtonDetails}
-              loadingButtonPicture={loadingButtonPicture}
-              handleSubmit={(value) => handleSubmit("general", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 0) l = isReady;
+                  return l;
+                }));
+                handleSubmit("general", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -430,7 +412,14 @@ export const CaseDetails = (props) => {
               criminals={criminals}
               loading={loadingSkeleton}
               handleDeleteCriminal={handleDeleteCriminal}
-              handleSubmit={(value) => handleSubmit("criminals", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 1) l = isReady;
+                  return l;
+                }));
+                handleSubmit("criminals", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -443,7 +432,14 @@ export const CaseDetails = (props) => {
               victimInfo={caseDetail.victims}
               handleDeleteVictim={handleDeleteVictim}
               loading={loadingSkeleton}
-              handleSubmit={(value) => handleSubmit("victims", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 2) l = isReady;
+                  return l;
+                }));
+                handleSubmit("victims", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -456,7 +452,14 @@ export const CaseDetails = (props) => {
               witnessInfo={caseDetail.witnesses}
               handleDeleteWitness={handleDeleteWitness}
               loading={loadingSkeleton}
-              handleSubmit={(value) => handleSubmit("witnesses", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 3) l = isReady;
+                  return l;
+                }));
+                handleSubmit("witnesses", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -469,7 +472,14 @@ export const CaseDetails = (props) => {
               evidenceInfo={caseDetail.evidences}
               handleDeleteEvidence={handleDeleteEvidence}
               loading={loadingSkeleton}
-              handleSubmit={(value) => handleSubmit("evidences", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 4) l = isReady;
+                  return l;
+                }));
+                handleSubmit("evidences", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -480,8 +490,14 @@ export const CaseDetails = (props) => {
               loadingButtonDetails={loadingButtonDetails}
               handleAddCaseImage={handleAddCaseImage}
               handleDeleteCaseImage={handleDeleteCaseImage}
-              loadingButtonPicture={loadingButtonPicture}
-              handleSubmit={(value) => handleSubmit("caseImages", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 5) l = isReady;
+                  return l;
+                }));
+                handleSubmit("caseImages", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -495,7 +511,14 @@ export const CaseDetails = (props) => {
               criminals={caseDetail.criminals}
               handleDeleteWanted={handleDeleteWanted}
               loading={loadingSkeleton}
-              handleSubmit={(value) => handleSubmit("wantedCriminalRequest", value)}
+              handleSubmit={(value, isReady) => {
+                setListReady([...listReady].map((l, i) => {
+                  if (i == 6) l = isReady;
+                  return l;
+                }));
+                handleSubmit("wantedCriminalRequest", value);
+              }}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
 
@@ -505,6 +528,7 @@ export const CaseDetails = (props) => {
               investigators={investigators}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("investigatorIds", value)}
+              isSubmitting={isSubmitting}
             />
           </AccordionSection>
         </>

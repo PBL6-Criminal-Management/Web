@@ -25,9 +25,10 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { format, parse } from "date-fns";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import _ from "lodash";
 
 const CaseWitnessItem = (props) => {
-  const { witness, index, loading, handleSubmit, handleDeleteWitness } = props;
+  const { witness, index, loading, handleSubmit, handleDeleteWitness, isSubmitting } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -69,7 +70,7 @@ const CaseWitnessItem = (props) => {
         birthday: witness.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
         date: witness.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
-      });
+      }, _.isEmpty(formik.errors));
     }
   };
 
@@ -95,10 +96,10 @@ const CaseWitnessItem = (props) => {
     // enableReinitialize: true,
     initialValues: witness
       ? {
-          ...witness,
-          birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
-          date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
-        }
+        ...witness,
+        birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
+        date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -131,6 +132,12 @@ const CaseWitnessItem = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      formik.handleSubmit();
+    }
+  }, [isSubmitting]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">

@@ -108,7 +108,7 @@ export const REQUIRED_NOTE = "Nội dung không được để trống";
 export const REQUIRED_ANOTHER_NAME = "Tên khác không được để trống";
 export const REQUIRED_PHONE_MODEL = "Model điện thoại không được để trống";
 export const REQUIRED_CAREER_AND_WORKPLACE = "Nghề nghiệp và nơi làm việc không được để trống";
-export const REQUIRED_CHARACTERISTICS = "Tính cách không được để trống";
+export const REQUIRED_CHARACTERISTICS = "Đặc điểm nhận dạng không được để trống";
 export const REQUIRED_HOME_TOWN = "Quê quán không được để trống";
 export const REQUIRED_ETHNICITY = "Dân tộc không được để trống";
 export const REQUIRED_RELIGION = "Tôn giáo không được để trống";
@@ -159,7 +159,7 @@ export const LIMIT_ANOTHER_NAME = "Tên khác không được vượt quá 100 k
 export const LIMIT_PHONE_MODEL = "Model điện thoại không được vượt quá 100 ký tự!";
 export const LIMIT_CAREER_AND_WORKPLACE =
   "Nghề nghiệp và nơi làm việc không được vượt quá 300 ký tự!";
-export const LIMIT_CHARACTERISTICS = "Tính cách không được vượt quá 500 ký tự!";
+export const LIMIT_CHARACTERISTICS = "Đặc điểm nhận dạng không được vượt quá 500 ký tự!";
 export const LIMIT_HOME_TOWN = "Quê quán không được vượt quá 200 ký tự!";
 export const LIMIT_ETHNICITY = "Dân tộc không được vượt quá 50 ký tự!";
 export const LIMIT_RELIGION = "Tôn giáo không được vượt quá 50 ký tự!";
@@ -226,7 +226,7 @@ export const PHONE_MODE_VALID_CHARACTER =
 export const CAREER_AND_WORKPLACE_VALID_CHARACTER =
   "Nơi làm việc và chỗ ở không được chứa ký tự đặc biệt";
 export const CHARACTERISTICS_VALID_CHARACTER =
-  "Tính cách chỉ chứa ký tự chữ, khoảng trắng và dấu phẩy";
+  "Đặc điểm nhận dạng chỉ chứa ký tự chữ, khoảng trắng và dấu phẩy";
 export const HOME_TOWN_VALID_CHARACTER = "Quê quán không được chứa ký tự đặc biệt";
 export const ETHNICITY_VALID_CHARACTER = "Dân tộc chỉ chứa ký tự chữ";
 export const RELIGION_VALID_CHARACTER = "Tôn giáo chỉ chứa ký tự chữ";

@@ -9,62 +9,41 @@ import {
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Skeleton from "@mui/material/Skeleton";
-import { LoadingButton } from "@mui/lab";
 import * as constants from "../../../constants/constants";
 import * as messages from "../../../constants/messages";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { format, parse } from "date-fns";
 import { useState, useEffect } from "react";
+import _ from "lodash";
 
 const CaseGeneral = (props) => {
-  const { generalInfo, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit } = props;
-  const [isFieldDisabled, setIsFieldDisabled] = useState(true);
-  const [isClicked, setIsClicked] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const { generalInfo, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit, isSubmitting } = props;
   const [changesMade, setChangesMade] = useState(false);
 
   useEffect(() => {
-    if (!loadingButtonDetails && hasSubmitted) {
-      setIsClicked(false);
-      setHasSubmitted(false);
+    if (isSubmitting) {
+      formik.handleSubmit();
     }
-  }, [loadingButtonDetails, hasSubmitted]);
-
-  const handleEditGeneral = () => {
-    setIsFieldDisabled(false);
-    setIsClicked(false);
-    setChangesMade(false);
-  };
+  }, [isSubmitting]);
 
   const handleSubmitGeneral = () => {
-    setIsFieldDisabled(true);
-    setIsClicked(true);
-    setHasSubmitted(true);
     if (changesMade)
       handleSubmit({
         ...formik.values,
         startDate: generalInfo.startDate && format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
         endDate: generalInfo.endDate && format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
-      });
-  };
-
-  const handleCancelGeneral = () => {
-    formik.setValues({
-      ...generalInfo,
-      startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
-      endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
-    });
+      }, _.isEmpty(formik.errors));
   };
 
   const formik = useFormik({
-    enableReinitialize: true,
+    // enableReinitialize: true,
     initialValues: generalInfo
       ? {
-          ...generalInfo,
-          startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
-          endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
-        }
+        ...generalInfo,
+        startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
+        endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       charge: Yup.string()
@@ -125,7 +104,7 @@ const CaseGeneral = (props) => {
               },
               { label: "Thời gian kết thúc", name: "endDate", md: 3, dateTimePicker: true },
               { label: "Tội danh chính", name: "charge", required: true, md: 9 },
-              { label: "Khu vực xảy ra", name: "area", md: 3 },
+              { label: "Khu vực xảy ra", name: "area", md: 3, required: true },
               { label: "Chi tiết vụ án", name: "description", textArea: true },
             ].map((field) => (
               <Grid key={field.name} xs={12} md={field.md || 12}>
@@ -146,8 +125,8 @@ const CaseGeneral = (props) => {
                       formik.setFieldValue(field.name, date);
                     }}
                     type={field.name}
-                    value={formik.values[field.name]}
-                    disabled={isFieldDisabled || field.disabled}
+                    value={formik.values[field.name] || null}
+                    // disabled={isFieldDisabled || field.disabled}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -174,7 +153,7 @@ const CaseGeneral = (props) => {
                     type={field.name}
                     value={formik.values[field.name]}
                     multiline={field.textArea || false}
-                    disabled={isFieldDisabled || field.disabled}
+                    // disabled={isFieldDisabled || field.disabled}
                     required={field.required || false}
                     select={field.select}
                     SelectProps={field.select ? { native: true } : undefined}
@@ -197,7 +176,7 @@ const CaseGeneral = (props) => {
             ))}
           </Grid>
         </CardContent>
-        <Divider />
+        {/* <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           {isClicked ? (
             loadingButtonDetails && (
@@ -226,7 +205,7 @@ const CaseGeneral = (props) => {
               )}
             </>
           )}
-        </CardActions>
+        </CardActions> */}
       </Card>
     </form>
   );

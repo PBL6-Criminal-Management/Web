@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@mui/material";
-import CaseEvidenceItem from "./case-evidence-item";
+import CaseEvidenceItem from "./new-case-evidence-item";
 import { Space } from "antd";
 const CaseEvidences = (props) => {
   const { evidenceInfo, loading, handleSubmit, handleDeleteEvidence, isSubmitting } = props;
 
-  const handleSubmitEvidenceInfo = (index, values) => {
+  const handleSubmitEvidenceInfo = (index, values, isReady) => {
     console.log("submit evidence info");
     console.log([
       ...evidenceInfo.slice(0, index),
@@ -15,7 +15,7 @@ const CaseEvidences = (props) => {
       ...evidenceInfo.slice(0, index),
       { ...values, id: values.id ? values.id : -1 },
       ...evidenceInfo.slice(index + 1),
-    ]);
+    ], isReady);
   };
 
   return (
@@ -41,8 +41,9 @@ const CaseEvidences = (props) => {
                 evidence={evidence}
                 index={index}
                 loading={loading}
-                handleSubmit={(values) => handleSubmitEvidenceInfo(index, values)}
+                handleSubmit={(values, isReady) => handleSubmitEvidenceInfo(index, values, isReady)}
                 handleDeleteEvidence={handleDeleteEvidence}
+                isSubmitting={isSubmitting}
               />
             ))}
         </Space>

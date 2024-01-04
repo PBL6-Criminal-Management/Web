@@ -1,10 +1,8 @@
+import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import Head from "next/head";
-import NextLink from "next/link";
-import { useState, useEffect, useCallback } from "react";
 import {
   Alert,
   Box,
-  Breadcrumbs,
   Collapse,
   Container,
   IconButton,
@@ -12,42 +10,54 @@ import {
   Stack,
   Typography,
   Unstable_Grid2 as Grid,
+  Breadcrumbs,
   Link,
+  Button
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import { CaseDetails } from "src/sections/cases/case/case-details";
+import NextLink from "next/link";
+import { useState, useCallback, useEffect } from 'react';
+import { useAuth } from "src/hooks/use-auth";
 import * as criminalsApi from "../../api/criminals";
 import * as casesApi from "../../api/cases";
 import * as accountsApi from "../../api/accounts";
-import { useRouter } from "next/router";
-import { useAuth } from "src/hooks/use-auth";
+import CloseIcon from "@mui/icons-material/Close";
+import { NewCaseDetails } from 'src/sections/cases/new-case/new-case-details';
+import { format } from "date-fns";
 
-const Page = () => {
-  const [casee, setCasee] = useState({});
+const NewCasePage = () => {
+  const [casee, setCasee] = useState({
+    startDate: format(new Date(), "HH:mm dd/MM/yyyy"),
+    endDate: '',
+    typeOfViolation: 0,
+    status: 0,
+    charge: '',
+    area: '',
+    description: '',
+    evidences: [],
+    witnesses: [],
+    caseImages: [],
+    criminals: [],
+    investigatorIds: [],
+    victims: [],
+    wantedCriminalRequest: []
+  });
   const [criminals, setCriminals] = useState([]);
   const [investigators, setInvestigators] = useState([]);
   const [loadingSkeleton, setLoadingSkeleton] = useState(false);
-  const [loadingButtonPicture, setLoadingButtonPicture] = useState(false);
   const [loadingButtonDetails, setLoadingButtonDetails] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(true);
-
-  const router = useRouter();
-  const caseId = decodeURIComponent(router.query.id);
-  const caseCode = decodeURIComponent(router.query.code);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const auth = useAuth();
 
-  const getCase = useCallback(async () => {
+  const getData = useCallback(async () => {
     setLoadingSkeleton(true);
     setError(null);
     try {
-      const casee = await casesApi.getCaseById(caseId, auth);
       const criminals = await criminalsApi.getAllCriminals("", "", auth);
       const investigators = await accountsApi.getAllAccounts("", { role: 2 }, auth);
-      setCasee(casee);
       setCriminals(criminals);
       setInvestigators(investigators);
     } catch (error) {
@@ -58,30 +68,30 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    getCase();
+    getData();
   }, []);
 
-  const updateDetails = useCallback(
-    async (updatedDetails) => {
-      try {
-        const updatedCase = {
-          id: caseId, // dung params de truyen id
-          ...casee,
-          ...updatedDetails,
-        };
-        console.log(updatedCase);
-        await casesApi.editCase(updatedCase, auth);
-        // getCase();
-        setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
-        setError(null);
-      } catch (error) {
-        setSuccess(null);
-        setError(error.message);
-        console.log(error);
-      }
-    },
-    [casee]
-  );
+  // const updateDetails = useCallback(
+  //   async (updatedDetails) => {
+  //     try {
+
+  //       const updatedCase = { // dung params de truyen id
+  //         ...casee,
+  //         ...updatedDetails,
+  //       };
+  //       console.log("updatedCase", updatedCase);
+  //       // await casesApi.editCase(updatedCase, auth);
+  //       // getCase();
+  //       // setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
+  //       // setError(null);
+  //     } catch (error) {
+  //       setSuccess(null);
+  //       setError(error.message);
+  //       console.log(error);
+  //     }
+  //   },
+  //   [casee]
+  // );
 
   const updateCaseDetails = useCallback(
     async (updatedDetails) => {
@@ -90,20 +100,29 @@ const Page = () => {
         setLoadingButtonDetails(true);
         setCasee((prevCasee) => ({ ...prevCasee, ...updatedDetails }));
         setOpen(true);
-        await updateDetails(updatedDetails);
+        setIsSubmitting(false);
+        // await updateDetails(updatedDetails);
       } catch (error) {
         console.log(error);
       } finally {
         setLoadingButtonDetails(false);
       }
     },
-    [setCasee, updateDetails]
+    [casee]
   );
+
+  useEffect(() => {
+    console.log("isSubmitting", isSubmitting);
+  }, [isSubmitting]) 
+
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+  }
 
   return (
     <>
       <Head>
-        <title>Vụ án | {casee?.code}</title>
+        <title>Vụ án | Thêm vụ án</title>
       </Head>
       <Box
         sx={{
@@ -166,7 +185,7 @@ const Page = () => {
                       color: "primary.main",
                     }}
                   >
-                    {casee?.code}
+                    Thêm vụ án
                   </Typography>
                 </Breadcrumbs>
               )}
@@ -174,15 +193,82 @@ const Page = () => {
             <div>
               <Grid container spacing={3}>
                 <Grid xs={12} md={12} lg={12}>
-                  <CaseDetails
+                  <NewCaseDetails
                     casee={casee}
                     criminals={criminals}
                     investigators={investigators}
                     loadingSkeleton={loadingSkeleton}
                     loadingButtonDetails={loadingButtonDetails}
-                    loadingButtonPicture={loadingButtonPicture}
                     onUpdate={updateCaseDetails}
+                    isSubmitting={isSubmitting}
                   />
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{
+                      mt: 2,
+                    }}
+                  >
+                    {loadingSkeleton ? (
+                      <>
+                        <Skeleton height={40} width={120} variant="rounded"></Skeleton>
+                        <Skeleton height={40} width={70} variant="rounded"></Skeleton>
+                      </>
+                    ) : (loadingButtonDetails ?
+                      (
+                        <>
+                          <LoadingButton
+                            disabled
+                            loading={loadingButtonDetails}
+                            size="medium"
+                            variant="contained"
+                          >
+                            Thêm vụ án
+                          </LoadingButton>
+                          <Button
+                            // disabled={loadingButtonDetails || buttonDisabled}
+                            variant="outlined"
+                            component={NextLink}
+                            href="/cases"
+                            sx={{
+                              color: 'neutral.500',
+                              borderColor: 'neutral.500',
+                            }}
+                          >
+                            Huỷ
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={handleSubmit}
+                            // disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
+                            type="submit"
+                            variant="contained"
+                          >
+                            Thêm vụ án
+                          </Button>
+                          <Button
+                            // disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                            variant="outlined"
+                            component={NextLink}
+                            href="/cases"
+                            sx={{
+                              color: 'neutral.500',
+                              borderColor: 'neutral.500',
+                              '&:hover': {
+                                borderColor: 'neutral.600',
+                                backgroundColor: 'neutral.100',
+                              }
+                            }}
+                          >
+                            Huỷ
+                          </Button>
+                        </>
+                      ))}
+                  </Stack>
                 </Grid>
               </Grid>
             </div>
@@ -254,7 +340,6 @@ const Page = () => {
     </>
   );
 };
+NewCasePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default Page;
+export default NewCasePage;
