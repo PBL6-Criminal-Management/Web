@@ -39,7 +39,7 @@ const CaseWantedItem = (props) => {
     loading,
     handleSubmit,
     handleDeleteWanted,
-    isSubmitting
+    isSubmitting,
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -62,8 +62,6 @@ const CaseWantedItem = (props) => {
       setIsFieldDisabled(false);
     }
   }, [wanted]);
-
-
 
   const handleDeleteConfirm = () => {
     handleDeleteWanted(index);
@@ -94,7 +92,7 @@ const CaseWantedItem = (props) => {
     });
   };
 
-  const handleSubmitWanted = (e) => {
+  const handleSubmitWanted = (isValid) => {
     // e.stopPropagation();
     console.log("changemade", changesMade);
     console.log("submit", {
@@ -102,12 +100,13 @@ const CaseWantedItem = (props) => {
       wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
     });
     setIsFieldDisabled((prev) => !prev);
-    if (changesMade) {
-      handleSubmit({
+    handleSubmit(
+      {
         ...formik.values,
         wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
-      }, _.isEmpty(formik.errors));
-    }
+      },
+      isValid
+    );
   };
 
   const handleCancelWanted = (e) => {
@@ -145,7 +144,8 @@ const CaseWantedItem = (props) => {
         setValue(options.find((option) => option.id === wanted.criminalId));
         formik.setValues({
           ...wanted,
-          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+          wantedDecisionDay:
+            wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         });
       }
     }
@@ -155,9 +155,10 @@ const CaseWantedItem = (props) => {
     // enableReinitialize: true,
     initialValues: wanted
       ? {
-        ...wanted,
-        wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
-      }
+          ...wanted,
+          wantedDecisionDay:
+            wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+        }
       : null,
     validationSchema: Yup.object({
       criminalId: Yup.string().required(messages.REQUIRED_CRIMINAL),
@@ -173,7 +174,7 @@ const CaseWantedItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitWanted();
+        handleSubmitWanted(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -187,6 +188,12 @@ const CaseWantedItem = (props) => {
       formik.handleSubmit();
     }
   }, [isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitWanted(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -305,14 +312,19 @@ const CaseWantedItem = (props) => {
                       required: true,
                     },
                     { label: "Hoạt động hiện hành", name: "currentActivity", md: 7 },
-                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3, required: true, },
+                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3, required: true },
                     {
                       label: "Ngày ra quyết định",
                       name: "wantedDecisionDay",
                       md: 2,
                       datePicker: true,
                     },
-                    { label: "Đơn vị ra quyết định", name: "decisionMakingUnit", md: 7, required: true, },
+                    {
+                      label: "Đơn vị ra quyết định",
+                      name: "decisionMakingUnit",
+                      md: 7,
+                      required: true,
+                    },
                   ].map((field) => (
                     <Grid key={field.name} xs={12} md={field.md || 12}>
                       {loading ? (

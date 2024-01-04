@@ -18,14 +18,7 @@ import { useFormik } from "formik";
 import _ from "lodash";
 
 const CaseImages = (props) => {
-  const {
-    caseImages,
-    loading,
-    loadingButtonDetails,
-    loadingButtonPicture,
-    handleSubmit,
-    isSubmitting
-  } = props;
+  const { caseImages, loading, handleSubmit, isSubmitting } = props;
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -57,11 +50,6 @@ const CaseImages = (props) => {
   );
 
   useEffect(() => console.log(fileList), [fileList]);
-  useEffect(() => {
-    if (isSubmitting) {
-      formik.handleSubmit();
-    }
-  }, [isSubmitting]);
 
   const handleSuccess = (response, filename) => {
     const newImage = {
@@ -164,17 +152,11 @@ const CaseImages = (props) => {
     </div>
   );
 
-  const handleSubmitImages = () => {
-    if (changesMade) {
-      handleSubmit(formik.values, _isEmpty(formik.errors));
-    }
-  };
-
   const formik = useFormik({
     initialValues: caseImages ? caseImages : null,
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitImages();
+        handleSubmit(formik.values, true);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -194,6 +176,12 @@ const CaseImages = (props) => {
       }))
     );
   }, [formik.values]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmit(formik.values, true);
+    }
+  }, [isSubmitting]);
 
   return (
     <Card

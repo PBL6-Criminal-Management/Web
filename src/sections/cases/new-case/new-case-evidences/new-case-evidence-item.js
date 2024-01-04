@@ -43,8 +43,6 @@ const CaseEvidenceItem = (props) => {
     }
   }, [evidence]);
 
-
-
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
     const imageExtensions = ["jpg", "png", "gif", "jpeg"]; // Additional image extensions
@@ -169,18 +167,19 @@ const CaseEvidenceItem = (props) => {
     setOpenDeletePopup(true);
   };
 
-  const handleSubmitEvidence = (e) => {
+  const handleSubmitEvidence = (isValid) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
     });
     // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
-    if (changesMade) {
-      handleSubmit({
+    handleSubmit(
+      {
         ...formik.values,
-      }, _.isEmpty(formik.errors));
-    }
+      },
+      isValid
+    );
   };
 
   const handleCancelEvidence = (e) => {
@@ -208,7 +207,7 @@ const CaseEvidenceItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitEvidence();
+        handleSubmitEvidence(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -222,6 +221,12 @@ const CaseEvidenceItem = (props) => {
       formik.handleSubmit();
     }
   }, [isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitEvidence(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   useEffect(() => {
     setFileList(

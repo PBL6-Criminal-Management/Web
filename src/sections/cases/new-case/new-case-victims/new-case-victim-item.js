@@ -38,7 +38,7 @@ const CaseVictimItem = (props) => {
     if (victim.name === "") {
       setIsFieldDisabled(false);
     }
-  }, [victim])
+  }, [victim]);
 
   const handleDeleteConfirm = () => {
     handleDeleteVictim(index);
@@ -54,7 +54,7 @@ const CaseVictimItem = (props) => {
     setOpenDeletePopup(true);
   };
 
-  const handleSubmitVictim = () => {
+  const handleSubmitVictim = (isValid) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
@@ -63,14 +63,15 @@ const CaseVictimItem = (props) => {
       gender: formik.values.gender === true || formik.values.gender === "true",
     });
     setIsFieldDisabled((prev) => !prev);
-    if (changesMade) {
-      handleSubmit({
+    handleSubmit(
+      {
         ...formik.values,
         birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
         date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
-      }, _.isEmpty(formik.errors));
-    }
+      },
+      isValid
+    );
   };
 
   const handleCancelVictim = (e) => {
@@ -95,10 +96,10 @@ const CaseVictimItem = (props) => {
     // enableReinitialize: true,
     initialValues: victim
       ? {
-        ...victim,
-        birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
-        date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
-      }
+          ...victim,
+          birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
+          date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
+        }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -123,7 +124,7 @@ const CaseVictimItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitVictim();
+        handleSubmitVictim(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -137,6 +138,12 @@ const CaseVictimItem = (props) => {
       formik.handleSubmit();
     }
   }, [isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitVictim(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">

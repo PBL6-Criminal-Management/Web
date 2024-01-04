@@ -11,7 +11,6 @@ import CaseWanted from "./new-case-wanted/new-case-wanted";
 import CaseInvestigators from "./new-case-investigators";
 import _ from "lodash";
 import { format } from "date-fns";
-import { listeners } from "process";
 
 export const NewCaseDetails = (props) => {
   const {
@@ -21,11 +20,13 @@ export const NewCaseDetails = (props) => {
     loadingSkeleton,
     loadingButtonDetails,
     onUpdate,
-    isSubmitting
+    isSubmitting,
+    setIsSubmitting,
   } = props;
   const [caseDetail, setCaseDetail] = useState(null);
+  const [formData, setFormData] = useState(null);
   const [isFirst, setIsFirst] = useState(true);
-  const [listReady, setListReady] = useState([false, false, false, false, false, false, false, true]);
+  const [listReady, setListReady] = useState([]);
 
   useEffect(() => {
     if (!_.isEmpty(initialCase) && isFirst) {
@@ -58,7 +59,7 @@ export const NewCaseDetails = (props) => {
             return { ...v, key: index };
           }),
       });
-      setIsFirst(false)
+      setIsFirst(false);
     }
   }, [initialCase]);
 
@@ -279,13 +280,22 @@ export const NewCaseDetails = (props) => {
       witnesses: submitData.witnesses?.filter((w) => w.id !== null),
       victims: submitData.victims?.filter((v) => v.id !== null),
     };
-
-    // if (listReady.every(v => v === true)){
-    onUpdate(submitData);
-    // }
+    setFormData(submitData);
   };
 
-  // useEffect(() => { if (listState) onUpdate(submitData); }, [listState]);
+  useEffect(() => {
+    console.log("list ready", listReady);
+    console.log("list ready unique", _.uniq(listReady.map((i) => i.id)));
+    if (_.uniq(listReady.map((i) => i.id)).length === 8) {
+      console.log(listReady.every((v) => v.isReady === true) ? "pass" : "fail");
+      if (listReady.every((v) => v.isReady === true)) {
+        onUpdate(formData);
+      } else {
+        setIsSubmitting(false);
+        setListReady([]);
+      }
+    }
+  }, [listReady]);
 
   return (
     <Box
@@ -392,11 +402,8 @@ export const NewCaseDetails = (props) => {
               loading={loadingSkeleton}
               loadingButtonDetails={loadingButtonDetails}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 0) l = isReady;
-                  return l;
-                }));
                 handleSubmit("general", value);
+                setListReady((listReady) => [...listReady, { id: 1, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -413,11 +420,8 @@ export const NewCaseDetails = (props) => {
               loading={loadingSkeleton}
               handleDeleteCriminal={handleDeleteCriminal}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 1) l = isReady;
-                  return l;
-                }));
                 handleSubmit("criminals", value);
+                setListReady((listReady) => [...listReady, { id: 2, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -433,11 +437,8 @@ export const NewCaseDetails = (props) => {
               handleDeleteVictim={handleDeleteVictim}
               loading={loadingSkeleton}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 2) l = isReady;
-                  return l;
-                }));
                 handleSubmit("victims", value);
+                setListReady((listReady) => [...listReady, { id: 3, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -453,11 +454,8 @@ export const NewCaseDetails = (props) => {
               handleDeleteWitness={handleDeleteWitness}
               loading={loadingSkeleton}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 3) l = isReady;
-                  return l;
-                }));
                 handleSubmit("witnesses", value);
+                setListReady((listReady) => [...listReady, { id: 4, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -473,11 +471,8 @@ export const NewCaseDetails = (props) => {
               handleDeleteEvidence={handleDeleteEvidence}
               loading={loadingSkeleton}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 4) l = isReady;
-                  return l;
-                }));
                 handleSubmit("evidences", value);
+                setListReady((listReady) => [...listReady, { id: 5, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -491,11 +486,8 @@ export const NewCaseDetails = (props) => {
               handleAddCaseImage={handleAddCaseImage}
               handleDeleteCaseImage={handleDeleteCaseImage}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 5) l = isReady;
-                  return l;
-                }));
                 handleSubmit("caseImages", value);
+                setListReady((listReady) => [...listReady, { id: 6, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -512,11 +504,8 @@ export const NewCaseDetails = (props) => {
               handleDeleteWanted={handleDeleteWanted}
               loading={loadingSkeleton}
               handleSubmit={(value, isReady) => {
-                setListReady([...listReady].map((l, i) => {
-                  if (i == 6) l = isReady;
-                  return l;
-                }));
                 handleSubmit("wantedCriminalRequest", value);
+                setListReady((listReady) => [...listReady, { id: 7, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
             />
@@ -527,7 +516,10 @@ export const NewCaseDetails = (props) => {
               investigatorsOfCase={caseDetail.investigators}
               investigators={investigators}
               loading={loadingSkeleton}
-              handleSubmit={(value) => handleSubmit("investigatorIds", value)}
+              handleSubmit={(value, isReady) => {
+                handleSubmit("investigatorIds", value);
+                setListReady((listReady) => [...listReady, { id: 8, isReady: isReady }]);
+              }}
               isSubmitting={isSubmitting}
             />
           </AccordionSection>

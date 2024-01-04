@@ -1,14 +1,25 @@
 import { Card, CardContent } from "@mui/material";
 import CaseWantedItem from "./new-case-wanted-item";
 import { Space } from "antd";
+import { useEffect } from "react";
+import _ from "lodash";
 const CaseWanted = (props) => {
   const { wantedInfo, criminals, loading, handleSubmit, handleDeleteWanted, isSubmitting } = props;
 
   const handleSubmitWantedInfo = (index, values, isReady) => {
     console.log("submit wanted info");
     console.log([...wantedInfo.slice(0, index), { ...values }, ...wantedInfo.slice(index + 1)]);
-    handleSubmit([...wantedInfo.slice(0, index), { ...values }, ...wantedInfo.slice(index + 1)], isReady);
+    handleSubmit(
+      [...wantedInfo.slice(0, index), { ...values }, ...wantedInfo.slice(index + 1)],
+      isReady
+    );
   };
+
+  useEffect(() => {
+    if (isSubmitting && _.isEmpty(wantedInfo)) {
+      handleSubmit(wantedInfo, true);
+    }
+  }, [isSubmitting]);
 
   return (
     <Card

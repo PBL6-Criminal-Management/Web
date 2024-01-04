@@ -38,7 +38,7 @@ const CaseCriminalItem = (props) => {
     loading,
     handleSubmit,
     handleDeleteCriminal,
-    isSubmitting
+    isSubmitting,
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -100,8 +100,9 @@ const CaseCriminalItem = (props) => {
     });
   };
 
-  const handleSubmitCriminal = () => {
+  const handleSubmitCriminal = (isValid) => {
     if (value === null) return;
+    console.log("criminal");
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
@@ -109,12 +110,13 @@ const CaseCriminalItem = (props) => {
     });
     // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
-    if (changesMade) {
-      handleSubmit({
+    handleSubmit(
+      {
         ...formik.values,
         date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
-      }, _.isEmpty(formik.errors));
-    }
+      },
+      isValid
+    );
   };
 
   const handleCancelCriminal = (e) => {
@@ -171,10 +173,10 @@ const CaseCriminalItem = (props) => {
     // enableReinitialize: true,
     initialValues: criminal
       ? {
-        ...criminal,
-        date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-        typeOfViolation: parseInt(criminal.typeOfViolation, 10),
-      }
+          ...criminal,
+          date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+          typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+        }
       : null,
     validationSchema: Yup.object({
       id: Yup.string().required(messages.REQUIRED_CRIMINAL),
@@ -194,7 +196,7 @@ const CaseCriminalItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitCriminal();
+        handleSubmitCriminal(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -207,7 +209,13 @@ const CaseCriminalItem = (props) => {
     if (isSubmitting) {
       formik.handleSubmit();
     }
-  }, [isSubmitting])
+  }, [isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitCriminal(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -347,7 +355,7 @@ const CaseCriminalItem = (props) => {
                       md: 3,
                       select: true,
                       selectProps: constants.typeOfViolation,
-                      required: true
+                      required: true,
                     },
                     {
                       label: "Thời gian lấy lời khai gần nhất",

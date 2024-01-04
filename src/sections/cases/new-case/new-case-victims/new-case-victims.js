@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@mui/material";
 import CaseVictimItem from "./new-case-victim-item";
 import { Space } from "antd";
+import { useEffect } from "react";
+import _ from "lodash";
 const CaseVictims = (props) => {
   const { victimInfo, loading, handleSubmit, handleDeleteVictim, isSubmitting } = props;
 
@@ -11,12 +13,21 @@ const CaseVictims = (props) => {
       { ...values, id: values.id ? values.id : -1 },
       ...victimInfo.slice(index + 1),
     ]);
-    handleSubmit([
-      ...victimInfo.slice(0, index),
-      { ...values, id: values.id ? values.id : -1 },
-      ...victimInfo.slice(index + 1),
-    ], isReady);
+    handleSubmit(
+      [
+        ...victimInfo.slice(0, index),
+        { ...values, id: values.id ? values.id : -1 },
+        ...victimInfo.slice(index + 1),
+      ],
+      isReady
+    );
   };
+
+  useEffect(() => {
+    if (isSubmitting && _.isEmpty(victimInfo)) {
+      handleSubmit(victimInfo, true);
+    }
+  }, [isSubmitting]);
 
   return (
     <Card

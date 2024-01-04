@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@mui/material";
 import CaseWitnessItem from "./new-case-witness-item";
 import { Space } from "antd";
+import { useEffect } from "react";
+import _ from "lodash";
 const CaseWitnesses = (props) => {
   const { witnessInfo, loading, handleSubmit, handleDeleteWitness, isSubmitting } = props;
 
@@ -11,12 +13,21 @@ const CaseWitnesses = (props) => {
       { ...values, id: values.id ? values.id : -1 },
       ...witnessInfo.slice(index + 1),
     ]);
-    handleSubmit([
-      ...witnessInfo.slice(0, index),
-      { ...values, id: values.id ? values.id : -1 },
-      ...witnessInfo.slice(index + 1),
-    ], isReady);
+    handleSubmit(
+      [
+        ...witnessInfo.slice(0, index),
+        { ...values, id: values.id ? values.id : -1 },
+        ...witnessInfo.slice(index + 1),
+      ],
+      isReady
+    );
   };
+
+  useEffect(() => {
+    if (isSubmitting && _.isEmpty(witnessInfo)) {
+      handleSubmit(witnessInfo, true);
+    }
+  }, [isSubmitting]);
 
   return (
     <Card

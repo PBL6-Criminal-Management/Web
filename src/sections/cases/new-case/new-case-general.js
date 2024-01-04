@@ -1,12 +1,4 @@
-import {
-  Unstable_Grid2 as Grid,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
-} from "@mui/material";
+import { Unstable_Grid2 as Grid, TextField, Card, CardContent } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Skeleton from "@mui/material/Skeleton";
 import * as constants from "../../../constants/constants";
@@ -14,36 +6,36 @@ import * as messages from "../../../constants/messages";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { format, parse } from "date-fns";
-import { useState, useEffect } from "react";
-import _ from "lodash";
+import { useEffect } from "react";
 
 const CaseGeneral = (props) => {
-  const { generalInfo, loading, loadingButtonDetails, loadingButtonPicture, handleSubmit, isSubmitting } = props;
-  const [changesMade, setChangesMade] = useState(false);
+  const { generalInfo, loading, handleSubmit, isSubmitting } = props;
 
-  useEffect(() => {
-    if (isSubmitting) {
-      formik.handleSubmit();
-    }
-  }, [isSubmitting]);
-
-  const handleSubmitGeneral = () => {
-    if (changesMade)
-      handleSubmit({
+  const handleSubmitGeneral = (isValid) => {
+    handleSubmit(
+      {
         ...formik.values,
         startDate: generalInfo.startDate && format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
         endDate: generalInfo.endDate && format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
-      }, _.isEmpty(formik.errors));
+      },
+      isValid
+    );
   };
+
+  useEffect(() => {
+    if (isSubmitting) formik.handleSubmit();
+  }, [isSubmitting]);
 
   const formik = useFormik({
     // enableReinitialize: true,
     initialValues: generalInfo
       ? {
-        ...generalInfo,
-        startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
-        endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
-      }
+          ...generalInfo,
+          startDate:
+            generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
+          endDate:
+            generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
+        }
       : null,
     validationSchema: Yup.object({
       charge: Yup.string()
@@ -58,7 +50,7 @@ const CaseGeneral = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitGeneral();
+        handleSubmitGeneral(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -66,6 +58,12 @@ const CaseGeneral = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitGeneral(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   return (
     <form autoComplete="off" noValidate onSubmit={formik.handleSubmit}>
@@ -121,7 +119,6 @@ const CaseGeneral = (props) => {
                     name={field.name}
                     onBlur={formik.handleBlur}
                     onChange={(date) => {
-                      setChangesMade(true);
                       formik.setFieldValue(field.name, date);
                     }}
                     type={field.name}
@@ -147,7 +144,6 @@ const CaseGeneral = (props) => {
                     name={field.name}
                     onBlur={formik.handleBlur}
                     onChange={(e) => {
-                      setChangesMade(true);
                       formik.handleChange(e);
                     }}
                     type={field.name}

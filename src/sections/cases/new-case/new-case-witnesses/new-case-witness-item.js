@@ -38,7 +38,7 @@ const CaseWitnessItem = (props) => {
     if (witness.name === "") {
       setIsFieldDisabled(false);
     }
-  }, [witness])
+  }, [witness]);
 
   const handleDeleteConfirm = () => {
     handleDeleteWitness(index);
@@ -54,7 +54,7 @@ const CaseWitnessItem = (props) => {
     setOpenDeletePopup(true);
   };
 
-  const handleSubmitWitness = (e) => {
+  const handleSubmitWitness = (isValid) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
@@ -64,14 +64,15 @@ const CaseWitnessItem = (props) => {
     });
     // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
-    if (changesMade) {
-      handleSubmit({
+    handleSubmit(
+      {
         ...formik.values,
         birthday: witness.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
         date: witness.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
-      }, _.isEmpty(formik.errors));
-    }
+      },
+      isValid
+    );
   };
 
   const handleCancelWitness = (e) => {
@@ -96,10 +97,10 @@ const CaseWitnessItem = (props) => {
     // enableReinitialize: true,
     initialValues: witness
       ? {
-        ...witness,
-        birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
-        date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
-      }
+          ...witness,
+          birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
+          date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+        }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -124,7 +125,7 @@ const CaseWitnessItem = (props) => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        handleSubmitWitness();
+        handleSubmitWitness(formik.isValid);
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -138,6 +139,12 @@ const CaseWitnessItem = (props) => {
       formik.handleSubmit();
     }
   }, [isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      handleSubmitWitness(formik.isValid);
+    }
+  }, [formik.isValid]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">

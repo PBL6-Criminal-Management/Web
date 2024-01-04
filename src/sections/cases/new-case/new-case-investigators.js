@@ -22,7 +22,7 @@ const CaseInvestigators = (props) => {
     loadingButtonDetails,
     loadingButtonPicture,
     handleSubmit,
-    isSubmitting
+    isSubmitting,
   } = props;
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState([]);
@@ -34,9 +34,8 @@ const CaseInvestigators = (props) => {
     }
   }, [isSubmitting]);
 
-
   const handleSubmitInvestigators = () => {
-    handleSubmit(investigatorState);
+    handleSubmit(investigatorState, true);
   };
 
   useEffect(() => {

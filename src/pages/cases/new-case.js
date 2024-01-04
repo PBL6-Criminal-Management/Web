@@ -1,4 +1,4 @@
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
+import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import Head from "next/head";
 import {
   Alert,
@@ -12,34 +12,35 @@ import {
   Unstable_Grid2 as Grid,
   Breadcrumbs,
   Link,
-  Button
+  Button,
 } from "@mui/material";
 import NextLink from "next/link";
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "src/hooks/use-auth";
 import * as criminalsApi from "../../api/criminals";
 import * as casesApi from "../../api/cases";
 import * as accountsApi from "../../api/accounts";
 import CloseIcon from "@mui/icons-material/Close";
-import { NewCaseDetails } from 'src/sections/cases/new-case/new-case-details';
+import { NewCaseDetails } from "src/sections/cases/new-case/new-case-details";
 import { format } from "date-fns";
+import { LoadingButton } from "@mui/lab";
 
 const NewCasePage = () => {
   const [casee, setCasee] = useState({
     startDate: format(new Date(), "HH:mm dd/MM/yyyy"),
-    endDate: '',
+    endDate: "",
     typeOfViolation: 0,
     status: 0,
-    charge: '',
-    area: '',
-    description: '',
+    charge: "",
+    area: "",
+    description: "",
     evidences: [],
     witnesses: [],
     caseImages: [],
     criminals: [],
     investigatorIds: [],
     victims: [],
-    wantedCriminalRequest: []
+    wantedCriminalRequest: [],
   });
   const [criminals, setCriminals] = useState([]);
   const [investigators, setInvestigators] = useState([]);
@@ -71,27 +72,31 @@ const NewCasePage = () => {
     getData();
   }, []);
 
-  // const updateDetails = useCallback(
-  //   async (updatedDetails) => {
-  //     try {
-
-  //       const updatedCase = { // dung params de truyen id
-  //         ...casee,
-  //         ...updatedDetails,
-  //       };
-  //       console.log("updatedCase", updatedCase);
-  //       // await casesApi.editCase(updatedCase, auth);
-  //       // getCase();
-  //       // setSuccess("Cập nhật thông tin chi tiết vụ án thành công.");
-  //       // setError(null);
-  //     } catch (error) {
-  //       setSuccess(null);
-  //       setError(error.message);
-  //       console.log(error);
-  //     }
-  //   },
-  //   [casee]
-  // );
+  const updateDetails = useCallback(
+    async (updatedDetails) => {
+      try {
+        const newCase = {
+          // dung params de truyen id
+          ...casee,
+          ...updatedDetails,
+        };
+        await casesApi.addCase(newCase, auth);
+        setSuccess("Thêm vụ án thành công.");
+        setError(null);
+        setIsFieldDisabled(true);
+        setButtonDisabled(true);
+      } catch (error) {
+        setIsFieldDisabled(false);
+        setButtonDisabled(false);
+        setSuccess(null);
+        setError(error.message);
+        console.log(error);
+      } finally {
+        setLoadingButtonDetails(false);
+      }
+    },
+    [casee]
+  );
 
   const updateCaseDetails = useCallback(
     async (updatedDetails) => {
@@ -100,8 +105,7 @@ const NewCasePage = () => {
         setLoadingButtonDetails(true);
         setCasee((prevCasee) => ({ ...prevCasee, ...updatedDetails }));
         setOpen(true);
-        setIsSubmitting(false);
-        // await updateDetails(updatedDetails);
+        await updateDetails(updatedDetails);
       } catch (error) {
         console.log(error);
       } finally {
@@ -111,13 +115,9 @@ const NewCasePage = () => {
     [casee]
   );
 
-  useEffect(() => {
-    console.log("isSubmitting", isSubmitting);
-  }, [isSubmitting]) 
-
   const handleSubmit = () => {
     setIsSubmitting(true);
-  }
+  };
 
   return (
     <>
@@ -163,17 +163,17 @@ const NewCasePage = () => {
                     color="text.primary"
                   >
                     <Typography
-                      variant='h4'
+                      variant="h4"
                       sx={{
-                        marginLeft: '-8px',
-                        marginRight: '-8px',
-                        padding: '6px 8px',
-                        '&:hover': {
-                          transition: '0.2s all ease-in-out',
-                          backgroundColor: 'divider',
-                          padding: '6px 8px',
-                          borderRadius: '8px'
-                        }
+                        marginLeft: "-8px",
+                        marginRight: "-8px",
+                        padding: "6px 8px",
+                        "&:hover": {
+                          transition: "0.2s all ease-in-out",
+                          backgroundColor: "divider",
+                          padding: "6px 8px",
+                          borderRadius: "8px",
+                        },
                       }}
                     >
                       Vụ án
@@ -201,6 +201,7 @@ const NewCasePage = () => {
                     loadingButtonDetails={loadingButtonDetails}
                     onUpdate={updateCaseDetails}
                     isSubmitting={isSubmitting}
+                    setIsSubmitting={setIsSubmitting}
                   />
                   <Stack
                     direction="row"
@@ -216,58 +217,57 @@ const NewCasePage = () => {
                         <Skeleton height={40} width={120} variant="rounded"></Skeleton>
                         <Skeleton height={40} width={70} variant="rounded"></Skeleton>
                       </>
-                    ) : (loadingButtonDetails ?
-                      (
-                        <>
-                          <LoadingButton
-                            disabled
-                            loading={loadingButtonDetails}
-                            size="medium"
-                            variant="contained"
-                          >
-                            Thêm vụ án
-                          </LoadingButton>
-                          <Button
-                            // disabled={loadingButtonDetails || buttonDisabled}
-                            variant="outlined"
-                            component={NextLink}
-                            href="/cases"
-                            sx={{
-                              color: 'neutral.500',
-                              borderColor: 'neutral.500',
-                            }}
-                          >
-                            Huỷ
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            onClick={handleSubmit}
-                            // disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
-                            type="submit"
-                            variant="contained"
-                          >
-                            Thêm vụ án
-                          </Button>
-                          <Button
-                            // disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
-                            variant="outlined"
-                            component={NextLink}
-                            href="/cases"
-                            sx={{
-                              color: 'neutral.500',
-                              borderColor: 'neutral.500',
-                              '&:hover': {
-                                borderColor: 'neutral.600',
-                                backgroundColor: 'neutral.100',
-                              }
-                            }}
-                          >
-                            Huỷ
-                          </Button>
-                        </>
-                      ))}
+                    ) : loadingButtonDetails ? (
+                      <>
+                        <LoadingButton
+                          disabled
+                          loading={loadingButtonDetails}
+                          size="medium"
+                          variant="contained"
+                        >
+                          Thêm vụ án
+                        </LoadingButton>
+                        <Button
+                          // disabled={loadingButtonDetails || buttonDisabled}
+                          variant="outlined"
+                          component={NextLink}
+                          href="/cases"
+                          sx={{
+                            color: "neutral.500",
+                            borderColor: "neutral.500",
+                          }}
+                        >
+                          Huỷ
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={handleSubmit}
+                          // disabled={formik.isSubmitting || loadingButtonPicture || buttonDisabled}
+                          type="submit"
+                          variant="contained"
+                        >
+                          Thêm vụ án
+                        </Button>
+                        <Button
+                          // disabled={formik.isSubmitting || loadingButtonPicture || loadingButtonDetails || buttonDisabled}
+                          variant="outlined"
+                          component={NextLink}
+                          href="/cases"
+                          sx={{
+                            color: "neutral.500",
+                            borderColor: "neutral.500",
+                            "&:hover": {
+                              borderColor: "neutral.600",
+                              backgroundColor: "neutral.100",
+                            },
+                          }}
+                        >
+                          Huỷ
+                        </Button>
+                      </>
+                    )}
                   </Stack>
                 </Grid>
               </Grid>
