@@ -21,3 +21,14 @@ export const deleteImage = async (filePath) => {
         }
     }
 }
+
+export const splitVideo = async (formData, config) => {
+    try {
+        const response = await axios.post('/api/v1/upload/split-video', formData, config);
+        return response.data.data;
+    } catch (error) {
+        if (error.response) {
+            throw new Error(error.response.data.messages);
+        }
+    }
+}
