@@ -1,7 +1,15 @@
-import { Accordion, AccordionDetails, AccordionSummary, Typography, Button, Grid, SvgIcon } from '@mui/material';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
-import { useState } from 'react';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+  Button,
+  Grid,
+  SvgIcon,
+} from "@mui/material";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import { useState } from "react";
 
 const AccordionSection = ({ summary, summaryVariant, children, handleAdd, addLabel, canEdit }) => {
     const handleAddAccordion = (e) => {
@@ -9,11 +17,11 @@ const AccordionSection = ({ summary, summaryVariant, children, handleAdd, addLab
         handleAdd();
     }
 
-    const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
-    const handleChange = () => {
-        setExpanded(!expanded);
-    };
+  const handleChange = () => {
+    setExpanded(!expanded);
+  };
 
     return (
         <Accordion expanded={expanded} onChange={handleChange}>

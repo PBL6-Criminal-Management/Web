@@ -26,7 +26,7 @@ export const NOT_FOUND_MSG = "Không thể tìm thấy dữ liệu phù hợp!";
 export const DELETE_USER = "Xóa người dùng thành công!";
 export const DELETE_SUCCESS = "Xóa thành công!";
 export const DELETE_CASE = "Xóa vụ án thành công";
-export const DELETE_REPORT = "Xóa bản tố giác tội phạm thành công";
+export const DELETE_REPORT = "Xóa bản báo cáo tội phạm thành công";
 export const SYS_ERROR = "Lỗi hệ thống!";
 export const NOT_FOUND_EMAIL = "Không tìm thấy email!";
 export const NOT_FOUND_ROLE = "Không tìm thấy vai trò phù hợp!";
@@ -108,7 +108,7 @@ export const REQUIRED_NOTE = "Nội dung không được để trống";
 export const REQUIRED_ANOTHER_NAME = "Tên khác không được để trống";
 export const REQUIRED_PHONE_MODEL = "Model điện thoại không được để trống";
 export const REQUIRED_CAREER_AND_WORKPLACE = "Nghề nghiệp và nơi làm việc không được để trống";
-export const REQUIRED_CHARACTERISTICS = "Tính cách không được để trống";
+export const REQUIRED_CHARACTERISTICS = "Đặc điểm nhận dạng không được để trống";
 export const REQUIRED_HOME_TOWN = "Quê quán không được để trống";
 export const REQUIRED_ETHNICITY = "Dân tộc không được để trống";
 export const REQUIRED_RELIGION = "Tôn giáo không được để trống";
@@ -138,11 +138,12 @@ export const REQUIRED_CHARGE = "Tội danh không được để trống";
 export const REQUIRED_CRIME_SCENE = "Địa điểm xảy ra vụ án không được để trống";
 export const REQUIRED_TESTIMONY = "Lời khai không được để trống";
 export const REQUIRED_CRIMINAL = "Phải chọn tội phạm trước khi lưu";
-export const REQUIRED_REPORTER_NAME = "Họ và tên của người tố giác tội phạm không được để trống";
-export const REQUIRED_REPORTER_EMAIL = "Email của người tố giác tội phạm không được để trống";
+export const REQUIRED_REPORTER_NAME = "Họ và tên của người báo cáo tội phạm không được để trống";
+export const REQUIRED_REPORTER_EMAIL = "Email của người báo cáo tội phạm không được để trống";
 export const REQUIRED_REPORTER_PHONE =
-  "Số điện thoại của người tố giác tội phạm không được để trống";
-export const REQUIRED_REPORTER_ADDRESS = "Địa chỉ của người tố giác tội phạm không được để trống";
+  "Số điện thoại của người báo cáo tội phạm không được để trống";
+export const REQUIRED_REPORTER_ADDRESS = "Địa chỉ của người báo cáo tội phạm không được để trống";
+export const REQUIRED_CONTENT = "Nội dung báo cáo không được để trống";
 
 //Limit length
 export const LIMIT_NAME = "Tên không được vượt quá 100 ký tự!";
@@ -159,7 +160,7 @@ export const LIMIT_ANOTHER_NAME = "Tên khác không được vượt quá 100 k
 export const LIMIT_PHONE_MODEL = "Model điện thoại không được vượt quá 100 ký tự!";
 export const LIMIT_CAREER_AND_WORKPLACE =
   "Nghề nghiệp và nơi làm việc không được vượt quá 300 ký tự!";
-export const LIMIT_CHARACTERISTICS = "Tính cách không được vượt quá 500 ký tự!";
+export const LIMIT_CHARACTERISTICS = "Đặc điểm nhận dạng không được vượt quá 500 ký tự!";
 export const LIMIT_HOME_TOWN = "Quê quán không được vượt quá 200 ký tự!";
 export const LIMIT_ETHNICITY = "Dân tộc không được vượt quá 50 ký tự!";
 export const LIMIT_RELIGION = "Tôn giáo không được vượt quá 50 ký tự!";
@@ -190,13 +191,15 @@ export const LIMIT_CHARGE = "Tội danh không được vượt quá 100 ký t�
 export const LIMIT_CRIME_SCENE = "Địa điểm xảy ra vụ án không được vượt quá 200 ký tự";
 export const LIMIT_TESTIMONY = "Lời khai không được vượt quá 65535 ký tự";
 export const LIMIT_REPORTER_NAME =
-  "Họ và tên của người tố giác tội phạm không được vượt quá 100 ký tự";
+  "Họ và tên của người báo cáo tội phạm không được vượt quá 100 ký tự";
 export const LIMIT_REPORTER_EMAIL =
-  "Email của người tố giác tội phạm không được vượt quá 100 ký tự";
+  "Email của người báo cáo tội phạm không được vượt quá 100 ký tự";
 export const LIMIT_REPORTER_PHONE =
-  "Số điện thoại của người tố giác tội phạm không được vượt quá 15 ký tự";
+  "Số điện thoại của người báo cáo tội phạm không được vượt quá 15 ký tự";
 export const LIMIT_REPORTER_ADDRESS =
-  "Địa chỉ của người tố giác tội phạm không được vượt quá 200 ký tự";
+  "Địa chỉ của người báo cáo tội phạm không được vượt quá 200 ký tự";
+export const LIMIT_CONTENT = 
+  "Nội dung báo cáo không được vượt quá 65535 ký tự";
 //Error message
 export const ERROR_DELETE_IMAGE = "Xóa ảnh không thành công!!!";
 export const ERNAL_SERVER_ERROR = "Lỗi server";
@@ -226,7 +229,7 @@ export const PHONE_MODE_VALID_CHARACTER =
 export const CAREER_AND_WORKPLACE_VALID_CHARACTER =
   "Nơi làm việc và chỗ ở không được chứa ký tự đặc biệt";
 export const CHARACTERISTICS_VALID_CHARACTER =
-  "Tính cách chỉ chứa ký tự chữ, khoảng trắng và dấu phẩy";
+  "Đặc điểm nhận dạng chỉ chứa ký tự chữ, khoảng trắng và dấu phẩy";
 export const HOME_TOWN_VALID_CHARACTER = "Quê quán không được chứa ký tự đặc biệt";
 export const ETHNICITY_VALID_CHARACTER = "Dân tộc chỉ chứa ký tự chữ";
 export const RELIGION_VALID_CHARACTER = "Tôn giáo chỉ chứa ký tự chữ";

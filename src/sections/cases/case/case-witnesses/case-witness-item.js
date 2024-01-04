@@ -15,7 +15,7 @@ import {
 import * as constants from "../../../../constants/constants";
 import * as messages from "../../../../constants/messages";
 import { Collapse, Button } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PencilSquareIcon from "@heroicons/react/24/outline/PencilSquareIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import CheckCircleIcon from "@heroicons/react/24/outline/CheckCircleIcon";
@@ -32,6 +32,12 @@ const CaseWitnessItem = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
   const [changesMade, setChangesMade] = useState(false);
+
+  useEffect(() => {
+    if (witness.name === "") {
+      setIsFieldDisabled(false);
+    }
+  }, [witness])
 
   const handleDeleteConfirm = () => {
     handleDeleteWitness(index);
@@ -60,8 +66,8 @@ const CaseWitnessItem = (props) => {
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        birthday: witness.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        date: witness.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
       });
     }
@@ -72,8 +78,8 @@ const CaseWitnessItem = (props) => {
     setIsFieldDisabled((prev) => !prev);
     formik.setValues({
       ...witness,
-      birthday: parse(witness.birthday, "dd/MM/yyyy", new Date()),
-      date: parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+      birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
+      date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
     });
     formik.setTouched({}, false);
     setChangesMade(false);
@@ -90,8 +96,8 @@ const CaseWitnessItem = (props) => {
     initialValues: witness
       ? {
           ...witness,
-          birthday: parse(witness.birthday, "dd/MM/yyyy", new Date()),
-          date: parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+          birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
+          date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({

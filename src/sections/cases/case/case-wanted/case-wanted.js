@@ -2,7 +2,7 @@ import { Card, CardContent } from "@mui/material";
 import CaseWantedItem from "./case-wanted-item";
 import { Space } from "antd";
 const CaseWanted = (props) => {
-  const { wantedInfo, criminals, loading, handleSubmit, handleDeleteWanted, canEdit } = props;
+  const { wantedInfo, criminals, loading, handleSubmit, handleDeleteWanted, canEdit, isSubmitting } = props;
 
   const handleSubmitWantedInfo = (index, values) => {
     console.log("submit wanted info");

@@ -16,6 +16,7 @@ import { CasesSearch } from "src/sections/cases/cases-search";
 import axios from "axios";
 import * as casesApi from "../../api/cases";
 import { useAuth } from "src/hooks/use-auth";
+import NextLink from 'next/link';
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -119,17 +120,18 @@ const Page = () => {
               <div>
                 {canAdd && (
                   <Button
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <PlusIcon />
-                      </SvgIcon>
-                    }
-                    variant="contained"
-                  >
-                    Thêm vụ án
-                  </Button>
+                  startIcon={
+                    <SvgIcon fontSize="small">
+                      <PlusIcon />
+                    </SvgIcon>
+                  }
+                  variant="contained"
+                  component={NextLink}
+                  href="/cases/new-case"
+                >
+                  Thêm vụ án
+                </Button>
                 )}
-                
               </div>
             </Stack>
             <CasesSearch

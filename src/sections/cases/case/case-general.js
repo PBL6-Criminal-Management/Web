@@ -44,18 +44,16 @@ const CaseGeneral = (props) => {
     if (changesMade)
       handleSubmit({
         ...formik.values,
-        startDate: format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
-        endDate: format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
+        startDate: generalInfo.startDate && format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
+        endDate: generalInfo.endDate && format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
       });
   };
 
   const handleCancelGeneral = () => {
-    setIsClicked(false);
-    setIsFieldDisabled(true);
     formik.setValues({
       ...generalInfo,
-      startDate: parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
-      endDate: parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
+      startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
+      endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
     });
   };
 
@@ -64,8 +62,8 @@ const CaseGeneral = (props) => {
     initialValues: generalInfo
       ? {
           ...generalInfo,
-          startDate: parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
-          endDate: parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
+          startDate: generalInfo.startDate && parse(generalInfo.startDate, "HH:mm dd/MM/yyyy", new Date()),
+          endDate: generalInfo.endDate && parse(generalInfo.endDate, "HH:mm dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({

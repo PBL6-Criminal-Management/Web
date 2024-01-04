@@ -70,6 +70,11 @@ const CaseCriminalItem = (props) => {
     setOpenDeletePopup(true);
   };
 
+  useEffect(() => {
+    if (!criminal.id) {
+      setIsFieldDisabled(false);
+    }
+  }, [criminal]);
   const fillEmpty = () => {
     if (!criminal.id) setChangesMade(false);
     setValue(null);
@@ -100,14 +105,14 @@ const CaseCriminalItem = (props) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
     });
     // e.stopPropagation();
     setIsFieldDisabled((prev) => !prev);
     if (changesMade) {
       handleSubmit({
         ...formik.values,
-        date: format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
       });
     }
   };
@@ -119,7 +124,7 @@ const CaseCriminalItem = (props) => {
       setValue(options.find((option) => option.id === criminal.id));
       formik.setValues({
         ...criminal,
-        date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+        date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
         typeOfViolation: parseInt(criminal.typeOfViolation, 10),
       });
       setChangesMade(false);
@@ -155,7 +160,7 @@ const CaseCriminalItem = (props) => {
         setValue(options.find((option) => option.id === criminal.id));
         formik.setValues({
           ...criminal,
-          date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+          date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
           typeOfViolation: parseInt(criminal.typeOfViolation, 10),
         });
       }
@@ -167,7 +172,7 @@ const CaseCriminalItem = (props) => {
     initialValues: criminal
       ? {
           ...criminal,
-          date: parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
+          date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
           typeOfViolation: parseInt(criminal.typeOfViolation, 10),
         }
       : null,
@@ -329,7 +334,7 @@ const CaseCriminalItem = (props) => {
                     },
                     { label: "Quốc tịch", name: "nationality", md: 6, disabled: true, info: true },
                     { label: "Dân tộc", name: "ethnicity", md: 6, disabled: true, info: true },
-                    { label: "Tội danh", name: "charge", md: 3 },
+                    { label: "Tội danh", name: "charge", md: 3, required: true },
                     { label: "Nguyên nhân", name: "reason", md: 3 },
                     { label: "Vũ khí", name: "weapon", md: 3 },
                     {
@@ -338,13 +343,14 @@ const CaseCriminalItem = (props) => {
                       md: 3,
                       select: true,
                       selectProps: constants.typeOfViolation,
+                      required: true
                     },
                     {
                       label: "Thời gian lấy lời khai gần nhất",
                       name: "date",
                       dateTimePicker: true,
                     },
-                    { label: "Lời khai", name: "testimony", textArea: true },
+                    { label: "Lời khai", name: "testimony", textArea: true, required: true },
                   ].map((field) => (
                     <Grid key={field.name} xs={12} md={field.md || 12}>
                       {loading ? (

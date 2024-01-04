@@ -26,9 +26,10 @@ export const CaseDetails = (props) => {
   const [caseDetail, setCaseDetail] = useState(null);
   const auth = useAuth();
   const canEdit = auth.isAuthenticated ? auth.user.role !== 2 : false;
+  const [isFirst, setIsFirst] = useState(true);
 
   useEffect(() => {
-    if (initialCase) {
+    if (!_.isEmpty(initialCase) && isFirst) {
       const { wantedCriminalResponse, ...remainFields } = initialCase;
       setCaseDetail({
         ...remainFields,
@@ -58,6 +59,7 @@ export const CaseDetails = (props) => {
             return { ...v, key: index };
           }),
       });
+      setIsFirst(false)
     }
   }, [initialCase]);
 
@@ -264,14 +266,14 @@ export const CaseDetails = (props) => {
     } else if (key === "investigatorIds") {
       console.log("submit values: ", {
         ...caseDetail,
-        investigatorIds: value.map((i) => parseInt(i.id, 10)),
-        investigators: value,
+        investigatorIds: value?.map((i) => parseInt(i.id, 10)),
+        // investigators: value,
       });
       setCaseDetail({ ...caseDetail, investigators: value });
       submitData({
         ...caseDetail,
-        investigatorIds: value.map((i) => parseInt(i.id, 10)),
-        investigators: value,
+        investigatorIds: value?.map((i) => parseInt(i.id, 10)),
+        // investigators: value,
       });
     } else if (key === "caseImages") {
       console.log("submit values: ", {
@@ -310,6 +312,16 @@ export const CaseDetails = (props) => {
     >
       {loadingSkeleton || caseDetail === null || caseDetail.status === undefined ? (
         <>
+          <Skeleton
+            variant="rounded"
+            sx={{
+              "&:not(:last-child)": {
+                marginBottom: "16px",
+              },
+            }}
+          >
+            <AccordionSection summary=""></AccordionSection>
+          </Skeleton>
           <Skeleton
             variant="rounded"
             sx={{

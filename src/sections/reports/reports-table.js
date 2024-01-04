@@ -21,8 +21,6 @@ import {
 } from '@mui/material';
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
 import { Scrollbar } from 'src/components/scrollbar';
 import { Stack } from '@mui/system';
@@ -75,7 +73,7 @@ export const ReportsTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell sx={{ width: 120 }}>
                   Mã báo cáo
                 </TableCell>
                 <TableCell>
@@ -106,6 +104,7 @@ export const ReportsTable = (props) => {
                 <TableCell
                   sx={{
                     textAlign: 'center',
+                    width: 111,
                   }}
                 >
                   Hành động
@@ -121,7 +120,7 @@ export const ReportsTable = (props) => {
                   >
                     <TableCell>
                       <Typography variant="subtitle2">
-                        {report.id}
+                        {report.code}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -172,7 +171,7 @@ export const ReportsTable = (props) => {
                               LinkComponent={NextLink}
                               href={{
                                 pathname: '/reports/[id]',
-                                query: { id: encodeURIComponent(report.id), name: encodeURIComponent(report.name) },
+                                query: { id: encodeURIComponent(report.id), name: encodeURIComponent(report.code) },
                               }}
                             >
                               <SvgIcon
@@ -194,21 +193,7 @@ export const ReportsTable = (props) => {
                               <TrashIcon />
                             </SvgIcon>
                           </IconButton>
-                        </Tooltip>
-                        )}
-                        
-                        {/* <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <PencilSquareIcon />
-                        </SvgIcon>
-                        <SvgIcon
-                          color="action"
-                          fontSize="small"
-                        >
-                          <TrashIcon />
-                        </SvgIcon> */}
+                        </Tooltip>)}
                       </Stack>
                     </TableCell>
                   </TableRow>

@@ -13,9 +13,9 @@ import {
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CriminalsTable } from "src/sections/criminals/criminals-table";
 import { CriminalsSearch } from "src/sections/criminals/criminals-search";
-import axios from "axios";
 import * as criminalsApi from "../../api/criminals";
 import { useAuth } from "src/hooks/use-auth";
+import NextLink from 'next/link';
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -119,16 +119,19 @@ const Page = () => {
               <div>
                 {canAdd && (
                   <Button
-                    startIcon={
-                      <SvgIcon fontSize="small">
-                        <PlusIcon />
-                      </SvgIcon>
-                    }
-                    variant="contained"
-                  >
-                    Thêm tội phạm
-                  </Button>
+                  startIcon={
+                    <SvgIcon fontSize="small">
+                      <PlusIcon />
+                    </SvgIcon>
+                  }
+                  component={NextLink}
+                  href="/criminals/new-criminal"
+                  variant="contained"
+                >
+                  Thêm tội phạm
+                </Button>
                 )}
+                
               </div>
             </Stack>
             <CriminalsSearch

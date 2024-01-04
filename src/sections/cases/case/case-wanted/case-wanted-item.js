@@ -56,6 +56,12 @@ const CaseWantedItem = (props) => {
     });
   };
 
+  useEffect(() => {
+    if (!wanted.criminalId) {
+      setIsFieldDisabled(false);
+    }
+  }, [wanted]);
+
   const handleDeleteConfirm = () => {
     handleDeleteWanted(index);
     setOpenDeletePopup(false);
@@ -136,7 +142,7 @@ const CaseWantedItem = (props) => {
         setValue(options.find((option) => option.id === wanted.criminalId));
         formik.setValues({
           ...wanted,
-          wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         });
       }
     }
@@ -147,10 +153,11 @@ const CaseWantedItem = (props) => {
     initialValues: wanted
       ? {
           ...wanted,
-          wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+          wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({
+      criminalId: Yup.string().required(messages.REQUIRED_CRIMINAL),
       currentActivity: Yup.string().nullable().max(200, messages.LIMIT_CURRENT_ACTIVITY),
       wantedDecisionNo: Yup.string()
         .max(50, messages.LIMIT_WANTED_DECISION_NO)
@@ -288,16 +295,17 @@ const CaseWantedItem = (props) => {
                       md: 2,
                       select: true,
                       selectProps: constants.wantedType,
+                      required: true,
                     },
                     { label: "Hoạt động hiện hành", name: "currentActivity", md: 7 },
-                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3 },
+                    { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3, required: true, },
                     {
                       label: "Ngày ra quyết định",
                       name: "wantedDecisionDay",
                       md: 2,
                       datePicker: true,
                     },
-                    { label: "Đơn vị ra quyết định", name: "decisionMakingUnit", md: 7 },
+                    { label: "Đơn vị ra quyết định", name: "decisionMakingUnit", md: 7, required: true, },
                   ].map((field) => (
                     <Grid key={field.name} xs={12} md={field.md || 12}>
                       {loading ? (
@@ -370,8 +378,10 @@ const CaseWantedItem = (props) => {
                           )} // Set the default value based on the criminal prop
                           renderInput={(params) => (
                             <TextField
-                              {...params}
-                              disabled={isFieldDisabled || field.disabled}
+                            {...params}
+                            error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                            helperText={formik.touched[field.name] && formik.errors[field.name]}
+                            disabled={isFieldDisabled || field.disabled}
                               label={field.label}
                               required={field.required || false}
                               sx={{

@@ -38,7 +38,12 @@ const Header = () => {
           TRANG THÔNG TIN TRUY NÃ
         </Typography>
         <Box sx={{ marginLeft: 'auto', display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
-          <Button variant='contained' color="error" onClick={handleLoginClick}>
+          <Button
+            variant='contained'
+            color="error"
+            component={NextLink}
+            href="/wanted-criminals/new-report"
+          >
             Báo cáo
           </Button>
           <Button color="inherit" onClick={handleLoginClick}>

@@ -2,7 +2,7 @@ import { Card, CardContent } from "@mui/material";
 import CaseEvidenceItem from "./case-evidence-item";
 import { Space } from "antd";
 const CaseEvidences = (props) => {
-  const { evidenceInfo, loading, handleSubmit, handleDeleteEvidence, canEdit } = props;
+  const { evidenceInfo, loading, handleSubmit, handleDeleteEvidence, canEdit, isSubmitting } = props;
 
   const handleSubmitEvidenceInfo = (index, values) => {
     console.log("submit evidence info");

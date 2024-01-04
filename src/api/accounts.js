@@ -102,6 +102,7 @@ export const getAllAccounts = async (searchValue, filter, auth) => {
       params.YearOfBirth = filter.yearOfBirth;
     }
 
+    params.OrderBy = 'id DESC';
     const response = await axios.get(`/api/v1/account`, {
       params,
       headers: {
