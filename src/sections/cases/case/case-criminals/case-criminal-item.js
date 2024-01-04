@@ -38,6 +38,7 @@ const CaseCriminalItem = (props) => {
     loading,
     handleSubmit,
     handleDeleteCriminal,
+    canEdit
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -199,7 +200,7 @@ const CaseCriminalItem = (props) => {
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
-      {isFieldDisabled && (
+      {isFieldDisabled && canEdit && (
         <Tooltip title="Chỉnh sửa">
           <Button
             type="text"
@@ -242,19 +243,21 @@ const CaseCriminalItem = (props) => {
           </Tooltip>
         </>
       )}
-
-      <Tooltip title="Xóa">
-        <Button
-          type="text"
-          icon={
-            <SvgIcon fontSize="small">
-              <TrashIcon />
-            </SvgIcon>
-          }
-          shape="circle"
-          onClick={handleDeleteClick}
-        />
-      </Tooltip>
+      {canEdit && (
+        <Tooltip title="Xóa">
+          <Button
+            type="text"
+            icon={
+              <SvgIcon fontSize="small">
+                <TrashIcon />
+              </SvgIcon>
+            }
+            shape="circle"
+            onClick={handleDeleteClick}
+          />
+        </Tooltip>
+      )}
+      
     </Stack>
   );
 

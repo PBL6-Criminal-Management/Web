@@ -171,7 +171,7 @@ export const CasesTable = (props) => {
                       >
                         <Tooltip title="Xem chi tiết">
                             <IconButton
-                              LinkComponent={Link}
+                              LinkComponent={NextLink}
                               href={{
                                 pathname: '/cases/[id]',
                                 query: { id: encodeURIComponent(casee.id), code: encodeURIComponent(casee.code) },

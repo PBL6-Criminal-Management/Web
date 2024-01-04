@@ -27,7 +27,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const CaseVictimItem = (props) => {
-  const { victim, index, loading, handleSubmit, handleDeleteVictim } = props;
+  const { victim, index, loading, handleSubmit, handleDeleteVictim, canEdit } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -128,7 +128,7 @@ const CaseVictimItem = (props) => {
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
-      {isFieldDisabled && (
+      {isFieldDisabled && canEdit && (
         <Tooltip title="Chỉnh sửa">
           <Button
             type="text"
@@ -171,19 +171,21 @@ const CaseVictimItem = (props) => {
           </Tooltip>
         </>
       )}
-
-      <Tooltip title="Xóa">
-        <Button
-          type="text"
-          icon={
-            <SvgIcon fontSize="small">
-              <TrashIcon />
-            </SvgIcon>
-          }
-          shape="circle"
-          onClick={handleDeleteClick}
-        />
-      </Tooltip>
+      {canEdit && (
+        <Tooltip title="Xóa">
+          <Button
+            type="text"
+            icon={
+              <SvgIcon fontSize="small">
+                <TrashIcon />
+              </SvgIcon>
+            }
+            shape="circle"
+            onClick={handleDeleteClick}
+          />
+        </Tooltip>
+      )}
+      
     </Stack>
   );
 

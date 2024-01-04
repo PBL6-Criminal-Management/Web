@@ -165,7 +165,7 @@ export const CriminalsTable = (props) => {
                       >
                         <Tooltip title="Xem chi tiết">
                             <IconButton
-                              LinkComponent={Link}
+                              LinkComponent={NextLink}
                               href={{
                                 pathname: '/criminals/[id]',
                                 query: { id: encodeURIComponent(criminal.id), name: encodeURIComponent(criminal.name) },
@@ -225,15 +225,6 @@ export const CriminalsTable = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* <TablePagination
-        component="div"
-        count={count}
-        onPageChange={onPageChange}
-        onRowsPerPageChange={onRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      /> */}
     </Card>
   );
 };

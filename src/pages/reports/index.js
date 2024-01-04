@@ -26,6 +26,7 @@ const Page = () => {
   const [searchValue, setSearchValue] = useState("");
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
   const auth = useAuth();
+  const role = auth.isAuthenticated ? auth.user.role : null;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -121,6 +122,7 @@ const Page = () => {
               page={page}
               rowsPerPage={rowsPerPage}
               onDeleteReport={handleDelete}
+              role={role}
             />
           </Stack>
         </Container>

@@ -3,7 +3,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { useState } from 'react';
 
-const AccordionSection = ({ summary, summaryVariant, children, handleAdd, addLabel }) => {
+const AccordionSection = ({ summary, summaryVariant, children, handleAdd, addLabel, canEdit }) => {
     const handleAddAccordion = (e) => {
         e.stopPropagation();
         handleAdd();
@@ -45,7 +45,7 @@ const AccordionSection = ({ summary, summaryVariant, children, handleAdd, addLab
                             {summary}
                         </Typography>
                     </Grid>
-                    {expanded && handleAdd && typeof handleAdd === 'function' && (
+                    {expanded && handleAdd && typeof handleAdd === 'function' && canEdit && (
                         <Grid item xs={12} sm={6} sx={{ textAlign: 'end' }}>
                             <Button
                                 onClick={handleAddAccordion}

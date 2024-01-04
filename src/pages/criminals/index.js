@@ -28,7 +28,7 @@ const Page = () => {
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
   const auth = useAuth();
   const role = auth.isAuthenticated ? auth.user.role : null;
-  const canAdd = role === 0;
+  const canAdd = role !== 2;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
