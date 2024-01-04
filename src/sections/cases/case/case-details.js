@@ -11,6 +11,7 @@ import CaseWanted from "./case-wanted/case-wanted";
 import CaseInvestigators from "./case-investigators";
 import _ from "lodash";
 import { format } from "date-fns";
+import { useAuth } from "src/hooks/use-auth";
 
 export const CaseDetails = (props) => {
   const {
@@ -23,6 +24,8 @@ export const CaseDetails = (props) => {
     onUpdate,
   } = props;
   const [caseDetail, setCaseDetail] = useState(null);
+  const auth = useAuth();
+  const canEdit = auth.isAuthenticated ? auth.user.role !== 2 : false;
   const [isFirst, setIsFirst] = useState(true);
 
   useEffect(() => {
@@ -417,6 +420,7 @@ export const CaseDetails = (props) => {
               loadingButtonDetails={loadingButtonDetails}
               loadingButtonPicture={loadingButtonPicture}
               handleSubmit={(value) => handleSubmit("general", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -424,6 +428,7 @@ export const CaseDetails = (props) => {
             summary="Thông tin tội phạm"
             handleAdd={handleAddCriminal}
             addLabel="tội phạm"
+            canEdit={canEdit}
           >
             <CaseCriminals
               criminalInfo={caseDetail.criminals}
@@ -431,6 +436,7 @@ export const CaseDetails = (props) => {
               loading={loadingSkeleton}
               handleDeleteCriminal={handleDeleteCriminal}
               handleSubmit={(value) => handleSubmit("criminals", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -438,12 +444,14 @@ export const CaseDetails = (props) => {
             summary="Thông tin nạn nhân"
             handleAdd={handleAddVictim}
             addLabel="nạn nhân"
+            canEdit={canEdit}
           >
             <CaseVictims
               victimInfo={caseDetail.victims}
               handleDeleteVictim={handleDeleteVictim}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("victims", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -451,12 +459,14 @@ export const CaseDetails = (props) => {
             summary="Thông tin nhân chứng"
             handleAdd={handleAddWitness}
             addLabel="nhân chứng"
+            canEdit={canEdit}
           >
             <CaseWitnesses
               witnessInfo={caseDetail.witnesses}
               handleDeleteWitness={handleDeleteWitness}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("witnesses", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -464,12 +474,14 @@ export const CaseDetails = (props) => {
             summary="Thông tin vật chứng"
             handleAdd={handleAddEvidence}
             addLabel="vật chứng"
+            canEdit={canEdit}
           >
             <CaseEvidences
               evidenceInfo={caseDetail.evidences}
               handleDeleteEvidence={handleDeleteEvidence}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("evidences", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -482,6 +494,7 @@ export const CaseDetails = (props) => {
               handleDeleteCaseImage={handleDeleteCaseImage}
               loadingButtonPicture={loadingButtonPicture}
               handleSubmit={(value) => handleSubmit("caseImages", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -489,6 +502,7 @@ export const CaseDetails = (props) => {
             summary="Thông tin truy nã"
             handleAdd={handleAddWanted}
             addLabel="truy nã"
+            canEdit={canEdit}
           >
             <CaseWanted
               wantedInfo={caseDetail.wantedCriminalRequest}
@@ -496,6 +510,7 @@ export const CaseDetails = (props) => {
               handleDeleteWanted={handleDeleteWanted}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("wantedCriminalRequest", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -505,6 +520,7 @@ export const CaseDetails = (props) => {
               investigators={investigators}
               loading={loadingSkeleton}
               handleSubmit={(value) => handleSubmit("investigatorIds", value)}
+              canEdit={canEdit}
             />
           </AccordionSection>
         </>

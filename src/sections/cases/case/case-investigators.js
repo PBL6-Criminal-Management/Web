@@ -22,6 +22,7 @@ const CaseInvestigators = (props) => {
     loadingButtonDetails,
     loadingButtonPicture,
     handleSubmit,
+    canEdit
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isClicked, setIsClicked] = useState(false);
@@ -162,35 +163,38 @@ const CaseInvestigators = (props) => {
         </Grid>
       </CardContent>
       <Divider />
-      <CardActions sx={{ justifyContent: "flex-end" }}>
-        {isClicked ? (
-          loadingButtonDetails && (
-            <LoadingButton
-              disabled
-              loading={loadingButtonDetails}
-              size="medium"
-              variant="contained"
-            >
-              Chỉnh sửa thông tin
-            </LoadingButton>
-          )
-        ) : (
-          <>
-            <Button
-              variant="contained"
-              onClick={isFieldDisabled ? handleEditInvestigators : handleSubmitInvestigators}
-              disabled={loadingButtonPicture}
-            >
-              {isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
-            </Button>
-            {!isFieldDisabled && (
-              <Button variant="outlined" onClick={handleCancelInvestigators}>
-                Hủy
+      {canEdit && (
+        <CardActions sx={{ justifyContent: "flex-end" }}>
+          {isClicked ? (
+            loadingButtonDetails && (
+              <LoadingButton
+                disabled
+                loading={loadingButtonDetails}
+                size="medium"
+                variant="contained"
+              >
+                Chỉnh sửa thông tin
+              </LoadingButton>
+            )
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                onClick={isFieldDisabled ? handleEditInvestigators : handleSubmitInvestigators}
+                disabled={loadingButtonPicture}
+              >
+                {isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
               </Button>
-            )}
-          </>
-        )}
-      </CardActions>
+              {!isFieldDisabled && (
+                <Button variant="outlined" onClick={handleCancelInvestigators}>
+                  Hủy
+                </Button>
+              )}
+            </>
+          )}
+        </CardActions>
+      )}
+      
     </Card>
   );
 };

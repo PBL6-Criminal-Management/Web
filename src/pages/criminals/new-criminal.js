@@ -40,6 +40,10 @@ const NewCriminalPage = () => {
   const [open, setOpen] = useState(true);
   const auth = useAuth();
   const router = useRouter();
+  const canAdd = auth.isAuthenticated ? auth.user.role !== 2 : false;
+    if (!canAdd) {
+        router.push("/404");
+    }
 
   const formik = useFormik({
     initialValues: {
@@ -251,7 +255,7 @@ const NewCriminalPage = () => {
     [uploadImage]
   );
 
-  return (
+  return (canAdd && (
     <>
       <Head>
         <title>Tội phạm | Thêm tội phạm </title>
@@ -475,7 +479,7 @@ const NewCriminalPage = () => {
         </Box>
       </form>
     </>
-  );
+  ));
 };
 
 NewCriminalPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;

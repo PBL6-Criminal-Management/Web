@@ -7,7 +7,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        404 | Devias Kit
+        Trang không tồn tại
       </title>
     </Head>
     <Box
@@ -48,15 +48,14 @@ const Page = () => (
             sx={{ mb: 3 }}
             variant="h3"
           >
-            404: The page you are looking for isn’t here
+            404: Trang này không tồn tại
           </Typography>
           <Typography
             align="center"
             color="text.secondary"
             variant="body1"
           >
-            You either tried some shady route or you came here by mistake.
-            Whichever it is, try using the navigation
+            Trang này không tồn tại hoặc bạn không có quyền truy cập vào trang này.
           </Typography>
           <Button
             component={NextLink}
@@ -69,7 +68,7 @@ const Page = () => (
             sx={{ mt: 3 }}
             variant="contained"
           >
-            Go back to dashboard
+            Trở về trang chủ
           </Button>
         </Box>
       </Container>

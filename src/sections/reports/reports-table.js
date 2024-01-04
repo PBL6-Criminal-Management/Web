@@ -35,7 +35,8 @@ export const ReportsTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
-    onDeleteReport
+    onDeleteReport,
+    role
   } = props;
 
   const colorsReport = {
@@ -43,6 +44,9 @@ export const ReportsTable = (props) => {
     1: 'primary',
     2: 'success',
   };
+
+  const canEdit = role !== 2;
+  const canDelete = role === 0; 
 
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState('');
@@ -162,24 +166,25 @@ export const ReportsTable = (props) => {
                         direction="row"
                         spacing={-1}
                       >
-                        <Tooltip title="Chỉnh sửa báo cáo">
-                          <IconButton
-                            LinkComponent={NextLink}
-                            href={{
-                              pathname: '/reports/[id]',
-                              query: { id: encodeURIComponent(report.id), code: encodeURIComponent(report.code) },
-                            }}
-                          >
-                            <SvgIcon
-                              color="action"
-                              fontSize="small"
+                        <Tooltip title="Xem chi tiết">
+                            <IconButton
+                              LinkComponent={NextLink}
+                              href={{
+                                pathname: '/reports/[id]',
+                                query: { id: encodeURIComponent(report.id), name: encodeURIComponent(report.code) },
+                              }}
                             >
-                              <PencilSquareIcon />
-                            </SvgIcon>
-                          </IconButton>
-                        </Tooltip>
+                              <SvgIcon
+                                color="action"
+                                fontSize="small"
+                              >
+                                <PencilSquareIcon />
+                              </SvgIcon>
+                            </IconButton>
+                          </Tooltip>
 
-                        <Tooltip title="Xóa báo cáo">
+                        {canDelete && (
+                          <Tooltip title="Xóa báo cáo">
                           <IconButton onClick={() => handleDeleteClick(report.id)}>
                             <SvgIcon
                               color="action"
@@ -188,7 +193,7 @@ export const ReportsTable = (props) => {
                               <TrashIcon />
                             </SvgIcon>
                           </IconButton>
-                        </Tooltip>
+                        </Tooltip>)}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -233,4 +238,5 @@ ReportsTable.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   onDeleteReport: PropTypes.func,
+  role: PropTypes.number,
 };

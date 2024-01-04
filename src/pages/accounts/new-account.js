@@ -40,6 +40,10 @@ const NewAccountPage = () => {
     const [open, setOpen] = useState(true);
     const auth = useAuth();
     const router = useRouter();
+    const isAdmin = auth.isAuthenticated ? auth.user.role === 0 : false;
+    if (!isAdmin) {
+        router.push("/404");
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -149,7 +153,7 @@ const NewAccountPage = () => {
         [uploadImage]
     );
 
-    return (
+    return (isAdmin && (
         <>
             <Head>
                 <title>Tài khoản | Thêm tài khoản</title>
@@ -392,7 +396,7 @@ const NewAccountPage = () => {
                 </Box>
             </form>
         </>
-    );
+    ));
 };
 
 NewAccountPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;

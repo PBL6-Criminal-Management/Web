@@ -18,6 +18,7 @@ import { applyPagination } from "src/utils/apply-pagination";
 import * as accountsApi from "../../api/accounts";
 import { useAuth } from "src/hooks/use-auth";
 import NextLink from 'next/link';
+import { useRouter } from "next/router";
 
 const Page = () => {
   const [page, setPage] = useState(0);
@@ -28,7 +29,12 @@ const Page = () => {
   const [searchValue, setSearchValue] = useState("");
   const [filter, setFilter] = useState({});
   const [searchButtonClicked, setSearchButtonClicked] = useState(true);
+  const router = useRouter();
   const auth = useAuth();
+  const isAdmin = auth.isAuthenticated ? auth.user.role === 0 : false;
+  if (!isAdmin) {
+    router.push("/404");
+  }
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -85,7 +91,7 @@ const Page = () => {
     }
   }, [searchButtonClicked]);
 
-  return (
+  return (isAdmin && (
     <>
       <Head>
         <title>Danh sách tài khoản</title>
@@ -135,6 +141,8 @@ const Page = () => {
         </Container>
       </Box>
     </>
+  )
+    
   );
 };
 
