@@ -18,11 +18,22 @@ import { useFormik } from "formik";
 import _ from "lodash";
 
 const CaseImages = (props) => {
-  const { caseImages, loading, handleSubmit, isSubmitting } = props;
+  const {
+    caseImages,
+    loading,
+    loadingButtonDetails,
+    handleAddCaseImage,
+    handleDeleteCaseImage,
+    handleSubmit,
+    isSubmitting,
+    isFieldDisabled,
+  } = props;
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
   const [changesMade, setChangesMade] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
@@ -49,7 +60,13 @@ const CaseImages = (props) => {
       }))
   );
 
-  useEffect(() => console.log(fileList), [fileList]);
+  // useEffect(() => console.log(fileList), [fileList]);
+  useEffect(() => {
+    if (!loadingButtonDetails && hasSubmitted) {
+      setIsClicked(false);
+      setHasSubmitted(false);
+    }
+  }, [loadingButtonDetails, hasSubmitted]);
 
   const handleSuccess = (response, filename) => {
     const newImage = {
@@ -152,6 +169,32 @@ const CaseImages = (props) => {
     </div>
   );
 
+  const handleEditImages = () => {
+    setIsFieldDisabled(false);
+    setIsClicked(false);
+    // handleEdit();
+    setChangesMade(false);
+  };
+
+  const handleSubmitImages = () => {
+    setIsFieldDisabled(true);
+    setIsClicked(true);
+    setHasSubmitted(true);
+    if (changesMade) {
+      handleSubmit(formik.values);
+    }
+    // handleSubmit();
+  };
+
+  const handleCancelImages = () => {
+    setIsClicked(false);
+    setIsFieldDisabled(true);
+    setChangesMade(false);
+    formik.setValues(caseImages);
+    formik.setTouched({}, false);
+    // handleCancel();
+  };
+
   const formik = useFormik({
     initialValues: caseImages ? caseImages : null,
     onSubmit: async (values, helpers) => {
@@ -218,6 +261,7 @@ const CaseImages = (props) => {
                         listType="picture-card"
                         fileList={fileList}
                         onPreview={handlePreviewImages}
+                        disabled={isFieldDisabled}
                       >
                         {uploadButton}
                       </Upload>

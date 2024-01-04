@@ -45,6 +45,7 @@ const CriminalInfo = (props) => {
       handleSubmit({
         ...formik.values,
         releaseDate: format(formik.values.releaseDate, "dd/MM/yyyy"),
+        dateOfMostRecentCrime: format(formik.values.dateOfMostRecentCrime, "dd/MM/yyyy"),
         status: Number(formik.values.status),
       });
   };
@@ -61,6 +62,11 @@ const CriminalInfo = (props) => {
       ? {
           ...criminalInfo,
           releaseDate: parse(criminalInfo.releaseDate, "dd/MM/yyyy", new Date()),
+          dateOfMostRecentCrime: parse(
+            criminalInfo.dateOfMostRecentCrime,
+            "dd/MM/yyyy",
+            new Date()
+          ),
         }
       : null,
     validationSchema: Yup.object({

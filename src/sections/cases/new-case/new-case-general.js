@@ -9,7 +9,7 @@ import { format, parse } from "date-fns";
 import { useEffect } from "react";
 
 const CaseGeneral = (props) => {
-  const { generalInfo, loading, handleSubmit, isSubmitting } = props;
+  const { generalInfo, loading, handleSubmit, isSubmitting, isFieldDisabled } = props;
 
   const handleSubmitGeneral = (isValid) => {
     handleSubmit(
@@ -63,7 +63,7 @@ const CaseGeneral = (props) => {
     if (isSubmitting) {
       handleSubmitGeneral(formik.isValid);
     }
-  }, [formik.isValid]);
+  }, [formik.isValid, isSubmitting]);
 
   return (
     <form autoComplete="off" noValidate onSubmit={formik.handleSubmit}>
@@ -123,7 +123,7 @@ const CaseGeneral = (props) => {
                     }}
                     type={field.name}
                     value={formik.values[field.name] || null}
-                    // disabled={isFieldDisabled || field.disabled}
+                    disabled={isFieldDisabled || field.disabled || isFieldDisabled}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -149,7 +149,7 @@ const CaseGeneral = (props) => {
                     type={field.name}
                     value={formik.values[field.name]}
                     multiline={field.textArea || false}
-                    // disabled={isFieldDisabled || field.disabled}
+                    disabled={isFieldDisabled || field.disabled || isFieldDisabled}
                     required={field.required || false}
                     select={field.select}
                     SelectProps={field.select ? { native: true } : undefined}

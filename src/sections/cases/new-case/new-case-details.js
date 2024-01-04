@@ -22,6 +22,7 @@ export const NewCaseDetails = (props) => {
     onUpdate,
     isSubmitting,
     setIsSubmitting,
+    isFieldDisabled,
   } = props;
   const [caseDetail, setCaseDetail] = useState(null);
   const [formData, setFormData] = useState(null);
@@ -274,28 +275,63 @@ export const NewCaseDetails = (props) => {
   const submitData = (submitData) => {
     submitData = {
       ...submitData,
-      evidences: submitData.evidences?.filter((e) => e.id !== null),
-      criminals: submitData.criminals?.filter((c) => c.id !== null),
-      wantedCriminalRequest: submitData.wantedCriminalRequest?.filter((w) => w.criminalId !== null),
-      witnesses: submitData.witnesses?.filter((w) => w.id !== null),
-      victims: submitData.victims?.filter((v) => v.id !== null),
+      // evidences: submitData.evidences?.filter((e) => e.id !== null),
+      // criminals: submitData.criminals?.filter((c) => c.id !== null),
+      // wantedCriminalRequest: submitData.wantedCriminalRequest?.filter((w) => w.criminalId !== null),
+      // witnesses: submitData.witnesses?.filter((w) => w.id !== null),
+      // victims: submitData.victims?.filter((v) => v.id !== null),
     };
     setFormData(submitData);
   };
 
-  useEffect(() => {
-    console.log("list ready", listReady);
-    console.log("list ready unique", _.uniq(listReady.map((i) => i.id)));
-    if (_.uniq(listReady.map((i) => i.id)).length === 8) {
-      console.log(listReady.every((v) => v.isReady === true) ? "pass" : "fail");
-      if (listReady.every((v) => v.isReady === true)) {
-        onUpdate(formData);
+  const uniqueList = (dataList) => {
+    return dataList.reduce((lst, current) => {
+      const existingItemIndex = lst.findIndex((item) => item.id === current.id);
+
+      if (existingItemIndex !== -1) {
+        // If item with the same id exists, merge by updating the isReady property
+        lst[existingItemIndex].isReady = current.isReady;
       } else {
+        // If item with the id doesn't exist, add it to the result array
+        lst.push(current);
+      }
+
+      return lst;
+    }, []);
+  };
+
+  useEffect(() => {
+    if (formData !== null && isSubmitting) {
+      const lst = uniqueList(listReady);
+      console.log("old list ready", listReady);
+      console.log("unique list ready", lst);
+      console.log("length data", getLengthData(formData));
+      console.log("data", formData);
+      if (lst.length === getLengthData(formData)) {
+        console.log(lst.every((v) => v.isReady === true) ? "pass" : "fail");
+        if (lst.every((v) => v.isReady === true)) {
+          onUpdate(formData);
+        }
         setIsSubmitting(false);
         setListReady([]);
       }
     }
-  }, [listReady]);
+  }, [listReady, formData, isSubmitting]);
+
+  const getLengthData = (data) => {
+    const evidenceCount =
+      !data.evidences || data.evidences.length === 0 ? 1 : data.evidences.length;
+    const witnessesCount =
+      !data.witnesses || data.witnesses.length === 0 ? 1 : data.witnesses.length;
+    const criminalsCount =
+      !data.criminals || data.criminals.length === 0 ? 1 : data.criminals.length;
+    const victimsCount = !data.victims || data.victims.length === 0 ? 1 : data.victims.length;
+    const wantedCount =
+      !data.wantedCriminalRequest || data.wantedCriminalRequest.length === 0
+        ? 1
+        : data.wantedCriminalRequest.length;
+    return 1 + evidenceCount + witnessesCount + 1 + criminalsCount + 1 + victimsCount + wantedCount;
+  };
 
   return (
     <Box
@@ -388,7 +424,7 @@ export const NewCaseDetails = (props) => {
         </>
       ) : (
         <>
-          <AccordionSection summary="Thông tin sơ bộ">
+          <AccordionSection summary="Thông tin sơ bộ" isDisabled={isFieldDisabled}>
             <CaseGeneral
               generalInfo={{
                 status: caseDetail.status,
@@ -406,6 +442,7 @@ export const NewCaseDetails = (props) => {
                 setListReady((listReady) => [...listReady, { id: 1, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
@@ -413,17 +450,24 @@ export const NewCaseDetails = (props) => {
             summary="Thông tin tội phạm"
             handleAdd={handleAddCriminal}
             addLabel="tội phạm"
+            isDisabled={isFieldDisabled}
           >
             <CaseCriminals
               criminalInfo={caseDetail.criminals}
               criminals={criminals}
               loading={loadingSkeleton}
-              handleDeleteCriminal={handleDeleteCriminal}
-              handleSubmit={(value, isReady) => {
+              handleDeleteCriminal={(index) => {
+                setListReady((listReady) =>
+                  [...listReady].filter((i) => i.id !== "2." + (index + 1))
+                );
+                handleDeleteCriminal(index);
+              }}
+              handleSubmit={(key, value, isReady) => {
                 handleSubmit("criminals", value);
-                setListReady((listReady) => [...listReady, { id: 2, isReady: isReady }]);
+                setListReady((listReady) => [...listReady, { id: key, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
@@ -431,16 +475,24 @@ export const NewCaseDetails = (props) => {
             summary="Thông tin nạn nhân"
             handleAdd={handleAddVictim}
             addLabel="nạn nhân"
+            isDisabled={isFieldDisabled}
           >
             <CaseVictims
               victimInfo={caseDetail.victims}
-              handleDeleteVictim={handleDeleteVictim}
+              handleDeleteVictim={(index) => {
+                setListReady((listReady) =>
+                  [...listReady].filter((i) => i.id !== "3." + (index + 1))
+                );
+                handleDeleteVictim(index);
+              }}
               loading={loadingSkeleton}
-              handleSubmit={(value, isReady) => {
+              handleSubmit={(key, value, isReady) => {
+                console.log("victims", value);
                 handleSubmit("victims", value);
-                setListReady((listReady) => [...listReady, { id: 3, isReady: isReady }]);
+                setListReady((listReady) => [...listReady, { id: key, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
@@ -448,16 +500,23 @@ export const NewCaseDetails = (props) => {
             summary="Thông tin nhân chứng"
             handleAdd={handleAddWitness}
             addLabel="nhân chứng"
+            isDisabled={isFieldDisabled}
           >
             <CaseWitnesses
               witnessInfo={caseDetail.witnesses}
-              handleDeleteWitness={handleDeleteWitness}
+              handleDeleteWitness={(index) => {
+                setListReady((listReady) =>
+                  [...listReady].filter((i) => i.id !== "4." + (index + 1))
+                );
+                handleDeleteWitness(index);
+              }}
               loading={loadingSkeleton}
-              handleSubmit={(value, isReady) => {
+              handleSubmit={(key, value, isReady) => {
                 handleSubmit("witnesses", value);
-                setListReady((listReady) => [...listReady, { id: 4, isReady: isReady }]);
+                setListReady((listReady) => [...listReady, { id: key, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
@@ -465,20 +524,27 @@ export const NewCaseDetails = (props) => {
             summary="Thông tin vật chứng"
             handleAdd={handleAddEvidence}
             addLabel="vật chứng"
+            isDisabled={isFieldDisabled}
           >
             <CaseEvidences
               evidenceInfo={caseDetail.evidences}
-              handleDeleteEvidence={handleDeleteEvidence}
+              handleDeleteEvidence={(index) => {
+                setListReady((listReady) =>
+                  [...listReady].filter((i) => i.id !== "5." + (index + 1))
+                );
+                handleDeleteEvidence(index);
+              }}
               loading={loadingSkeleton}
-              handleSubmit={(value, isReady) => {
+              handleSubmit={(key, value, isReady) => {
                 handleSubmit("evidences", value);
-                setListReady((listReady) => [...listReady, { id: 5, isReady: isReady }]);
+                setListReady((listReady) => [...listReady, { id: key, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
-          <AccordionSection summary="Hình ảnh/video vụ án">
+          <AccordionSection summary="Hình ảnh/video vụ án" isDisabled={isFieldDisabled}>
             <CaseImages
               caseImages={caseDetail.caseImages}
               loading={loadingSkeleton}
@@ -490,6 +556,7 @@ export const NewCaseDetails = (props) => {
                 setListReady((listReady) => [...listReady, { id: 6, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
@@ -497,21 +564,28 @@ export const NewCaseDetails = (props) => {
             summary="Thông tin truy nã"
             handleAdd={handleAddWanted}
             addLabel="truy nã"
+            isDisabled={isFieldDisabled}
           >
             <CaseWanted
               wantedInfo={caseDetail.wantedCriminalRequest}
               criminals={caseDetail.criminals}
-              handleDeleteWanted={handleDeleteWanted}
+              handleDeleteWanted={(index) => {
+                setListReady((listReady) =>
+                  [...listReady].filter((i) => i.id !== "7." + (index + 1))
+                );
+                handleDeleteWanted(index);
+              }}
               loading={loadingSkeleton}
-              handleSubmit={(value, isReady) => {
+              handleSubmit={(key, value, isReady) => {
                 handleSubmit("wantedCriminalRequest", value);
-                setListReady((listReady) => [...listReady, { id: 7, isReady: isReady }]);
+                setListReady((listReady) => [...listReady, { id: key, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
 
-          <AccordionSection summary="Thông tin điều tra viên">
+          <AccordionSection summary="Thông tin điều tra viên" isDisabled={isFieldDisabled}>
             <CaseInvestigators
               investigatorsOfCase={caseDetail.investigators}
               investigators={investigators}
@@ -521,6 +595,7 @@ export const NewCaseDetails = (props) => {
                 setListReady((listReady) => [...listReady, { id: 8, isReady: isReady }]);
               }}
               isSubmitting={isSubmitting}
+              isFieldDisabled={isFieldDisabled}
             />
           </AccordionSection>
         </>

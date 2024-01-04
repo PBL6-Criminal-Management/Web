@@ -1,11 +1,8 @@
 import {
   Unstable_Grid2 as Grid,
   TextField,
-  Button,
   Card,
   CardContent,
-  CardActions,
-  Divider,
   Skeleton,
   Autocomplete,
   Box,
@@ -19,10 +16,9 @@ const CaseInvestigators = (props) => {
     investigatorsOfCase,
     investigators,
     loading,
-    loadingButtonDetails,
-    loadingButtonPicture,
     handleSubmit,
     isSubmitting,
+    isFieldDisabled,
   } = props;
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState([]);
@@ -81,6 +77,7 @@ const CaseInvestigators = (props) => {
                       name={field.name}
                       label={field.label}
                       disablePortal
+                      disabled={isFieldDisabled}
                       fullWidth
                       options={options}
                       getOptionLabel={(option) => (value ? option.name : "")}
@@ -122,7 +119,7 @@ const CaseInvestigators = (props) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          // disabled={isFieldDisabled || field.disabled}
+                          disabled={isFieldDisabled || field.disabled || isFieldDisabled}
                           label={field.label}
                           required={field.required || false}
                           sx={{
