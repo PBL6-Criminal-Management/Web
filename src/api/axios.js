@@ -1,5 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
 
 export default axios.create({
-    baseURL: 'https://criminalmanagementapi.azurewebsites.net'
+  baseURL: "https://webapi20240103001211.azurewebsites.net",
 });

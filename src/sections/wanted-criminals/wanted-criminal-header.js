@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Divider } from '@mui/material';
 import { Logo } from 'src/components/logo';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
@@ -37,7 +37,10 @@ const Header = () => {
         >
           TRANG THÔNG TIN TRUY NÃ
         </Typography>
-        <Box sx={{ marginLeft: 'auto' }}>
+        <Box sx={{ marginLeft: 'auto', display: "flex", flexDirection: "row", alignItems: "center", gap: 1 }}>
+          <Button variant='contained' color="error" onClick={handleLoginClick}>
+            Báo cáo
+          </Button>
           <Button color="inherit" onClick={handleLoginClick}>
             Đăng nhập
           </Button>

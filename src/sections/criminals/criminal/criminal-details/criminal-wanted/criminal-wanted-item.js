@@ -7,8 +7,6 @@ import { Collapse, Space } from "antd";
 const CriminalWantedItem = (props) => {
   const { title, wanted, loading } = props;
 
-  console.log("wanted", wanted);
-
   return (
     <Collapse
       items={[
@@ -26,7 +24,8 @@ const CriminalWantedItem = (props) => {
                   disabled: true,
                   selectProps: constants.wantedType,
                 },
-                { label: "Hoạt động hiện hành", name: "currentActivity", disabled: true },
+                { label: "Vũ khí", name: "weapon", md: 5.5, disabled: true },
+                { label: "Hoạt động hiện hành", md: 6.5, name: "currentActivity", disabled: true },
                 { label: "Số ra quyết định", name: "wantedDecisionNo", md: 3, disabled: true },
                 { label: "Ngày ra quyết định", name: "wantedDecisionDay", md: 2.5, disabled: true },
                 {

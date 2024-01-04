@@ -22,7 +22,6 @@ export const CriminalDetails = (props) => {
   } = props;
 
   useEffect(() => {
-    console.log("inint", initialCriminal);
     if (initialCriminal) {
       setGeneralInformation({
         name: initialCriminal.name,
@@ -139,7 +138,10 @@ export const CriminalDetails = (props) => {
           </AccordionSection>
           {wantedInformation && wantedInformation.isWantedCriminal && (
             <AccordionSection summary="Thông tin truy nã">
-              <CriminalWanted wantedCriminals={wantedInformation} loading={loadingSkeleton} />
+              <CriminalWanted
+                wantedCriminals={wantedInformation}
+                loading={loadingSkeleton}
+              />
             </AccordionSection>
           )}
         </>

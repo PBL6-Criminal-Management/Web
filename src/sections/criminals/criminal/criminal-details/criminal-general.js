@@ -47,14 +47,19 @@ const CriminalGeneral = (props) => {
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
         fatherBirthday: format(formik.values.fatherBirthday, "dd/MM/yyyy"),
         motherBirthday: format(formik.values.motherBirthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
       });
   };
 
   const handleCancelGeneral = () => {
     setIsClicked(false);
     setIsFieldDisabled(true);
-    formik.setValues(generalInfo);
+    formik.setValues({
+      ...generalInfo,
+      birthday: parse(generalInfo.birthday, "dd/MM/yyyy", new Date()),
+      fatherBirthday: parse(generalInfo.fatherBirthday, "dd/MM/yyyy", new Date()),
+      motherBirthday: parse(generalInfo.motherBirthday, "dd/MM/yyyy", new Date()),
+    });
   };
 
   const formik = useFormik({
@@ -172,7 +177,12 @@ const CriminalGeneral = (props) => {
               { label: "Quốc tịch", name: "nationality", md: 3, required: true },
               { label: "Dân tộc", name: "ethnicity", md: 3, required: true },
               { label: "Tôn giáo", name: "religion", md: 3 },
-              { label: "Nghề nghiệp, nơi làm việc", name: "careerAndWorkplace", md: 6, required: true },
+              {
+                label: "Nghề nghiệp, nơi làm việc",
+                name: "careerAndWorkplace",
+                md: 6,
+                required: true,
+              },
               { label: "Nơi ĐKTT", name: "permanentResidence", md: 6, required: true },
               { label: "Nơi ở hiện tại", name: "currentAccommodation", md: 6, required: true },
               { label: "Họ và tên cha", name: "fatherName", md: 6, required: true },

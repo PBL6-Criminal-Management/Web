@@ -70,9 +70,9 @@ export const UserDetails = (props) => {
     enableReinitialize: true,
     initialValues: initialUser
       ? {
-          ...initialUser,
-          birthday: parse(initialUser.birthday, "dd/MM/yyyy", new Date()),
-        }
+        ...initialUser,
+        birthday: parse(initialUser.birthday, "dd/MM/yyyy", new Date()),
+      }
       : null,
     validationSchema: Yup.object({
       name: Yup.string()
@@ -121,7 +121,7 @@ export const UserDetails = (props) => {
         name: formik.values.name,
         citizenId: formik.values.citizenId,
         birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        gender: formik.values.gender === "true",
+        gender: formik.values.gender === true || formik.values.gender === "true",
         address: formik.values.address,
         email: formik.values.email,
         phoneNumber: formik.values.phoneNumber,
@@ -238,21 +238,13 @@ export const UserDetails = (props) => {
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           {loadingSkeleton ? (
-            <Skeleton>
-              <Button>Chỉnh sửa thông tin</Button>
-            </Skeleton>
-          ) : loadingButtonDetails ? (
-            <LoadingButton
-              disabled
-              loading={loadingButtonDetails}
-              size="medium"
-              variant="contained"
-            >
-              Chỉnh sửa thông tin
-            </LoadingButton>
+            <>
+              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
+            </>
           ) : loadingButtonDetails ? (
             <>
-              <Button variant="outlined" disabled={loadingButtonDetails}>
+              <Button variant="outlined" color="error" disabled={loadingButtonDetails}>
                 Đổi mật khẩu
               </Button>
               <LoadingButton
@@ -266,7 +258,7 @@ export const UserDetails = (props) => {
             </>
           ) : (
             <>
-              <Button variant="outlined" disabled={loadingButtonPicture}>
+              <Button variant="outlined" color="error" disabled={loadingButtonPicture}>
                 Đổi mật khẩu
               </Button>
               <Button
