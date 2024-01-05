@@ -230,6 +230,7 @@ const NewReportPage = () => {
                         size="small"
                         onClick={() => {
                           setOpen(false);
+                          router.push("/wanted-criminals");
                         }}
                       >
                         <CloseIcon fontSize="inherit" />
@@ -259,7 +260,7 @@ const NewReportPage = () => {
                         size="small"
                         onClick={() => {
                           setOpen(false);
-                          router.push("/criminals");
+                          
                         }}
                       >
                         <CloseIcon fontSize="inherit" />
