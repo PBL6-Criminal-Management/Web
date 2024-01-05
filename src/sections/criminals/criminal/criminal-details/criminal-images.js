@@ -205,6 +205,7 @@ const CriminalImages = (props) => {
  const handleChangeImages = ({ fileList: newFileList }) => {
   console.log("newFileList", newFileList);
   setFileList(newFileList);
+  setChangesMade(true);
  };
 
  const handleEditImages = () => {
