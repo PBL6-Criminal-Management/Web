@@ -427,6 +427,7 @@ const NewCriminalPage = () => {
                           size="small"
                           onClick={() => {
                             setOpen(false);
+                            router.push("/criminals");
                           }}
                         >
                           <CloseIcon fontSize="inherit" />

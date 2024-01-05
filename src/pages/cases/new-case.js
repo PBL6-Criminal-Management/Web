@@ -305,6 +305,7 @@ const NewCasePage = () => {
                         size="small"
                         onClick={() => {
                           setOpen(false);
+                          router.push('/cases');
                         }}
                       >
                         <CloseIcon fontSize="inherit" />
