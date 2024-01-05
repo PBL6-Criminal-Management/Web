@@ -11,6 +11,7 @@ import CaseWanted from "./new-case-wanted/new-case-wanted";
 import CaseInvestigators from "./new-case-investigators";
 import _ from "lodash";
 import { format } from "date-fns";
+import { useAuth } from "src/hooks/use-auth";
 
 export const NewCaseDetails = (props) => {
   const {
@@ -28,6 +29,8 @@ export const NewCaseDetails = (props) => {
   const [formData, setFormData] = useState(null);
   const [isFirst, setIsFirst] = useState(true);
   const [listReady, setListReady] = useState([]);
+  const auth = useAuth();
+  const canEdit = auth.isAuthenticated ? auth.user.role !== 2 : false;
 
   useEffect(() => {
     if (!_.isEmpty(initialCase) && isFirst) {
@@ -443,6 +446,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -451,6 +455,7 @@ export const NewCaseDetails = (props) => {
             handleAdd={handleAddCriminal}
             addLabel="tội phạm"
             isDisabled={isFieldDisabled}
+            canEdit={canEdit}
           >
             <CaseCriminals
               criminalInfo={caseDetail.criminals}
@@ -468,6 +473,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -476,6 +482,7 @@ export const NewCaseDetails = (props) => {
             handleAdd={handleAddVictim}
             addLabel="nạn nhân"
             isDisabled={isFieldDisabled}
+            canEdit={canEdit}
           >
             <CaseVictims
               victimInfo={caseDetail.victims}
@@ -493,6 +500,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -501,6 +509,7 @@ export const NewCaseDetails = (props) => {
             handleAdd={handleAddWitness}
             addLabel="nhân chứng"
             isDisabled={isFieldDisabled}
+            canEdit={canEdit}
           >
             <CaseWitnesses
               witnessInfo={caseDetail.witnesses}
@@ -517,6 +526,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -525,6 +535,7 @@ export const NewCaseDetails = (props) => {
             handleAdd={handleAddEvidence}
             addLabel="vật chứng"
             isDisabled={isFieldDisabled}
+            canEdit={canEdit}
           >
             <CaseEvidences
               evidenceInfo={caseDetail.evidences}
@@ -541,6 +552,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -557,6 +569,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -565,6 +578,7 @@ export const NewCaseDetails = (props) => {
             handleAdd={handleAddWanted}
             addLabel="truy nã"
             isDisabled={isFieldDisabled}
+            canEdit={canEdit}
           >
             <CaseWanted
               wantedInfo={caseDetail.wantedCriminalRequest}
@@ -582,6 +596,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
 
@@ -596,6 +611,7 @@ export const NewCaseDetails = (props) => {
               }}
               isSubmitting={isSubmitting}
               isFieldDisabled={isFieldDisabled}
+              canEdit={canEdit}
             />
           </AccordionSection>
         </>
