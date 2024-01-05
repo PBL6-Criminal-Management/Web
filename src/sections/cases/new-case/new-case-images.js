@@ -7,6 +7,7 @@ import {
   CardActions,
   Divider,
   Skeleton,
+  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import React, { useState, useEffect } from "react";
@@ -34,6 +35,7 @@ const CaseImages = (props) => {
   const [changesMade, setChangesMade] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [message, setMessage] = useState('');
 
   const getFileType = (url) => {
     const extension = url.slice(((url.lastIndexOf(".") - 1) >>> 0) + 2);
@@ -51,13 +53,13 @@ const CaseImages = (props) => {
 
   const [fileList, setFileList] = useState(
     caseImages &&
-      caseImages.map((image, index) => ({
-        uid: index,
-        name: image.fileName,
-        status: "done",
-        path: image.filePath,
-        url: image.fileUrl,
-      }))
+    caseImages.map((image, index) => ({
+      uid: index,
+      name: image.fileName,
+      status: "done",
+      path: image.filePath,
+      url: image.fileUrl,
+    }))
   );
 
   // useEffect(() => console.log(fileList), [fileList]);
@@ -90,16 +92,16 @@ const CaseImages = (props) => {
   };
 
   const handleError = (error) => {
-    console.log("handleError", error);
+    setMessage(error);
     setFileList(
       caseImages &&
-        caseImages.map((image, index) => ({
-          uid: index,
-          name: image.fileName,
-          status: "done",
-          path: image.filePath,
-          url: image.fileUrl,
-        }))
+      caseImages.map((image, index) => ({
+        uid: index,
+        name: image.fileName,
+        status: "done",
+        path: image.filePath,
+        url: image.fileUrl,
+      }))
     );
     formik.setValues(caseImages);
   };
@@ -132,6 +134,13 @@ const CaseImages = (props) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
+
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      onError("Hình ảnh/video tải lên không hợp lệ. Vui lòng thử lại.")
+      return;
+    }
+    setMessage('');
+
     fmData.append("Files", file);
     try {
       const response = await imagesApi.uploadImage(fmData, config);
@@ -265,6 +274,14 @@ const CaseImages = (props) => {
                       >
                         {uploadButton}
                       </Upload>
+                      <Typography
+                        sx={{
+                          mt: 0.75,
+                          color: "error.main",
+                        }}
+                      >
+                        {message}
+                      </Typography>
                       {previewVisible && (
                         <Image.PreviewGroup
                           preview={{

@@ -171,7 +171,7 @@ export const ReportsTable = (props) => {
                               LinkComponent={NextLink}
                               href={{
                                 pathname: '/reports/[id]',
-                                query: { id: encodeURIComponent(report.id), name: encodeURIComponent(report.code) },
+                                query: { id: encodeURIComponent(report.id), code: encodeURIComponent(report.code) },
                               }}
                             >
                               <SvgIcon

@@ -170,7 +170,7 @@ const NewCriminalImages = (props) => {
     onError(error);
    }
   }
- }
+ };
 
 
  const uploadButton = (
