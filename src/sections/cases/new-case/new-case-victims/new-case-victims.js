@@ -4,7 +4,8 @@ import { Space } from "antd";
 import { useEffect } from "react";
 import _ from "lodash";
 const CaseVictims = (props) => {
-  const { victimInfo, loading, handleSubmit, handleDeleteVictim, isSubmitting } = props;
+  const { victimInfo, loading, handleSubmit, handleDeleteVictim, isSubmitting, isFieldDisabled } =
+    props;
 
   const handleSubmitVictimInfo = (index, values, isReady) => {
     console.log("submit victim info");
@@ -14,6 +15,7 @@ const CaseVictims = (props) => {
       ...victimInfo.slice(index + 1),
     ]);
     handleSubmit(
+      "3." + (index + 1),
       [
         ...victimInfo.slice(0, index),
         { ...values, id: values.id ? values.id : -1 },
@@ -25,7 +27,7 @@ const CaseVictims = (props) => {
 
   useEffect(() => {
     if (isSubmitting && _.isEmpty(victimInfo)) {
-      handleSubmit(victimInfo, true);
+      handleSubmit(3, victimInfo, true);
     }
   }, [isSubmitting]);
 
@@ -55,6 +57,7 @@ const CaseVictims = (props) => {
                 handleSubmit={(values, isReady) => handleSubmitVictimInfo(index, values, isReady)}
                 handleDeleteVictim={handleDeleteVictim}
                 isSubmitting={isSubmitting}
+                isDisabled={isFieldDisabled}
               />
             ))}
         </Space>

@@ -28,7 +28,8 @@ import * as Yup from "yup";
 import _ from "lodash";
 
 const CaseEvidenceItem = (props) => {
-  const { evidence, index, loading, handleSubmit, handleDeleteEvidence, isSubmitting } = props;
+  const { evidence, index, loading, handleSubmit, handleDeleteEvidence, isSubmitting, isDisabled } =
+    props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -226,7 +227,7 @@ const CaseEvidenceItem = (props) => {
     if (isSubmitting) {
       handleSubmitEvidence(formik.isValid);
     }
-  }, [formik.isValid]);
+  }, [formik.isValid, isSubmitting]);
 
   useEffect(() => {
     setFileList(
@@ -256,7 +257,6 @@ const CaseEvidenceItem = (props) => {
           />
         </Tooltip>
       )}
-
       {!isFieldDisabled && (
         <>
           <Tooltip title="Cập nhật">
@@ -285,7 +285,6 @@ const CaseEvidenceItem = (props) => {
           </Tooltip>
         </>
       )}
-
       <Tooltip title="Xóa">
         <Button
           type="text"
@@ -335,7 +334,7 @@ const CaseEvidenceItem = (props) => {
                     ) : field.upload ? (
                       <>
                         <Upload
-                          disabled={isFieldDisabled || field.disabled}
+                          disabled={isFieldDisabled || field.disabled || isDisabled}
                           accept="image/*,video/*"
                           name={field.name}
                           customRequest={(options) =>
@@ -397,7 +396,7 @@ const CaseEvidenceItem = (props) => {
                         type={field.name}
                         value={formik.values[field.name]}
                         multiline={field.textArea || false}
-                        disabled={isFieldDisabled || field.disabled}
+                        disabled={isFieldDisabled || field.disabled || isDisabled}
                         required={field.required || false}
                         select={field.select}
                         SelectProps={field.select ? { native: true } : undefined}

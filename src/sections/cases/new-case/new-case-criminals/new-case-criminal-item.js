@@ -39,6 +39,7 @@ const CaseCriminalItem = (props) => {
     handleSubmit,
     handleDeleteCriminal,
     isSubmitting,
+    isDisabled,
   } = props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -215,7 +216,7 @@ const CaseCriminalItem = (props) => {
     if (isSubmitting) {
       handleSubmitCriminal(formik.isValid);
     }
-  }, [formik.isValid]);
+  }, [formik.isValid, isSubmitting]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -263,18 +264,20 @@ const CaseCriminalItem = (props) => {
         </>
       )}
 
-      <Tooltip title="Xóa">
-        <Button
-          type="text"
-          icon={
-            <SvgIcon fontSize="small">
-              <TrashIcon />
-            </SvgIcon>
-          }
-          shape="circle"
-          onClick={handleDeleteClick}
-        />
-      </Tooltip>
+      {!isDisabled && (
+        <Tooltip title="Xóa">
+          <Button
+            type="text"
+            icon={
+              <SvgIcon fontSize="small">
+                <TrashIcon />
+              </SvgIcon>
+            }
+            shape="circle"
+            onClick={handleDeleteClick}
+          />
+        </Tooltip>
+      )}
     </Stack>
   );
 
@@ -373,7 +376,9 @@ const CaseCriminalItem = (props) => {
                         <Autocomplete
                           id="autocomplete-criminal"
                           autoHighlight={true}
-                          disabled={isFieldDisabled || field.disabled}
+                          disabled={
+                            isFieldDisabled || field.disabled || (isDisabled && formik.isValid)
+                          }
                           name={field.name}
                           label={field.label}
                           disablePortal
@@ -434,7 +439,9 @@ const CaseCriminalItem = (props) => {
                               {...params}
                               error={!!(formik.touched[field.name] && formik.errors[field.name])}
                               helperText={formik.touched[field.name] && formik.errors[field.name]}
-                              disabled={isFieldDisabled || field.disabled}
+                              disabled={
+                                isFieldDisabled || field.disabled || (isDisabled && formik.isValid)
+                              }
                               label={field.label}
                               required={field.required || false}
                               sx={{
@@ -460,11 +467,15 @@ const CaseCriminalItem = (props) => {
                           }}
                           type={field.name}
                           value={formik.values[field.name]}
-                          disabled={isFieldDisabled || field.disabled}
+                          disabled={
+                            isFieldDisabled || field.disabled || (isDisabled && formik.isValid)
+                          }
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              disabled={isFieldDisabled || field.disabled}
+                              disabled={
+                                isFieldDisabled || field.disabled || (isDisabled && formik.isValid)
+                              }
                               fullWidth
                               InputLabelProps={{ shrink: true }}
                               required={field.required || false}
@@ -487,7 +498,9 @@ const CaseCriminalItem = (props) => {
                           }}
                           value={formik.values[field.name] ?? ""}
                           multiline={field.textArea || false}
-                          disabled={isFieldDisabled || field.disabled}
+                          disabled={
+                            isFieldDisabled || field.disabled || (isDisabled && formik.isValid)
+                          }
                           required={field.required || false}
                           select={field.select}
                           SelectProps={field.select ? { native: true } : undefined}

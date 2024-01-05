@@ -5,13 +5,21 @@ import { useEffect } from "react";
 import _ from "lodash";
 
 const CaseCriminals = (props) => {
-  const { criminalInfo, criminals, loading, handleSubmit, handleDeleteCriminal, isSubmitting } =
-    props;
+  const {
+    criminalInfo,
+    criminals,
+    loading,
+    handleSubmit,
+    handleDeleteCriminal,
+    isSubmitting,
+    isFieldDisabled,
+  } = props;
 
   const handleSubmitInfo = (index, values, isReady) => {
     console.log("submit info");
     console.log([...criminalInfo.slice(0, index), { ...values }, ...criminalInfo.slice(index + 1)]);
     handleSubmit(
+      "2." + (index + 1),
       [...criminalInfo.slice(0, index), { ...values }, ...criminalInfo.slice(index + 1)],
       isReady
     );
@@ -19,7 +27,7 @@ const CaseCriminals = (props) => {
 
   useEffect(() => {
     if (isSubmitting && _.isEmpty(criminalInfo)) {
-      handleSubmit(criminalInfo, true);
+      handleSubmit(2, criminalInfo, true);
     }
   }, [isSubmitting]);
 
@@ -52,6 +60,7 @@ const CaseCriminals = (props) => {
                   handleSubmit={(values, isReady) => handleSubmitInfo(index, values, isReady)}
                   handleDeleteCriminal={handleDeleteCriminal}
                   isSubmitting={isSubmitting}
+                  isDisabled={isFieldDisabled}
                 />
               );
             })}

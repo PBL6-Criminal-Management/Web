@@ -4,12 +4,21 @@ import { Space } from "antd";
 import { useEffect } from "react";
 import _ from "lodash";
 const CaseWanted = (props) => {
-  const { wantedInfo, criminals, loading, handleSubmit, handleDeleteWanted, isSubmitting } = props;
+  const {
+    wantedInfo,
+    criminals,
+    loading,
+    handleSubmit,
+    handleDeleteWanted,
+    isSubmitting,
+    isFieldDisabled,
+  } = props;
 
   const handleSubmitWantedInfo = (index, values, isReady) => {
     console.log("submit wanted info");
     console.log([...wantedInfo.slice(0, index), { ...values }, ...wantedInfo.slice(index + 1)]);
     handleSubmit(
+      "7." + (index + 1),
       [...wantedInfo.slice(0, index), { ...values }, ...wantedInfo.slice(index + 1)],
       isReady
     );
@@ -17,7 +26,7 @@ const CaseWanted = (props) => {
 
   useEffect(() => {
     if (isSubmitting && _.isEmpty(wantedInfo)) {
-      handleSubmit(wantedInfo, true);
+      handleSubmit(7, wantedInfo, true);
     }
   }, [isSubmitting]);
 
@@ -50,6 +59,7 @@ const CaseWanted = (props) => {
                   handleSubmit={(values, isReady) => handleSubmitWantedInfo(index, values, isReady)}
                   handleDeleteWanted={handleDeleteWanted}
                   isSubmitting={isSubmitting}
+                  isDisabled={isFieldDisabled}
                 />
               );
             })}

@@ -28,7 +28,8 @@ import * as Yup from "yup";
 import _ from "lodash";
 
 const CaseWitnessItem = (props) => {
-  const { witness, index, loading, handleSubmit, handleDeleteWitness, isSubmitting } = props;
+  const { witness, index, loading, handleSubmit, handleDeleteWitness, isSubmitting, isDisabled } =
+    props;
   const [isFieldDisabled, setIsFieldDisabled] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
@@ -144,7 +145,7 @@ const CaseWitnessItem = (props) => {
     if (isSubmitting) {
       handleSubmitWitness(formik.isValid);
     }
-  }, [formik.isValid]);
+  }, [formik.isValid, isSubmitting]);
 
   const extraBtns = () => (
     <Stack direction="row" spacing={-0.5} justifyContent="flex-end" alignItems="center">
@@ -268,10 +269,10 @@ const CaseWitnessItem = (props) => {
                         }}
                         type={field.name}
                         value={formik.values[field.name]}
-                        disabled={isFieldDisabled || field.disabled}
+                        disabled={isFieldDisabled || field.disabled || isDisabled}
                         renderInput={(params) => (
                           <TextField
-                            disabled={isFieldDisabled || field.disabled}
+                            disabled={isFieldDisabled || field.disabled || isDisabled}
                             {...params}
                             fullWidth
                             InputLabelProps={{ shrink: true }}
@@ -294,11 +295,11 @@ const CaseWitnessItem = (props) => {
                         }}
                         type={field.name}
                         value={formik.values[field.name]}
-                        disabled={isFieldDisabled || field.disabled}
+                        disabled={isFieldDisabled || field.disabled || isDisabled}
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            disabled={isFieldDisabled || field.disabled}
+                            disabled={isFieldDisabled || field.disabled || isDisabled}
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             required={field.required || false}
@@ -322,7 +323,7 @@ const CaseWitnessItem = (props) => {
                         type={field.name}
                         value={formik.values[field.name]}
                         multiline={field.textArea || false}
-                        disabled={isFieldDisabled || field.disabled}
+                        disabled={isFieldDisabled || field.disabled || isDisabled}
                         required={field.required || false}
                         select={field.select}
                         SelectProps={field.select ? { native: true } : undefined}

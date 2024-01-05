@@ -4,28 +4,27 @@ import { Space } from "antd";
 import { useEffect } from "react";
 import _ from "lodash";
 const CaseWitnesses = (props) => {
-  const { witnessInfo, loading, handleSubmit, handleDeleteWitness, isSubmitting } = props;
+  const { witnessInfo, loading, handleSubmit, handleDeleteWitness, isSubmitting, isFieldDisabled } =
+    props;
 
   const handleSubmitWitnessInfo = (index, values, isReady) => {
     console.log("submit witness info");
     console.log([
+      "4." + (index + 1),
       ...witnessInfo.slice(0, index),
-      { ...values, id: values.id ? values.id : -1 },
+      { ...values, id: -1 },
       ...witnessInfo.slice(index + 1),
     ]);
     handleSubmit(
-      [
-        ...witnessInfo.slice(0, index),
-        { ...values, id: values.id ? values.id : -1 },
-        ...witnessInfo.slice(index + 1),
-      ],
+      "4." + (index + 1),
+      [...witnessInfo.slice(0, index), { ...values, id: -1 }, ...witnessInfo.slice(index + 1)],
       isReady
     );
   };
 
   useEffect(() => {
     if (isSubmitting && _.isEmpty(witnessInfo)) {
-      handleSubmit(witnessInfo, true);
+      handleSubmit(4, witnessInfo, true);
     }
   }, [isSubmitting]);
 
@@ -55,6 +54,7 @@ const CaseWitnesses = (props) => {
                 handleSubmit={(values, isReady) => handleSubmitWitnessInfo(index, values, isReady)}
                 handleDeleteWitness={handleDeleteWitness}
                 isSubmitting={isSubmitting}
+                isDisabled={isFieldDisabled}
               />
             ))}
         </Space>
