@@ -3,7 +3,7 @@ import { Box, Skeleton } from "@mui/material";
 import AccordionSection from "src/layouts/dashboard/accordion-section";
 import NewCriminalGeneral from "./new-criminal-general";
 import NewCriminalInfo from "./new-criminal-info";
-import NewCriminalImages from "./new-criminal-iamges";
+import NewCriminalImages from "./new-criminal-images";
 
 export const NewCriminalDetails = (props) => {
   const {

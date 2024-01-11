@@ -44,9 +44,9 @@ const CriminalGeneral = (props) => {
     if (changesMade)
       handleSubmit({
         ...formik.values,
-        birthday: format(formik.values.birthday, "dd/MM/yyyy"),
-        fatherBirthday: format(formik.values.fatherBirthday, "dd/MM/yyyy"),
-        motherBirthday: format(formik.values.motherBirthday, "dd/MM/yyyy"),
+        birthday: formik.values.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        fatherBirthday: formik.values.fatherBirthday && format(formik.values.fatherBirthday, "dd/MM/yyyy"),
+        motherBirthday: formik.values.motherBirthday && format(formik.values.motherBirthday, "dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
       });
   };
@@ -67,9 +67,9 @@ const CriminalGeneral = (props) => {
     initialValues: generalInfo
       ? {
           ...generalInfo,
-          birthday: parse(generalInfo.birthday, "dd/MM/yyyy", new Date()),
-          fatherBirthday: parse(generalInfo.fatherBirthday, "dd/MM/yyyy", new Date()),
-          motherBirthday: parse(generalInfo.motherBirthday, "dd/MM/yyyy", new Date()),
+        birthday: generalInfo.birthday && parse(generalInfo.birthday, "dd/MM/yyyy", new Date()),
+        fatherBirthday: generalInfo.fatherBirthday && parse(generalInfo.fatherBirthday, "dd/MM/yyyy", new Date()),
+        motherBirthday: generalInfo.motherBirthday && parse(generalInfo.motherBirthday, "dd/MM/yyyy", new Date()),
         }
       : null,
     validationSchema: Yup.object({

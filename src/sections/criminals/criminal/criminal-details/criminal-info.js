@@ -44,9 +44,9 @@ const CriminalInfo = (props) => {
     if (changesMade)
       handleSubmit({
         ...formik.values,
-        releaseDate: format(formik.values.releaseDate, "dd/MM/yyyy"),
-        dateOfMostRecentCrime: format(formik.values.dateOfMostRecentCrime, "dd/MM/yyyy"),
-        status: Number(formik.values.status),
+        releaseDate: formik.values.releaseDate && format(formik.values.releaseDate, "dd/MM/yyyy"),
+        dateOfMostRecentCrime: formik.values.dateOfMostRecentCrime && format(formik.values.dateOfMostRecentCrime, "dd/MM/yyyy"),
+        status: formik.values.status && Number(formik.values.status),
       });
   };
 
@@ -60,14 +60,14 @@ const CriminalInfo = (props) => {
     enableReinitialize: true,
     initialValues: criminalInfo
       ? {
-          ...criminalInfo,
-          releaseDate: parse(criminalInfo.releaseDate, "dd/MM/yyyy", new Date()),
-          dateOfMostRecentCrime: parse(
-            criminalInfo.dateOfMostRecentCrime,
-            "dd/MM/yyyy",
-            new Date()
-          ),
-        }
+        ...criminalInfo,
+        releaseDate: criminalInfo.releaseDate && parse(criminalInfo.releaseDate, "dd/MM/yyyy", new Date()),
+        dateOfMostRecentCrime: criminalInfo.dateOfMostRecentCrime && parse(
+          criminalInfo.dateOfMostRecentCrime,
+          "dd/MM/yyyy",
+          new Date()
+        ),
+      }
       : null,
     validationSchema: Yup.object({
       phoneModel: Yup.string()
@@ -185,7 +185,7 @@ const CriminalInfo = (props) => {
                       formik.setFieldValue(field.name, date);
                     }}
                     type={field.name}
-                    value={formik.values[field.name]}
+                    value={formik.values[field.name] ?? null}
                     disabled={isFieldDisabled || field.disabled}
                     renderInput={(params) => (
                       <TextField
@@ -268,7 +268,7 @@ const CriminalInfo = (props) => {
             )}
           </CardActions>
         )}
-        
+
       </Card>
     </form>
   );

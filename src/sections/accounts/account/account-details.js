@@ -109,7 +109,6 @@ export const AccountDetails = (props) => {
     formik.setValues({
       ...formik.values,
       isActive: !formik.values.isActive,
-      changesMade: true,
     });
     formik.handleSubmit();
   };
@@ -244,7 +243,7 @@ export const AccountDetails = (props) => {
                 variant="outlined"
                 color={formik.values.isActive ? 'error' : 'success'}
                 onClick={handleToggleActivation}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
               </Button>
@@ -252,7 +251,7 @@ export const AccountDetails = (props) => {
                 variant="contained"
                 color='error'
                 onClick={() => { }}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 Đặt lại mật khẩu
               </Button>
@@ -272,7 +271,7 @@ export const AccountDetails = (props) => {
                 variant="outlined"
                 color={formik.values.isActive ? 'error' : 'success'}
                 onClick={handleToggleActivation}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
               </Button>
@@ -280,14 +279,14 @@ export const AccountDetails = (props) => {
                 variant="contained"
                 color='error'
                 onClick={() => { }}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 Đặt lại mật khẩu
               </Button>
               <Button
                 variant="contained"
                 onClick={state.isFieldDisabled ? handleClick : formik.handleSubmit}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 {state.isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
               </Button>

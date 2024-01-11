@@ -68,8 +68,8 @@ const CaseWitnessItem = (props) => {
     handleSubmit(
       {
         ...formik.values,
-        birthday: witness.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
-        date: witness.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        birthday: formik.values.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
       },
       isValid
@@ -83,6 +83,7 @@ const CaseWitnessItem = (props) => {
       ...witness,
       birthday: witness.birthday && parse(witness.birthday, "dd/MM/yyyy", new Date()),
       date: witness.date && parse(witness.date, "HH:mm dd/MM/yyyy", new Date()),
+      gender: witness.gender && parseInt(witness.gender, 10)
     });
     formik.setTouched({}, false);
     setChangesMade(false);

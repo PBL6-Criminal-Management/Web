@@ -127,7 +127,7 @@ export const UserDetails = (props) => {
         image: formik.values.image,
       });
     }
-    dispatch({ type: "SUBMIT_FORM"});
+    dispatch({ type: "SUBMIT_FORM" });
   };
 
   const handleClick = () => {
@@ -243,7 +243,7 @@ export const UserDetails = (props) => {
             </>
           ) : loadingButtonDetails ? (
             <>
-              <Button variant="outlined" color="error" disabled={loadingButtonDetails}>
+              <Button variant="outlined" color="error" disabled={loadingButtonPicture || loadingButtonDetails}>
                 Đổi mật khẩu
               </Button>
               <LoadingButton
@@ -257,13 +257,13 @@ export const UserDetails = (props) => {
             </>
           ) : (
             <>
-              <Button variant="outlined" color="error" disabled={loadingButtonPicture}>
+              <Button variant="outlined" color="error" disabled={loadingButtonPicture || loadingButtonDetails}>
                 Đổi mật khẩu
               </Button>
               <Button
                 variant="contained"
                 onClick={state.isFieldDisabled ? handleClick : formik.handleSubmit}
-                disabled={loadingButtonPicture}
+                disabled={loadingButtonPicture || loadingButtonDetails}
               >
                 {state.isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
               </Button>

@@ -19,7 +19,15 @@ const Page = () => (
         minHeight: '100%'
       }}
     >
-      <Container maxWidth="md">
+      <Container
+        sx={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+        maxWidth="md"
+      >
         <Box
           sx={{
             alignItems: 'center',
@@ -65,7 +73,7 @@ const Page = () => (
                 <ArrowLeftIcon />
               </SvgIcon>
             )}
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, mb: 3 }}
             variant="contained"
           >
             Trở về trang chủ

@@ -102,6 +102,7 @@ const CaseWantedItem = (props) => {
     if (changesMade) {
       handleSubmit({
         ...formik.values,
+        wantedType: parseInt(formik.values.wantedType, 10),
         wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
       });
     }
@@ -114,7 +115,8 @@ const CaseWantedItem = (props) => {
       setValue(options.find((option) => option.id === wanted.criminalId));
       formik.setValues({
         ...wanted,
-        wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
+        wantedType: wanted.wantedType && parseInt(wanted.wantedType, 10),
+        wantedDecisionDay: wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
       });
       setChangesMade(false);
     } else fillEmpty();

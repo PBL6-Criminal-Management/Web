@@ -46,8 +46,8 @@ const CaseGeneral = (props) => {
         ...formik.values,
         status: parseInt(formik.values.status, 10),
         typeOfViolation: parseInt(formik.values.typeOfViolation, 10),
-        startDate: generalInfo.startDate && format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
-        endDate: generalInfo.endDate && format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
+        startDate: formik.values.startDate && format(formik.values.startDate, "HH:mm dd/MM/yyyy"),
+        endDate: formik.values.endDate && format(formik.values.endDate, "HH:mm dd/MM/yyyy"),
       });
   };
 

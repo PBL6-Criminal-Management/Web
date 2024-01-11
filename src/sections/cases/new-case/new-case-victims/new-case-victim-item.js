@@ -59,16 +59,16 @@ const CaseVictimItem = (props) => {
     console.log("changemade", changesMade);
     console.log("submit", {
       ...formik.values,
-      birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
-      date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
+      birthday: formik.values.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+      date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
       gender: formik.values.gender === true || formik.values.gender === "true",
     });
     setIsFieldDisabled((prev) => !prev);
     handleSubmit(
       {
         ...formik.values,
-        birthday: victim.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
-        date: victim.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
+        birthday: formik.values.birthday && format(formik.values.birthday, "dd/MM/yyyy"),
+        date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
         gender: formik.values.gender === true || formik.values.gender === "true",
       },
       isValid
@@ -82,6 +82,7 @@ const CaseVictimItem = (props) => {
       ...victim,
       birthday: victim.birthday && parse(victim.birthday, "dd/MM/yyyy", new Date()),
       date: victim.date && parse(victim.date, "HH:mm dd/MM/yyyy", new Date()),
+      gender: victim.gender === true || victim.gender === "true",
     });
     formik.setTouched({}, false);
     setChangesMade(false);

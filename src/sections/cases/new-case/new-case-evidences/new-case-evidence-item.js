@@ -37,6 +37,7 @@ const CaseEvidenceItem = (props) => {
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
   const [changesMade, setChangesMade] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (evidence.name === "") {
@@ -80,7 +81,7 @@ const CaseEvidenceItem = (props) => {
   };
 
   const handleError = (error) => {
-    console.log("handleError", error);
+    setMessage(error);
     formik.setValues({
       ...formik.values,
       evidenceImages: evidence.evidenceImages,
@@ -117,6 +118,13 @@ const CaseEvidenceItem = (props) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
+
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      onError("Hình ảnh/video tải lên không hợp lệ. Vui lòng thử lại.")
+      return;
+    }
+    setMessage('');
+
     fmData.append("Files", file);
     try {
       const response = await imagesApi.uploadImage(fmData, config);
@@ -352,6 +360,14 @@ const CaseEvidenceItem = (props) => {
                         >
                           {uploadButton}
                         </Upload>
+                        <Typography
+                          sx={{
+                            mt: 0.75,
+                            color: "error.main",
+                          }}
+                        >
+                          {message}
+                        </Typography>
                         {previewVisible && (
                           <Image.PreviewGroup
                             preview={{

@@ -114,6 +114,7 @@ const CaseCriminalItem = (props) => {
     handleSubmit(
       {
         ...formik.values,
+        typeOfViolation: formik.values.typeOfViolation && parseInt(formik.values.typeOfViolation, 10),
         date: formik.values.date && format(formik.values.date, "HH:mm dd/MM/yyyy"),
       },
       isValid
@@ -128,7 +129,7 @@ const CaseCriminalItem = (props) => {
       formik.setValues({
         ...criminal,
         date: criminal.date && parse(criminal.date, "HH:mm dd/MM/yyyy", new Date()),
-        typeOfViolation: parseInt(criminal.typeOfViolation, 10),
+        typeOfViolation: criminal.typeOfViolation && parseInt(criminal.typeOfViolation, 10),
       });
       setChangesMade(false);
     } else fillEmpty();

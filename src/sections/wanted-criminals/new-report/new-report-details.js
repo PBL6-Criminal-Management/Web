@@ -5,9 +5,7 @@ import {
   Skeleton,
   Card,
   CardContent,
-  CardActions,
-  Divider,
-  Button
+  Typography,
 } from "@mui/material";
 import * as constants from "../../../constants/constants";
 import { LoadingButton } from "@mui/lab";
@@ -24,6 +22,7 @@ export const NewReportDetails = (props) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentPreviewIndex, setCurrentPreviewIndex] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [message, setMessage] = useState('');
 
   const {
     formik,
@@ -78,7 +77,7 @@ export const NewReportDetails = (props) => {
   };
 
   const handleError = (error) => {
-    console.log("handleError", error);
+    setMessage(error);
     formik.setValues({
       ...formik.values,
       reportingImages: [...formik.values.reportingImages],
@@ -116,6 +115,13 @@ export const NewReportDetails = (props) => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       },
     };
+
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      onError("Hình ảnh/video tải lên không hợp lệ. Vui lòng thử lại.")
+      return;
+    }
+    setMessage('');
+
     fmData.append("Files", file);
     try {
       const response = await imagesApi.uploadImage(fmData, config);
@@ -191,6 +197,14 @@ export const NewReportDetails = (props) => {
                   >
                     {uploadButton}
                   </Upload>
+                  <Typography
+                    sx={{
+                      mt: 0.75,
+                      color: "error.main",
+                    }}
+                  >
+                    {message}
+                  </Typography>
                   {previewVisible && (
                     <Image.PreviewGroup
                       preview={{
