@@ -104,7 +104,8 @@ const CaseWantedItem = (props) => {
     handleSubmit(
       {
         ...formik.values,
-        wantedDecisionDay: format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
+        wantedDecisionDay: formik.values.wantedDecisionDay && format(formik.values.wantedDecisionDay, "dd/MM/yyyy"),
+        wantedType: formik.values.wantedType && parseInt(formik.values.wantedType, 10),
       },
       isValid
     );
@@ -117,6 +118,7 @@ const CaseWantedItem = (props) => {
       setValue(options.find((option) => option.id === wanted.criminalId));
       formik.setValues({
         ...wanted,
+        wantedType: wanted.wantedType && parseInt(wanted.wantedType, 10),
         wantedDecisionDay: parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
       });
       setChangesMade(false);
@@ -145,6 +147,7 @@ const CaseWantedItem = (props) => {
         setValue(options.find((option) => option.id === wanted.criminalId));
         formik.setValues({
           ...wanted,
+          wantedType: wanted.wantedType && parseInt(wanted.wantedType, 10),
           wantedDecisionDay:
             wanted.wantedDecisionDay && parse(wanted.wantedDecisionDay, "dd/MM/yyyy", new Date()),
         });

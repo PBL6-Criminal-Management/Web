@@ -162,7 +162,7 @@ const Page = () => {
               ) : (
                 <Breadcrumbs
                   sx={{
-                    mb: 2.5,
+                    mb: 1.5,
                   }}
                   separator="›"
                   aria-label="breadcrumb"

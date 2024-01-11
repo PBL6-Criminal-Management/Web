@@ -22,159 +22,90 @@ export const NewAccountDetails = (props) => {
   } = props;
 
   return (
-      <Card>
-        <CardContent>
-          <Grid container spacing={3}>
-            {[
-              { label: "Họ và tên", name: "name", required: true },
-              { label: "Ngày sinh", name: "birthday", md: 4, datePicker: true },
-              {
-                label: "Giới tính",
-                name: "gender",
-                md: 4,
-                select: true,
-                selectProps: constants.gender,
-              },
-              { label: "CMND/CCCD", name: "citizenId", md: 4, required: true },
-              { label: "Số điện thoại", name: "phoneNumber", md: 4, required: true },
-              { label: "Email", name: "email", md: 8, required: true },
-              { label: "Địa chỉ", name: "address", md: 8, required: true },
-              { label: "Vai trò", name: "role", md: 4, select: true, selectProps: constants.role },
-            ].map((field) => (
-              <Grid key={field.name} xs={12} md={field.md || 12}>
-                {loadingSkeleton || formik.values === null || formik.values.name === undefined ? (
-                  <Skeleton variant="rounded">
-                    <TextField fullWidth />
-                  </Skeleton>
-                ) : field.datePicker ? (
-                  <DatePicker
-                    error={!!(formik.touched[field.name] && formik.errors[field.name])}
-                    fullWidth
-                    helperText={formik.touched[field.name] && formik.errors[field.name]}
-                    disabled={isFieldDisabled || field.disabled}
-                    label={field.label}
-                    name={field.name}
-                    onBlur={formik.handleBlur}
-                    onChange={(date) => {
-                      // dispatch({ type: "UPDATE_USER" });
-                      formik.setFieldValue("birthday", date);
-                    }}
-                    type={field.name}
-                    value={formik.values[field.name]}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                        required={field.required || false}
-                        onKeyDown={(e) => e.preventDefault()}
-                      />
-                    )}
-                    maxDate={new Date()} // Assuming current date is the maximum allowed
-                  />
-                ) : (
-                  <TextField
-                    error={!!(formik.touched[field.name] && formik.errors[field.name])}
-                    fullWidth
-                    helperText={formik.touched[field.name] && formik.errors[field.name]}
-                    disabled={isFieldDisabled || field.disabled}
-                    label={field.label}
-                    name={field.name}
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type={field.name}
-                    value={!field.select && field.selectProps ? field.selectProps[formik.values[field.name]] : formik.values[field.name]}
-                    required={field.required || false}
-                    select={field.select}
-                    SelectProps={field.select ? { native: true } : undefined}
-                    sx={{
-                      "& .MuiInputBase-input": {
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      },
-                    }}
-                  >
-                    {field.select &&
-                      Object.entries(field.selectProps).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                  </TextField>
-                )}
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-        {/* <Divider />
-        <CardActions sx={{ justifyContent: "flex-end" }}>
-          {loadingSkeleton ? (
-            <>
-              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
-              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
-              <Skeleton height={40} width={170} variant="rounded"></Skeleton>
-            </>
-          ) : loadingButtonDetails ? (
-            <>
-              <Button
-                variant="outlined"
-                color={formik.values.isActive ? 'error' : 'success'}
-                onClick={handleToggleActivation}
-                disabled={loadingButtonPicture}
-              >
-                {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
-              </Button>
-              <Button
-                variant="contained"
-                color='error'
-                onClick={() => { }}
-                disabled={loadingButtonPicture}
-              >
-                Đặt lại mật khẩu
-              </Button>
-              <LoadingButton
-                disabled
-                loading={loadingButtonDetails}
-                size="medium"
-                variant="contained"
-              >
-                Chỉnh sửa thông tin
-              </LoadingButton>
-            </>
-
-          ) : (
-            <>
-              <Button
-                variant="outlined"
-                color={formik.values.isActive ? 'error' : 'success'}
-                onClick={handleToggleActivation}
-                disabled={loadingButtonPicture}
-              >
-                {formik.values.isActive ? "Khoá tài khoản" : "Mở khoá tài khoản"}
-              </Button>
-              <Button
-                variant="contained"
-                color='error'
-                onClick={() => { }}
-                disabled={loadingButtonPicture}
-              >
-                Đặt lại mật khẩu
-              </Button>
-              <Button
-                variant="contained"
-                onClick={state.isFieldDisabled ? handleClick : formik.handleSubmit}
-                disabled={loadingButtonPicture}
-              >
-                {state.isFieldDisabled ? "Chỉnh sửa thông tin" : "Cập nhật thông tin"}
-              </Button>
-              {!state.isFieldDisabled && (
-                <Button variant="outlined" onClick={handleCancel}>
-                  Hủy
-                </Button>
+    <Card>
+      <CardContent>
+        <Grid container spacing={3}>
+          {[
+            { label: "Họ và tên", name: "name", required: true },
+            { label: "Ngày sinh", name: "birthday", md: 4, datePicker: true },
+            {
+              label: "Giới tính",
+              name: "gender",
+              md: 4,
+              select: true,
+              selectProps: constants.gender,
+            },
+            { label: "CMND/CCCD", name: "citizenId", md: 4, required: true },
+            { label: "Số điện thoại", name: "phoneNumber", md: 4, required: true },
+            { label: "Email", name: "email", md: 8, required: true },
+            { label: "Địa chỉ", name: "address", md: 8, required: true },
+            { label: "Vai trò", name: "role", md: 4, select: true, selectProps: constants.role },
+          ].map((field) => (
+            <Grid key={field.name} xs={12} md={field.md || 12}>
+              {loadingSkeleton || formik.values === null || formik.values.name === undefined ? (
+                <Skeleton variant="rounded">
+                  <TextField fullWidth />
+                </Skeleton>
+              ) : field.datePicker ? (
+                <DatePicker
+                  error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                  fullWidth
+                  helperText={formik.touched[field.name] && formik.errors[field.name]}
+                  disabled={isFieldDisabled || field.disabled}
+                  label={field.label}
+                  name={field.name}
+                  onBlur={formik.handleBlur}
+                  onChange={(date) => {
+                    // dispatch({ type: "UPDATE_USER" });
+                    formik.setFieldValue("birthday", date);
+                  }}
+                  type={field.name}
+                  value={formik.values[field.name]}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                      required={field.required || false}
+                      onKeyDown={(e) => e.preventDefault()}
+                    />
+                  )}
+                  maxDate={new Date()} // Assuming current date is the maximum allowed
+                />
+              ) : (
+                <TextField
+                  error={!!(formik.touched[field.name] && formik.errors[field.name])}
+                  fullWidth
+                  helperText={formik.touched[field.name] && formik.errors[field.name]}
+                  disabled={isFieldDisabled || field.disabled}
+                  label={field.label}
+                  name={field.name}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  type={field.name}
+                  value={!field.select && field.selectProps ? field.selectProps[formik.values[field.name]] : formik.values[field.name]}
+                  required={field.required || false}
+                  select={field.select}
+                  SelectProps={field.select ? { native: true } : undefined}
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                >
+                  {field.select &&
+                    Object.entries(field.selectProps).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                </TextField>
               )}
-            </>
-          )}
-        </CardActions> */}
-      </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </CardContent>
+    </Card>
   );
 };

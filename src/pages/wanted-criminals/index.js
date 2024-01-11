@@ -43,10 +43,10 @@ const WantedCriminalsPage = () => {
           justifyContent: "center",
         }}
       >
-
         <Header />
         <AdvancedSearchBox onSearch={handleFilterChange} onResetFilter={handleResetFilter} />
         <Grid
+          mb={3.5}
           container
           rowSpacing={1}
           display="flex"
